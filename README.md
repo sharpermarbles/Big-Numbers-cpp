@@ -4,6 +4,7 @@ C++ library for gigantic numbers (integer or floating point)
   A big number class that represents numbers of any size and/or precission. With overloaded constructors and operators, these objects should be able to be instantiated and operated on/with as simply as with any primitive types. Bgnm objects can be created with any of the following types: int, long long, float, double, long double, char*, std::string, and of course Bgnm
 
  the following operators are overloaded to facilitate seamless math operations and interaction with other data types
+ 
      =  assigment
      +  addition
      -  subtraction
@@ -13,7 +14,7 @@ C++ library for gigantic numbers (integer or floating point)
      -- decrement
      ^  exponent
      %  modulo
-
+     
      << multiply by multiples of ten (base 10 shift left analogous to bitwise shift left in binary)
      >> divide by multiples of ten (base 10 shift right analogous to bitwise right left in binary)
 
