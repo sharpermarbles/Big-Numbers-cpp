@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E5F398F25F118B800B6C5C3 /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E5F398D25F118B800B6C5C3 /* command.cpp */; };
 		0E92528025EC160700CF825B /* big_nums.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E92527F25EC160700CF825B /* big_nums.cpp */; };
 		0ED5072C25EEB828007A8161 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0ED5072B25EEB828007A8161 /* main.cpp */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0E5F398D25F118B800B6C5C3 /* command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = command.cpp; sourceTree = "<group>"; };
+		0E5F398E25F118B800B6C5C3 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command.h; sourceTree = "<group>"; };
 		0E92527E25EC160700CF825B /* big_nums.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = big_nums.hpp; sourceTree = "<group>"; };
 		0E92527F25EC160700CF825B /* big_nums.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = big_nums.cpp; sourceTree = "<group>"; };
 		0E9DC0BA251FDA2700DE365A /* big_numbers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = big_numbers; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,6 +44,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E5F398B25F118B800B6C5C3 /* submodules */ = {
+			isa = PBXGroup;
+			children = (
+				0E5F398C25F118B800B6C5C3 /* command_library */,
+			);
+			path = submodules;
+			sourceTree = "<group>";
+		};
+		0E5F398C25F118B800B6C5C3 /* command_library */ = {
+			isa = PBXGroup;
+			children = (
+				0E5F398D25F118B800B6C5C3 /* command.cpp */,
+				0E5F398E25F118B800B6C5C3 /* command.h */,
+			);
+			path = command_library;
+			sourceTree = "<group>";
+		};
 		0E92527D25EC160700CF825B /* library */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,6 +73,7 @@
 		0E9DC0B1251FDA2700DE365A = {
 			isa = PBXGroup;
 			children = (
+				0E5F398B25F118B800B6C5C3 /* submodules */,
 				0E92527D25EC160700CF825B /* library */,
 				0ED5072A25EEB828007A8161 /* testing_module */,
 				0E9DC0BB251FDA2700DE365A /* Products */,
@@ -133,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0ED5072C25EEB828007A8161 /* main.cpp in Sources */,
+				0E5F398F25F118B800B6C5C3 /* command.cpp in Sources */,
 				0E92528025EC160700CF825B /* big_nums.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
