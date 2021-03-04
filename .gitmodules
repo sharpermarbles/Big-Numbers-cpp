@@ -1,0 +1,3 @@
+[submodule "Command-cpp"]
+	path = Command-cpp
+	url = https://github.com/sharpermarbles/Command-cpp.git
