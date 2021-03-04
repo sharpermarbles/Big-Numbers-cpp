@@ -10,10 +10,10 @@ const std::string Command::commands[] = {
 };
 
 // pointers to custom classes should be passed to the Command constructor
-Command::Command(SampleClass * _sc)
+Command::Command()
 {
     // set member pointer equal to pointer to custom class
-    sc = _sc;
+    //sc = _sc;
     
     std::string s = "";
     s += "    help          - List all possible user commands.\n";
@@ -103,7 +103,7 @@ void Command::exit_program()
 // example custom function which calls SampleClass member function
 void Command::do_stuff_1()
 {
-    sc->function_1();
+    //sc->function_1();
 }
 
 // example custom function that requires command line input and calls SampleClass member function
@@ -112,13 +112,13 @@ void Command::do_stuff_2()
     std::string s;
     std::cout << "  User input: ";
     getline(std::cin, s);
-    sc->function_2(s);
+    //sc->function_2(s);
 }
 
 // example custom function which calls SampleClass member function which throws an error
 void Command::do_stuff_3()
 {
-    sc->function_3();
+    //sc->function_3();
 }
 
 

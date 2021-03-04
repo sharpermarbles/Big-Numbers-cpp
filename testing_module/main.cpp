@@ -19,6 +19,7 @@
 
 //big_nums library
 #include "big_nums.hpp"
+#include "command.h"
 
 template <typename T>
 void p(T n){
@@ -378,6 +379,21 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
             
     } catch (const std::exception & e){
         std::cout << e.what() << std::endl;
+    }
+    
+    
+    //------------
+    //seting up for getting user input
+    
+    Command cmd;
+    
+    try
+    {
+        cmd.get();
+    }
+    catch (...)
+    {
+        
     }
     
     return  0;

@@ -17,7 +17,6 @@
 
 #include <string>
 #include <iostream>
-#include "sample_class.h"
 
 class Command
 {
@@ -27,7 +26,7 @@ class Command
 	void eval(int);
     
     // member variables to hold pointer to custom project class object
-	SampleClass * sc;
+	//SampleClass * sc;
     
     // built in commands
     void help();
@@ -40,7 +39,8 @@ class Command
 
 public:
     
-	Command(SampleClass *);
+	//Command(SampleClass *);
+    Command();
 	~Command();
 	void get();
 
