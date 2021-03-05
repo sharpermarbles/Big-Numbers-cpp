@@ -347,7 +347,7 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
         std::cout << "big is NOT bigger\n";
     }
     bgnm sr = "81", cr = "-81";
-    //std::cout << "square root of " << sr << " is " << sr.sqrt() << std::endl;
+    std::cout << "square root of " << sr << " is " << sr.sqrt() << std::endl;
     std::cout << "cube root of " << cr << " is " << cr.cbrt() << std::endl;
     
     bgnm bg = "-4.004";

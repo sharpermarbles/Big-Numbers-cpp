@@ -44,23 +44,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0E5F398B25F118B800B6C5C3 /* submodules */ = {
-			isa = PBXGroup;
-			children = (
-				0E5F398C25F118B800B6C5C3 /* command_library */,
-			);
-			path = submodules;
-			sourceTree = "<group>";
-		};
-		0E5F398C25F118B800B6C5C3 /* command_library */ = {
-			isa = PBXGroup;
-			children = (
-				0E5F398D25F118B800B6C5C3 /* command.cpp */,
-				0E5F398E25F118B800B6C5C3 /* command.h */,
-			);
-			path = command_library;
-			sourceTree = "<group>";
-		};
 		0E92527D25EC160700CF825B /* library */ = {
 			isa = PBXGroup;
 			children = (
@@ -73,7 +56,6 @@
 		0E9DC0B1251FDA2700DE365A = {
 			isa = PBXGroup;
 			children = (
-				0E5F398B25F118B800B6C5C3 /* submodules */,
 				0E92527D25EC160700CF825B /* library */,
 				0ED5072A25EEB828007A8161 /* testing_module */,
 				0E9DC0BB251FDA2700DE365A /* Products */,
@@ -91,6 +73,8 @@
 		0ED5072A25EEB828007A8161 /* testing_module */ = {
 			isa = PBXGroup;
 			children = (
+				0E5F398D25F118B800B6C5C3 /* command.cpp */,
+				0E5F398E25F118B800B6C5C3 /* command.h */,
 				0ED5072B25EEB828007A8161 /* main.cpp */,
 			);
 			path = testing_module;

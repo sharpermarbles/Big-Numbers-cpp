@@ -18,6 +18,7 @@
 #include <string>
 #include <iostream>
 
+
 class Command
 {
 	static const std::string commands[];
@@ -36,6 +37,7 @@ class Command
 	void do_stuff_1();
     void do_stuff_2();
     void do_stuff_3();
+    void random_tester();
 
 public:
     
