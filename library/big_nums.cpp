@@ -890,6 +890,12 @@ static std::string sub_num_strings(std::string_view a, std::string_view b)
 static std::string mult_num_strings( std::string_view a, std::string_view b, const int max_dec_prec = DONT_ADJUST_PRECISION)
 {
     
+    //multiplication by zero?
+    bool a_mult_by_0 = true, b_mult_by_0 = true;
+    for(int n = 0; n < a.size(); n++) if(a[n] > '0') a_mult_by_0 = false;
+    for(int n = 0; n < b.size(); n++) if(b[n] > '0') b_mult_by_0 = false;
+    if(a_mult_by_0 || b_mult_by_0) return "0";
+    
     //check for negatives
     bool negative = false;
     if(a[0]=='-' && b[0]=='-')
@@ -976,22 +982,22 @@ static std::string mult_num_strings( std::string_view a, std::string_view b, con
     }
     
     // create char array for return value
-    int result_size = digits_size + 3; // result string needs three places for a negative sign, potential leading zero, decimal
+    int result_size = digits_size + 3; // result string needs three places for potential negative sign, leading zero, decimal
     char result[result_size + 1];  // add one for null terminal character
     for (int i = 0; i < result_size; i ++) result[i] = '0'; // initialize to zeros
     result[result_size] = '\0';    // null terminal char
     
     //add decimal to string
-    int bef = result_size - 1 - (int)aft;
-    if (bef >= 0 && aft > 0) result[bef+2] = '.';
+    int bef = result_size - ((int)aft + 1);
+    if (bef >= 0 && aft > 0) result[bef] = '.';
     
     int j = digits_size - 1; // j iterates through digits array
     int i = result_size - 1; // i iterates through result string
     for(; j>= 0;)
     {
-        if(result[i+2] != '.')
+        if(result[i] != '.')
         {
-            result[i+2] += digits[j];
+            result[i] += digits[j];
             i--;
             j--;
         }
@@ -1017,7 +1023,7 @@ static std::string mult_num_strings( std::string_view a, std::string_view b, con
     
     // handle the negative sign and leading zero if any
     int n = 0;
-    while(result[n] == '0') n++;
+    while(result[n] == '0' && result[n+1] != '.') n++;
     if(negative)
     {
         result[n-1] = '-';
@@ -1360,18 +1366,18 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
         std::string partial;
         partial = str_pow(str_root(temp_base,denominator,internal_dec_limit), numerator,internal_dec_limit);
         ret = mult_num_strings(ret,partial,internal_dec_limit);
+
     }
     
     // if power was negative, need to inverse ret
     if(negative_power) ret = div_num_strings("1", ret);
-    
+
     if(max_dec_prec != DONT_ADJUST_PRECISION) round_string(ret,max_dec_prec);
     
     if(negative_base)
     {
         if(str_mod(integer, "2") != "0" && numerator == "0") ret.insert(0,"-");
     }
-    
     return ret;
     
 }

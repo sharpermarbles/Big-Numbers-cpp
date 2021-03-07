@@ -7,63 +7,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "35B7ED15-967C-403E-B6FA-E31F3293EE8B"
+            uuid = "91C14D0D-D08F-44F8-82BB-422D36709BBC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "library/big_nums.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1053"
+            endingLineNumber = "1053"
+            landmarkName = "div_num_strings(numerator, divisor, DONT_ADJUST_PRECISION)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "801472EC-862B-422E-8E42-72D9BC80D5A8"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../cpp_libraries/big_nums.cpp"
+            filePath = "library/big_nums.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1253"
-            endingLineNumber = "1253"
-            landmarkName = "str_mod(number, modulo)"
+            startingLineNumber = "1048"
+            endingLineNumber = "1048"
+            landmarkName = "div_num_strings(numerator, divisor, DONT_ADJUST_PRECISION)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F3890D2D-1124-45F0-9A2C-E4EB3C32543F"
-            shouldBeEnabled = "Yes"
+            uuid = "F66A8A4A-1A14-4299-83B6-5319E8AF6007"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../cpp_libraries/big_nums.cpp"
+            filePath = "library/big_nums.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "what()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F8F702D4-8F38-469A-8F8A-5ED7DE292125"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../cpp_libraries/big_nums.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1511"
-            endingLineNumber = "1511"
-            landmarkName = "str_root(base, initial_exp, max_dec_prec)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4FF61597-BF45-4958-B23B-00211FFBA7E1"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../cpp_libraries/big_nums.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1405"
-            endingLineNumber = "1405"
+            startingLineNumber = "1485"
+            endingLineNumber = "1485"
             landmarkName = "str_root(base, initial_exp, max_dec_prec)"
             landmarkType = "9">
          </BreakpointContent>
