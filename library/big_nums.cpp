@@ -1165,8 +1165,20 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
     
     //division by zero?!
     bool div_by_0_error = true;
+<<<<<<< Updated upstream
     for(int n = 0; n < div_view.size(); n++) if(div_view[n] > '0') div_by_0_error = false;
     if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
+=======
+    for(int n = 0; n < divisor.size(); n++)
+    {
+        if(divisor[n] > '0') div_by_0_error = false;
+    }
+    
+    if(div_by_0_error)
+    {
+        throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
+    }
+>>>>>>> Stashed changes
     
     // check for negatives
     bool negative = false;
