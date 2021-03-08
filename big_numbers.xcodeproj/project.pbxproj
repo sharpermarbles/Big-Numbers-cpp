@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E5F398F25F118B800B6C5C3 /* command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E5F398D25F118B800B6C5C3 /* command.cpp */; };
 		0E92528025EC160700CF825B /* big_nums.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E92527F25EC160700CF825B /* big_nums.cpp */; };
 		0ED5072C25EEB828007A8161 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0ED5072B25EEB828007A8161 /* main.cpp */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0E5F398D25F118B800B6C5C3 /* command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = command.cpp; sourceTree = "<group>"; };
+		0E5F398E25F118B800B6C5C3 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command.h; sourceTree = "<group>"; };
 		0E92527E25EC160700CF825B /* big_nums.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = big_nums.hpp; sourceTree = "<group>"; };
 		0E92527F25EC160700CF825B /* big_nums.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = big_nums.cpp; sourceTree = "<group>"; };
 		0E9DC0BA251FDA2700DE365A /* big_numbers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = big_numbers; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +73,8 @@
 		0ED5072A25EEB828007A8161 /* testing_module */ = {
 			isa = PBXGroup;
 			children = (
+				0E5F398D25F118B800B6C5C3 /* command.cpp */,
+				0E5F398E25F118B800B6C5C3 /* command.h */,
 				0ED5072B25EEB828007A8161 /* main.cpp */,
 			);
 			path = testing_module;
@@ -101,7 +106,7 @@
 		0E9DC0B2251FDA2700DE365A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1160;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = "Ben Harvey";
 				TargetAttributes = {
 					0E9DC0B9251FDA2700DE365A = {
@@ -133,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0ED5072C25EEB828007A8161 /* main.cpp in Sources */,
+				0E5F398F25F118B800B6C5C3 /* command.cpp in Sources */,
 				0E92528025EC160700CF825B /* big_nums.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -166,6 +172,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -224,6 +231,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -252,6 +260,7 @@
 		0E9DC0C2251FDA2700DE365A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -260,6 +269,7 @@
 		0E9DC0C3251FDA2700DE365A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

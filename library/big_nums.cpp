@@ -45,93 +45,93 @@ public:
     }
 };
 
-//helper struct for Bgnm::???_num_strings() functions
-struct Num_str
-{
-    
-    friend Bgnm;
-    
-    std::string num;
-    int bef_dec; // places before decimal
-    int dec_loc; // decimal location
-    int aft_dec; // places after decimal
-    int size; // count of places in number
-    bool neg;// negative?
-    
-    Num_str(const std::string & s, bool clean = false)
-    {
-        num = s;
-        neg = false;
-        if(s[0]=='-')
-        {
-            neg = true;
-            num[0]= '0';
-        }
-        size=(int)s.size();
-        dec_loc = locate_decimal(num);
-        bef_dec = dec_loc;
-        aft_dec = size-(dec_loc + 1);
-        if(aft_dec < 0) aft_dec=0;
-        if(clean)
-        {
-            for(int i=0;i<num.size();i++)
-            {
-                if(s[i]=='.')
-                {
-                    num.erase(i,1);
-                }
-            }
-            size=(int)num.size();
-            aft_dec = size-dec_loc;
-        }
-    }
-    
-    ~Num_str(){}
-    
-    int locate_decimal(std::string & s)
-    {
-        int i = 0;
-        for(std::string::iterator it=s.begin();it!=s.end();it++)
-        {
-            if(s[i] == '.')return i;
-            i++;
-        }
-        return i;
-    }
-    
-    //add zeros to end of num string
-    void add_zeros(const int zero_amnt)
-    {
-        char c = '0';
-        if(aft_dec<1)
-        {
-            bef_dec += zero_amnt;
-            size    += zero_amnt;
-        }
-        else
-        {
-            aft_dec += zero_amnt;
-            size    += zero_amnt;
-        }
-        for(int x=0; x< zero_amnt; x++)
-        {
-            num.append(&c,1);
-        }
-        dec_loc = locate_decimal( num);
-    }
-    
-    //subtracts a substring number from a number string by swaping digits w zeros
-    void zero_out(const int & start, const int & howmany)
-    {
-        int last=(int)num.size();
-        for(int i=0;i<howmany;i++)
-        {
-            if((start+i)>=last) throw Bgnm_error("Num_str::zero_out() - Went out of range.",__FILENAME__,__LINE__,__FUNCTION__,110);
-            num[start+i]= '0';
-        }
-    }
-    
-};
+////helper struct for Bgnm::???_num_strings() functions
+//struct Num_str
+//{
+//
+//    friend Bgnm;
+//
+//    std::string num;
+//    int bef_dec; // places before decimal
+//    int dec_loc; // decimal location
+//    int aft_dec; // places after decimal
+//    int size; // count of places in number
+//    bool neg;// negative?
+//
+//    Num_str(const std::string & s, bool clean = false)
+//    {
+//        num = s;
+//        neg = false;
+//        if(s[0]=='-')
+//        {
+//            neg = true;
+//            num[0]= '0';
+//        }
+//        size=(int)s.size();
+//        dec_loc = locate_decimal(num);
+//        bef_dec = dec_loc;
+//        aft_dec = size-(dec_loc + 1);
+//        if(aft_dec < 0) aft_dec=0;
+//        if(clean)
+//        {
+//            for(int i=0;i<num.size();i++)
+//            {
+//                if(s[i]=='.')
+//                {
+//                    num.erase(i,1);
+//                }
+//            }
+//            size=(int)num.size();
+//            aft_dec = size-dec_loc;
+//        }
+//    }
+//
+//    ~Num_str(){}
+//
+//    int locate_decimal(std::string & s)
+//    {
+//        int i = 0;
+//        for(std::string::iterator it=s.begin();it!=s.end();it++)
+//        {
+//            if(s[i] == '.')return i;
+//            i++;
+//        }
+//        return i;
+//    }
+//
+//    //add zeros to end of num string
+//    void add_zeros(const int zero_amnt)
+//    {
+//        char c = '0';
+//        if(aft_dec<1)
+//        {
+//            bef_dec += zero_amnt;
+//            size    += zero_amnt;
+//        }
+//        else
+//        {
+//            aft_dec += zero_amnt;
+//            size    += zero_amnt;
+//        }
+//        for(int x=0; x< zero_amnt; x++)
+//        {
+//            num.append(&c,1);
+//        }
+//        dec_loc = locate_decimal( num);
+//    }
+//
+//    //subtracts a substring number from a number string by swaping digits w zeros
+//    void zero_out(const int & start, const int & howmany)
+//    {
+//        int last=(int)num.size();
+//        for(int i=0;i<howmany;i++)
+//        {
+//            if((start+i)>=last) throw Bgnm_error("Num_str::zero_out() - Went out of range.",__FILENAME__,__LINE__,__FUNCTION__,110);
+//            num[start+i]= '0';
+//        }
+//    }
+//
+//};
 
 //helper functions
 //static int max(int a, int b){
@@ -158,68 +158,68 @@ struct Num_str
 //    }
 //}
 
-// carry() version 2.0
-// note that carry() will not carry off the end of the vector - if number carries off either end of vector, it is lost
-static void carry(std::vector<int> & vec, bool reverse = false)
-{
-    int x, size = (int)vec.size();
-    if(!reverse)
-    {
-        for (int it = size-1; it >=0; it--)
-        {
-            if(vec[it] > 9)
-            {
-                x = vec[it];
-                vec[it] = x%10;
-                if(it > 0)
-                {
-                    vec.at(it-1)+=(x-vec[it])/ 10;
-                }
-            }
-        }
-    }
-    else
-    {
-        for (int it = 0; it < size; it++)
-        {
-            if(vec[it] > 9)
-            {
-                x = vec[it];
-                vec[it]=x%10;
-                if(it < size - 1)
-                {
-                    vec.at(it+1)+=(x-vec[it])/ 10;
-                }
-            }
-        }
-    }
-}
+//// carry() version 2.0
+//// note that carry() will not carry off the end of the vector - if number carries off either end of vector, it is lost
+//static void carry(std::vector<int> & vec, bool reverse = false)
+//{
+//    int x, size = (int)vec.size();
+//    if(!reverse)
+//    {
+//        for (int it = size-1; it >=0; it--)
+//        {
+//            if(vec[it] > 9)
+//            {
+//                x = vec[it];
+//                vec[it] = x%10;
+//                if(it > 0)
+//                {
+//                    vec.at(it-1)+=(x-vec[it])/ 10;
+//                }
+//            }
+//        }
+//    }
+//    else
+//    {
+//        for (int it = 0; it < size; it++)
+//        {
+//            if(vec[it] > 9)
+//            {
+//                x = vec[it];
+//                vec[it]=x%10;
+//                if(it < size - 1)
+//                {
+//                    vec.at(it+1)+=(x-vec[it])/ 10;
+//                }
+//            }
+//        }
+//    }
+//}
 
-static void vec_to_string(const std::vector<int> & vec, std::string & str, bool reverse = false)
-{
-    if(!reverse)
-    {
-        for(int i = 0; i < vec.size(); i++)
-        {
-            str += (char)(vec[i] + '0');
-        }
-    }
-    else
-    {
-        for(int i = (int)vec.size() -1; i >= 0; i--)
-        {
-            str += (char)(vec[i] + '0');
-        }
-    }
-}
+//static void vec_to_string(const std::vector<int> & vec, std::string & str, bool reverse = false)
+//{
+//    if(!reverse)
+//    {
+//        for(int i = 0; i < vec.size(); i++)
+//        {
+//            str += (char)(vec[i] + '0');
+//        }
+//    }
+//    else
+//    {
+//        for(int i = (int)vec.size() -1; i >= 0; i--)
+//        {
+//            str += (char)(vec[i] + '0');
+//        }
+//    }
+//}
 
-static void add_dec(std::string &str, const int bef)
-{
-    if(bef < str.size())
-    {
-        str.insert(bef,1,'.');
-    }
-}
+//static void add_dec(std::string &str, const int bef)
+//{
+//    if(bef < str.size())
+//    {
+//        str.insert(bef,1,'.');
+//    }
+//}
 
 static void strip_leading_0s(std::string &str)
 {
@@ -1038,69 +1038,295 @@ static std::string mult_num_strings( std::string_view a, std::string_view b, con
 }
 
 //DIVIDE
-static std::string div_num_strings( const std::string & numerator, const std::string & divisor, const int max_dec_prec = DONT_ADJUST_PRECISION)
+//static std::string div_num_strings( const std::string & numerator, const std::string & divisor, const int max_dec_prec = DONT_ADJUST_PRECISION)
+//{
+//
+//    //division by zero?!
+//    bool div_by_0_error = true;
+//    for(int n = 0; n < divisor.size(); n++)
+//    {
+//        if(divisor[n] > '0') div_by_0_error = false;
+//    }
+//
+//    if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
+//
+//    std::string result, subst;
+//
+//    //check for negatives
+//    bool negative = false;
+//    if(numerator[0]=='-' && divisor[0]=='-')
+//    {
+//        negative = false;
+//    }
+//    else if(numerator[0]=='-' || divisor[0]=='-')
+//    {
+//        negative = true;
+//    }
+//
+//    Num_str nu(numerator,true);
+//    Num_str di(divisor,true);
+//
+//    int global_dec_loc = nu.aft_dec - di.aft_dec;
+//    int gl_crs; //global cursor
+//    int cntr; //counter
+//
+//    //add zeros to numerator
+//    //then update global_dec_loc
+//    int zero_amnt = (di.size * 2)+5;
+//    nu.add_zeros(zero_amnt);
+//    global_dec_loc += zero_amnt;
+//    std::vector<int> vec(nu.size, 0);
+//
+//    //in case divisor has many leading zeros, get rid of zeros and adjust global_dec_loc, otherwise division loop does way too many iterations in cases like 80 / .00000001
+//    while(di.num[0] == '0')
+//    {
+//        di.num.erase(0,1);
+//        di.size--;
+//    }
+//
+//    //main divisor loop, loops until global cursor hits zero
+//    gl_crs=nu.size;
+//    cntr=di.size;
+//
+//    while(comp_strs(nu.num,di.num) && (gl_crs > 0))
+//    {
+//        // 1. get smallest part of numerator that's larger than divisor
+//        gl_crs=nu.size - cntr + 1;//adjust cursor
+//        bool check = false;
+//        while(check==false && cntr <= nu.size)
+//        {
+//            subst = nu.num.substr(0,cntr);
+//            if(comp_strs(subst, di.num))
+//            {
+//                check=true; // got a chunk to work with
+//                // so need to take it to work with and remove it (subtract) it from the numerator while working with it
+//                nu.zero_out(0,cntr);
+//            }
+//            else
+//            {
+//                cntr++;
+//                gl_crs--;
+//            }
+//        }
+//        // 2. now how many divisors fit in numerator?
+//        while(comp_strs(subst, di.num))
+//        {
+//            subst= sub_num_strings(subst, di.num);
+//            vec[gl_crs-1] ++ ;
+//        }
+//
+//        // 3. now take remainder and add it back to main numerator
+//        subst.append(gl_crs-1,'0');
+//        nu.num = add_num_strings(subst, nu.num);
+//
+//        // 4. loop back to the next
+//    } // end main divisor loop
+//
+//    carry(vec, true);
+//    vec_to_string(vec, result, true);
+//
+//    add_dec(result,((int)result.size()-global_dec_loc ));
+//
+//    strip_leading_0s(result);
+//    strip_trailing_0s(result);
+//    if(negative) result = "-" + result;
+//
+//    // Following code is ignored by default. It can be used to set precision level of result. Bignum library needs this function for loops that call div_num_strings() because decimal precision grows with each consecutive division due to the step where precision zeros are added to the numerator. In such cases, this trimming is needed to prevent adding decimal places which with each loop.
+//    if(max_dec_prec != DONT_ADJUST_PRECISION)
+//    {
+//        round_string(result, max_dec_prec);
+//    }
+//
+//    return result;
+//}
+
+// This is a custom (more efficient) subtraction function used ONLY by div_num_strings. Runs about 5 times faster than div_num_string(). It's more efficient because there's no need to deal with negatives or decimals, the size of b is gauranteed to be <= to a, and the char array[] c is gauranteed big enough. So no new memory allocation, strings, or arrays are needed.
+static void sub_num_array(std::string_view a, std::string_view b, char * c)
+{
+    int right_most_digit_index = (int)a.size() - 1;
+    int adjust_b_index = (int)a.size()-(int)b.size();
+    c[right_most_digit_index + 1] = '\0'; // get that null char in there
+    int b_index, b_amount, steal = 0;
+    for(int i = right_most_digit_index; i >= 0; i--)
+    {
+        b_index = i - adjust_b_index;
+        b_index < 0 ? b_amount = '0' : b_amount = b[b_index];
+        if( a[i] - steal >= b_amount )
+        {
+            c[i] = '0' + ( a[i] - b_amount - steal );
+            steal = 0;
+        }
+        else
+        {
+            c[i] = '0' + ( a[i] - b_amount - steal ) + 10;
+            steal = 1;
+        }
+    }
+}
+
+//DIVIDE
+// !!!! STILL NEED TO PROVIDE FOR PRECISION TO BE GREATER THAN 2 x DIVISOR + 5 !!! FOR EXAMPLE, WHAT ABOUT IN THE CALCULATION OF PI?
+static std::string div_num_strings( std::string_view num_view, std::string_view div_view, const int max_dec_prec = DONT_ADJUST_PRECISION)
 {
     
     //division by zero?!
     bool div_by_0_error = true;
+<<<<<<< Updated upstream
+    for(int n = 0; n < div_view.size(); n++) if(div_view[n] > '0') div_by_0_error = false;
+    if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
+=======
     for(int n = 0; n < divisor.size(); n++)
     {
         if(divisor[n] > '0') div_by_0_error = false;
     }
     
-    if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
-    
-    std::string result, subst;
-    
-    //check for negatives
-    bool negative = false;
-    if(numerator[0]=='-' && divisor[0]=='-')
+    if(div_by_0_error)
     {
+        throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
+    }
+>>>>>>> Stashed changes
+    
+    // check for negatives
+    bool negative = false;
+    if(num_view[0]=='-' && div_view[0]=='-')
+    {
+        num_view = num_view.substr(1);
+        div_view = div_view.substr(1);
         negative = false;
     }
-    else if(numerator[0]=='-' || divisor[0]=='-')
+    else if(num_view[0]=='-')
     {
+        num_view = num_view.substr(1);
+        negative = true;
+    }
+    else if(div_view[0]=='-')
+    {
+        div_view = div_view.substr(1);
         negative = true;
     }
     
-    Num_str nu(numerator,true);
-    Num_str di(divisor,true);
+    // check for decimals and create temporary char arrays and divisor
+    int num_dec = (int)num_view.find('.');
+    int div_dec = (int)div_view.find('.');
+    bool num_has_dec = false, div_has_dec = false;
+    // how many decimal places to the right?
+    int num_aft_dec, div_aft_dec;
     
-    int global_dec_loc = nu.aft_dec - di.aft_dec;
-    int gl_crs; //global cursor
-    int cntr; //counter
-    
-    //add zeros to numerator
-    //then update global_dec_loc
-    int zero_amnt = (di.size * 2)+5;
-    nu.add_zeros(zero_amnt);
-    global_dec_loc += zero_amnt;
-    std::vector<int> vec(nu.size, 0);
-    
-    //in case divisor has many leading zeros, get rid of zeros and adjust global_dec_loc, otherwise division loop does way too many iterations in cases like 80 / .00000001
-    while(di.num[0] == '0')
+    int num_clean_size = (int)num_view.size();
+    if (num_dec == std::string::npos)
     {
-        di.num.erase(0,1);
-        di.size--;
+        num_dec = (int)num_view.size();
+        num_aft_dec = 0;
+    }
+    else
+    {
+        num_has_dec = true;
+        num_clean_size--; // cuz we're going to ignore the decimal for now
+        num_aft_dec = (int)num_view.size() - (num_dec + 1); if(num_aft_dec < 0) num_aft_dec = 0;
     }
     
-    //main divisor loop, loops until global cursor hits zero
-    gl_crs=nu.size;
-    cntr=di.size;
-    
-    while(comp_strs(nu.num,di.num) && (gl_crs > 0))
+    int div_clean_size = (int)div_view.size();
+    if (div_dec == std::string::npos)
     {
-        // 1. get smallest part of numerator that's larger than divisor
-        gl_crs=nu.size - cntr + 1;//adjust cursor
-        bool check = false;
-        while(check==false && cntr <= nu.size)
+        div_dec = (int)div_view.size();
+        div_aft_dec = 0;
+    }
+    else
+    {
+        div_has_dec = true;
+        div_clean_size--;
+        div_aft_dec = (int)div_view.size() - (div_dec + 1); if(div_aft_dec < 0) div_aft_dec = 0;
+    }
+    char div_clean[div_clean_size + 1];
+    //copy div_view over to div_clean array but without decimal
+    int div_counter = 0;
+    for (int i = 0; i < (int)div_view.size(); i++)
+    {
+        if(div_view[i] != '.')
         {
-            subst = nu.num.substr(0,cntr);
-            if(comp_strs(subst, di.num))
+            div_clean[div_counter] = div_view[i];
+            div_counter++;
+        }
+    }
+    div_clean[div_clean_size] = '\0';
+        
+    // add zeros to numerator
+    unsigned zero_amnt = (div_clean_size * 2)+5;
+    // if max precision has been specified, make sure enough zeros are added (if requested precision is less than current zero_amnt, then the final answer will be rounded at the end)
+    if(max_dec_prec != DONT_ADJUST_PRECISION)
+    {
+        int adjusted_zero_amnt = max_dec_prec;
+        adjusted_zero_amnt -= num_aft_dec;
+        adjusted_zero_amnt += div_aft_dec;
+        if (zero_amnt < adjusted_zero_amnt) zero_amnt = adjusted_zero_amnt;
+    }
+    
+    // create a new char array that is the numerator, but with the appropriate number of zeros added
+    const unsigned num_w_zeros_size = num_clean_size + zero_amnt;
+    char num_w_zeros[num_w_zeros_size + 1]; // add one for null char
+    for(int i = 0; i < num_w_zeros_size; i++) num_w_zeros[i] = '0';
+    num_w_zeros[num_w_zeros_size] = '\0';
+    int i = 0, j = 0;
+    //copy numerator over to num_clean and num_w_zeros char arrays
+    for(; i < num_view.size();)
+    {
+        if(num_view[i] == '.') { i++; }
+        else
+        {
+            num_w_zeros[j] = num_view[i];
+            j++;
+            i++;
+        }
+    }
+    
+    // create array that will accrue the answer during the division loop (size of answer (digits) array is the same as the num_w_zeros array)
+    char digits[num_w_zeros_size];
+    for (int i = 0; i < num_w_zeros_size; i++) digits[i] = '0';
+    
+    // if divisor has leading zeros, need to get rid of them (for example, divide by .00001 - decimal should be moved already, not get rid of zeros)
+    char * div_clean_ptr = &div_clean[0];
+    while(*div_clean_ptr == '0')
+    {
+        div_clean_ptr++;
+        div_clean_size--;
+    }
+    
+    // global cursor (gl_crs) tracks the cursor location (counting from the right) along the answer array (digits[])
+    // so the left-most position of the answer array (digits) is the highest index, reduced by the counter as it increases
+    int gl_crs = num_w_zeros_size;
+    // counter (cntr) tracks the size from left to right of the numerator substring being worked with at any given time
+    int cntr = div_clean_size;
+    // note that as we proceed through division loop, the counter (cntr) increases in size, and the global cursor (gl_crs) decreases
+    // essentially they track the working point of the loop, cntr tracks position from the left, and gl_crs from the right
+    
+    
+    // create char array called numerator substring (num_subst) that will hold all temporary values of numerator as it is reduced by divisor
+    char num_subst[num_w_zeros_size + 1];
+    
+    // string view of num_w_zeros will be used to create a substring of num_w_zeros, as well as for comparison functions
+    std::string_view num_w_zeros_view = num_w_zeros;
+    
+    //main division loop, loops until global cursor hits zero
+    while(comp_strs(num_w_zeros_view,div_clean_ptr) && (gl_crs > 0))
+    {
+        // 1. get smallest part of numerator that's just larger than divisor
+        gl_crs=num_w_zeros_size - cntr + 1;//adjust cursor
+        bool check = false;
+        while(check==false && cntr <= num_w_zeros_view.size()) // SHOULD THIS BE < OR <= ??
+        {
+            if(comp_strs(num_w_zeros_view.substr(0,cntr), div_clean_ptr))
             {
-                check=true; // got a chunk to work with
-                // so need to take it to work with and remove it (subtract) it from the numerator while working with it
-                nu.zero_out(0,cntr);
+                // now numerator substring is just bigger than divisor, time to get to work
+                check=true;
+                //copy the view over to the num_subst array so we can subtract from it
+                for(int i = 0; i < cntr; i++) num_subst[i] = num_w_zeros[i];
+                num_subst[cntr] = '\0';
+                // now need to remove it (subtract) it from the numerator while working with it
+                // this is done by just zeroing out the correct number of digits of num_w_zeros
+                for(int i=0;i<cntr;i++)
+                {
+                    num_w_zeros[0+i]= '0';
+                }
             }
             else
             {
@@ -1109,35 +1335,86 @@ static std::string div_num_strings( const std::string & numerator, const std::st
             }
         }
         // 2. now how many divisors fit in numerator?
-        while(comp_strs(subst, di.num))
+        while(comp_strs(num_subst, div_clean_ptr))
         {
-            subst= sub_num_strings(subst, di.num);
-            vec[gl_crs-1] ++ ;
+            //ANOTHER IDEA - INSTEAD OF SUBTRACTING ONE AT A TIME UNTIL NUM_SUBST IS TOO SMALL, WHAT IF I ADDED DIV UP UNTIL JUST SMALLER THAN NUM_SUBST, THEN SUBTRACTED THAT NUMBER - THAT MEANS MULTIPLE ADDS AND ONE SUBTRACT, INSTEAD OF MULTIPLE SUBTRACTS - MAYBE IT WOULD BE FASTER???
+            sub_num_array(num_subst, div_clean_ptr, num_subst);
+            digits[gl_crs-1] ++ ;
         }
         
         // 3. now take remainder and add it back to main numerator
-        subst.append(gl_crs-1,'0');
-        nu.num = add_num_strings(subst, nu.num);
+        // "append" zeros to num_subst
+        std::string_view num_subst_view = num_subst;
+        int k, temp_subst_size = (int)num_subst_view.size();
+        for(k = temp_subst_size; k < temp_subst_size + gl_crs - 1; k++) num_subst[k] = '0';
+        num_subst[k] = '\0';
+        num_subst_view = num_subst;
         
+        // add remainder back to numerator
+        for(int i = num_w_zeros_size - 1; i >= 0; i--)
+        {
+            num_w_zeros[i] += num_subst[i] - '0';
+        }
+
         // 4. loop back to the next
     } // end main divisor loop
     
-    carry(vec, true);
-    vec_to_string(vec, result, true);
+    // create char array for return value
+    const int result_size = num_w_zeros_size + 3; // result string needs three places for a negative sign, potential leading zero, and a decimal
+    char result[result_size + 1];  // add one for null terminal character
+    for (int i = 0; i <= result_size; i ++) result[i] = 0; // initialize entire array to null
+    result[0] = '0'; result[1] = '0';// first two char will be either zero or negative sign
     
-    add_dec(result,((int)result.size()-global_dec_loc ));
+    //add decimal to string
+    int bef = num_w_zeros_size - (num_aft_dec + zero_amnt - div_aft_dec);
+    if (bef >= 0 && bef < num_w_zeros_size) result[bef + 2] = '.';
     
-    strip_leading_0s(result);
-    strip_trailing_0s(result);
-    if(negative) result = "-" + result;
+    // copy digits array over to result array
+    j = num_w_zeros_size - 1; // j iterates through digits array backwards
+    i = 0; // i iterates through result string forwards, but leave space for negative sign if needed
+    for(; j>= 0;)
+    {
+        if(result[i+2] != '.')
+        {
+            result[i+2] += digits[j];
+            i++;
+            j--;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    
+    // is last character a decimal? then get rid of it
+    if(result[result_size-1]=='.')
+    {
+        result[result_size-1] = '\0';
+    }
+    
+    char* final_result = result;
     
     // Following code is ignored by default. It can be used to set precision level of result. Bignum library needs this function for loops that call div_num_strings() because decimal precision grows with each consecutive division due to the step where precision zeros are added to the numerator. In such cases, this trimming is needed to prevent adding decimal places which with each loop.
     if(max_dec_prec != DONT_ADJUST_PRECISION)
     {
-        round_string(result, max_dec_prec);
+        round_string(final_result, max_dec_prec);
     }
     
-    return result;
+    // handle the negative sign and leading zero if any
+    int n = 0;
+    while(result[n] == '0' && result[n+1] != '.') n++;
+    if(negative)
+    {
+        if(n == 0) n++; // test this - it may actually never be true
+        result[n-1] = '-';
+        final_result = final_result + (n - 1);
+    }
+    else
+    {
+        final_result = final_result + n;
+    }
+    
+    return final_result;
 }
 
 //function used by Bgnm constructors and overloaded operators to convert floats, doubles and long doubles to strings

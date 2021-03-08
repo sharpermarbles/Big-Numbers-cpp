@@ -19,6 +19,7 @@
 
 //big_nums library
 #include "big_nums.hpp"
+#include "command.h"
 
 template <typename T>
 void p(T n){
@@ -317,7 +318,7 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
     std::cout << base << " mod " << mod << " = " << answer << std::endl;
     
     Bgnm base2 = "-2.34", answer2;
-    float power = 3;
+    //float power = 3;
     //answer2 = base2 ^ power;
     //std::cout << base2 << " ^ " << power << " = " << answer2 << std::endl;
     
@@ -346,7 +347,7 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
         std::cout << "big is NOT bigger\n";
     }
     bgnm sr = "81", cr = "-81";
-    //std::cout << "square root of " << sr << " is " << sr.sqrt() << std::endl;
+    std::cout << "square root of " << sr << " is " << sr.sqrt() << std::endl;
     std::cout << "cube root of " << cr << " is " << cr.cbrt() << std::endl;
     
     bgnm bg = "-4.004";
@@ -378,6 +379,21 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
             
     } catch (const std::exception & e){
         std::cout << e.what() << std::endl;
+    }
+    
+    
+    //------------
+    //seting up for getting user input
+    
+    Command cmd;
+    
+    try
+    {
+        cmd.get();
+    }
+    catch (...)
+    {
+        
     }
     
     return  0;
