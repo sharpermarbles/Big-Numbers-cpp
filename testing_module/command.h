@@ -17,6 +17,7 @@
 
 #include <string>
 #include <iostream>
+#include "big_nums.hpp"
 
 
 class Command
@@ -34,9 +35,6 @@ class Command
     void exit_program();
 
 	// custom commands here
-	void do_stuff_1();
-    void do_stuff_2();
-    void do_stuff_3();
     void random_tester();
 
 public:

@@ -23,7 +23,7 @@
 
 template <typename T>
 void p(T n){
-    std::cout << n << std::endl;
+    //std::cout << n << std::endl;
 }
 
 int  main  () {
@@ -49,14 +49,14 @@ int  main  () {
 //    bgnm a(1.1);
 //    // constructor w = and int
 //    bgnm b = 2;
-    // constructor w float
-        //  0.00009876543000300405021
-    bgnm b_float((float)66655577744488833399.9222000111);
-    // constructor w double
-    bgnm b_double((double)666555.777444888333999222000111);
-    // constructor w long double
-    long double ld = 66655.577744488833399922200011L;
-    bgnm b_ldouble(ld);
+//    // constructor w float
+//        //  0.00009876543000300405021
+//    bgnm b_float((float)66655577744488833399.9222000111);
+//    // constructor w double
+//    bgnm b_double((double)666555.777444888333999222000111);
+//    // constructor w long double
+//    long double ld = 66655.577744488833399922200011L;
+//    bgnm b_ldouble(ld);
 //    // constructor w Cstring
 //    bgnm c("3");
 //    // constructor w = and Cstring
@@ -126,9 +126,9 @@ int  main  () {
 //
 //    std::cout << a << std::endl;
 //    std::cout << b << std::endl;
-    std::cout << b_float << std::endl;
-    std::cout << b_double << std::endl;
-    std::cout << b_ldouble << std::endl;
+//    std::cout << b_float << std::endl;
+//    std::cout << b_double << std::endl;
+//    std::cout << b_ldouble << std::endl;
 //    std::cout << c << std::endl;
 //    std::cout << d << std::endl;
 //    std::cout << e << std::endl;
@@ -277,14 +277,14 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
     p(ld11);
     p(ld12);
     
-    bgnm bn, bn2 = "-9834850322.09820935245";
-    p(ld8);
-    bn = ld8 + (long double)314.1592653589793238462643383;
-    std::cout << bn << std::endl;
-    bn--;
-    std::cout << bn << std::endl;
-    bn++;
-    std::cout << bn << std::endl;
+//    bgnm bn, bn2 = "-9834850322.09820935245";
+//    p(ld8);
+//    bn = ld8 + (long double)314.1592653589793238462643383;
+//    std::cout << bn << std::endl;
+//    bn--;
+//    std::cout << bn << std::endl;
+//    bn++;
+//    std::cout << bn << std::endl;
     
     
     
@@ -312,43 +312,43 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
     p(obj);
     p(obj1);
     
-    Bgnm base("922337492837413");
-    int mod = 25;
-    Bgnm answer = base % mod;
-    std::cout << base << " mod " << mod << " = " << answer << std::endl;
+//    Bgnm base("922337492837413");
+//    int mod = 25;
+//    Bgnm answer = base % mod;
+//    std::cout << base << " mod " << mod << " = " << answer << std::endl;
+//
+//    Bgnm base2 = "-2.34", answer2;
+//    //float power = 3;
+//    //answer2 = base2 ^ power;
+//    //std::cout << base2 << " ^ " << power << " = " << answer2 << std::endl;
+//
+//    Bgnm t = "8", y = "20";
+//    std::cout << t << " / " << y << " = " << t/y << std::endl;
     
-    Bgnm base2 = "-2.34", answer2;
-    //float power = 3;
-    //answer2 = base2 ^ power;
-    //std::cout << base2 << " ^ " << power << " = " << answer2 << std::endl;
+//    Bgnm nega = ".081", negb = ".081";
+//    if(nega != negb){
+//        std::cout << nega << " != " << negb << " : TRUE" << std::endl;
+//    } else {
+//        std::cout << nega << " != " << negb << " : FALSE" <<  std::endl;
+//    }
     
-    Bgnm t = "8", y = "20";
-    std::cout << t << " / " << y << " = " << t/y << std::endl;
-    
-    Bgnm nega = ".081", negb = ".081";
-    if(nega != negb){
-        std::cout << nega << " != " << negb << " : TRUE" << std::endl;
-    } else {
-        std::cout << nega << " != " << negb << " : FALSE" <<  std::endl;
-    }
-    
-    Bgnm radicant = -30.12352,answer3;
-    float index = 8.125;
-    
-    answer3 = radicant ^ index;
-    std::cout << index << " root of " << radicant << " = " << answer3 << "\n";
-    
-    Bgnm::set_bgnm_internal_precision_limit(30);
-    
-    Bgnm big = "-.002", small = "-.002";
-    if(big >= small){
-        std::cout << "big is bigger than small\n";
-    } else {
-        std::cout << "big is NOT bigger\n";
-    }
-    bgnm sr = "81", cr = "-81";
-    std::cout << "square root of " << sr << " is " << sr.sqrt() << std::endl;
-    std::cout << "cube root of " << cr << " is " << cr.cbrt() << std::endl;
+//    Bgnm radicant = -30.12352,answer3;
+//    float index = 8.125;
+//
+//    answer3 = radicant ^ index;
+//    std::cout << index << " root of " << radicant << " = " << answer3 << "\n";
+//
+//    Bgnm::set_bgnm_internal_precision_limit(30);
+//
+//    Bgnm big = "-.002", small = "-.002";
+//    if(big >= small){
+//        std::cout << "big is bigger than small\n";
+//    } else {
+//        std::cout << "big is NOT bigger\n";
+//    }
+//    bgnm sr = "81", cr = "-81";
+//    std::cout << "square root of " << sr << " is " << sr.sqrt() << std::endl;
+//    std::cout << "cube root of " << cr << " is " << cr.cbrt() << std::endl;
     
     bgnm bg = "-4.004";
     int integer = bg.to_int();

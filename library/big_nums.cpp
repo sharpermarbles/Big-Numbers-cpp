@@ -526,7 +526,7 @@ static bool comp_strs_equal(const std::string_view & a_str, const std::string_vi
     
     // compare a and b decimal components
     diff = (int)a_dec.size() - (int)b_dec.size();
-    a_shift=0; b_shift=0; i=0;
+    //a_shift=0; b_shift=0; i=0;
     std::string_view long_dec = a_dec; // assume that a is longer, has the panhandle
     int dec_size = (int)a_dec.size();
     if (dec_size > b_dec.size()) dec_size = (int)b_dec.size();
@@ -1171,20 +1171,24 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
     
     //division by zero?!
     bool div_by_0_error = true;
-<<<<<<< Updated upstream
-    for(int n = 0; n < div_view.size(); n++) if(div_view[n] > '0') div_by_0_error = false;
+    for(int n = 0; n < div_view.size(); n++)
+    {
+        if(div_view[n] > '0')
+        {
+            div_by_0_error = false;
+            break;
+        }
+    }
     if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
-=======
-    for(int n = 0; n < divisor.size(); n++)
-    {
-        if(divisor[n] > '0') div_by_0_error = false;
-    }
-    
-    if(div_by_0_error)
-    {
-        throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
-    }
->>>>>>> Stashed changes
+//    for(int n = 0; n < divisor.size(); n++)
+//    {
+//        if(divisor[n] > '0') div_by_0_error = false;
+//    }
+//
+//    if(div_by_0_error)
+//    {
+//        throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
+//    }
     
     // check for negatives
     bool negative = false;
@@ -1208,19 +1212,20 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
     // check for decimals and create temporary char arrays and divisor
     int num_dec = (int)num_view.find('.');
     int div_dec = (int)div_view.find('.');
-    bool num_has_dec = false, div_has_dec = false;
+    //bool num_has_dec = false, div_has_dec = false;
+    //bool div_has_dec = false;
     // how many decimal places to the right?
     int num_aft_dec, div_aft_dec;
     
     int num_clean_size = (int)num_view.size();
     if (num_dec == std::string::npos)
     {
-        num_dec = (int)num_view.size();
+        //num_dec = (int)num_view.size();
         num_aft_dec = 0;
     }
     else
     {
-        num_has_dec = true;
+        //num_has_dec = true;
         num_clean_size--; // cuz we're going to ignore the decimal for now
         num_aft_dec = (int)num_view.size() - (num_dec + 1); if(num_aft_dec < 0) num_aft_dec = 0;
     }
@@ -1228,12 +1233,12 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
     int div_clean_size = (int)div_view.size();
     if (div_dec == std::string::npos)
     {
-        div_dec = (int)div_view.size();
+        //div_dec = (int)div_view.size();
         div_aft_dec = 0;
     }
     else
     {
-        div_has_dec = true;
+        //div_has_dec = true;
         div_clean_size--;
         div_aft_dec = (int)div_view.size() - (div_dec + 1); if(div_aft_dec < 0) div_aft_dec = 0;
     }
@@ -1451,6 +1456,7 @@ static bool examine_text_number(const std::string & s)
             {
                 if(has_decimal > 0) return false;
                 has_decimal++;
+                if(s.size() < 2) return false; // if string ".", return false
             }
         }
         else
@@ -2884,7 +2890,11 @@ float Bgnm::to_float()
 
 double Bgnm::to_double()
 {
-    return std::stod(this->val);
+    try { return std::stod(this->val);}
+    catch (std::exception e)
+    {
+        throw Bgnm_error("Could not convert Bgnm type to double.",__FILENAME__,__LINE__,__FUNCTION__,198);
+    }
 }
 
 long double Bgnm::to_long_double()
