@@ -384,6 +384,7 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
     
     //------------
     //seting up for getting user input
+
     
     Command cmd;
     
@@ -395,6 +396,18 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
     {
         
     }
+    
+
+    bgnm bn("7");
+    double db = -7;
+    double temp = bn.to_double();
+    double diff = (temp - db)/db;
+    
+    std::cout << "bn   : " << bn << std::endl;
+    std::cout << "temp : " << temp << std::endl;
+    std::cout << "db   : " << db << std::endl;
+    std::cout << "diff : " << diff << std::endl;
+    
     
     return  0;
 }

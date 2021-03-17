@@ -3,6 +3,11 @@
 #include <iostream>
 #include <ctime> // for seeding rand() function
 
+#define MAX_STR_SIZE             20 // rand_bgnm() - maximum size of randomly generated Bgnm to work with (base 10 places)
+#define PROBABILITY_INT           2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be integer instead of floating point
+#define PROBABILITY_POSSITIVE     2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be possitive
+#define MAX_NUM_ZEROS            15 // rand_bgnm() - maximum number of zeros that may be randomly added to random bgnm (floating point)
+#define ERROR_THRESHHOLD 0.000000000000000001 // not_equal() - difference between bgnm calc and control calc which sounds the alarm
 
 const std::string Command::commands[] = {
     // built in commands
@@ -110,10 +115,6 @@ static uint rand_int(int flr, int ceil)
 
 static Bgnm* rand_bgnm(bool force_possitive = false)
 {
-    #define MAX_STR_SIZE         20
-    #define PROBABILITY_INT       2
-    #define PROBABILITY_POSSITIVE 2
-    #define MAX_NUM_ZEROS        15
     
     // how big a number should we make?
     int size = rand_int(1,MAX_STR_SIZE);
@@ -167,23 +168,26 @@ static Bgnm* rand_bgnm(bool force_possitive = false)
     return random;
 }
 
-static void test_add();
+static void test_add  ( bool show_success = true);
+static void test_sub  ( bool show_success = true);
+static void test_mult ( bool show_success = true);
+static void test_div  ( bool show_success = true);
 
 static void perform_random_test()
 {
     // how many switch cases are there?
-    int types_of_tests = 1;
+    int types_of_tests = 4;
     // pick one at random
     int rand = rand_int(0, types_of_tests - 1);
     switch (rand) {
         case 0:
             test_add(); break;
         case 1:
-            std::cout << "running test case  1\n";
-            break;
+            test_sub(); break;
         case 2:
-            std::cout << "running test case   2\n";
-            break;
+            test_mult(); break;
+        case 3:
+            test_div(); break;
         default:
             //std::cout << "error running test case\n";
             break;
@@ -215,7 +219,49 @@ void Command::random_tester()
     
 }
 
-static void test_add()
+// provide both the bgnm answer and the float answer, and also a double pointer to put the calculated difference into
+bool static not_equal(Bgnm &bn, double &db, double *diff)
+{
+    double temp = bn.to_double();
+    double denominator;
+    db == 0 ? denominator = 1 : denominator = db ; // just in case div by zero problem
+    *diff =  (temp - db)/denominator; // difference is the difference between the two numbers divided by the size of one of them (to give it relative weighting)
+    //std::cout << "denom is " << denominator << "  ";
+    if(*diff < ERROR_THRESHHOLD) // determine both to be equal is the two results are within one one-hundred-millionth of each other
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, std::string oper = "")
+{
+#define CHAR_ARRAY_SIZE (MAX_STR_SIZE + MAX_NUM_ZEROS + 2)
+    std::string a_ar = ""; a_ar.insert(0,CHAR_ARRAY_SIZE,' ');
+    std::string b_ar = ""; b_ar.insert(0,CHAR_ARRAY_SIZE,' ');
+    std::string c_ar = ""; c_ar.insert(0,CHAR_ARRAY_SIZE * 2,' ');
+    std::string as = a->to_string(), bs = b->to_string(), cs = c->to_string();
+    a_ar.replace(a_ar.size()-as.size(),as.size(),as);
+    b_ar.replace(0,bs.size(),bs);
+    c_ar.replace(0,cs.size(),cs);
+    std::cout << "    " << a_ar << oper << b_ar << " = " << c_ar << std::endl;
+}
+
+static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, double *af = NULL, double* bf = NULL, double* cf = NULL, double* diff = NULL, std::string oper = "")
+{
+    print_success(a,b,c,oper);
+    std::cout << "\n---- WE HAVE US A BIG PROBLEM HERE! ----\n";
+    std::cout << "   Difference of " << *diff << " is greater than allowed error threshhold of " << ERROR_THRESHHOLD << std::endl;
+    std::cout << "   bgnm: " << *a << oper << *b << " = " << *c << std::endl;
+    std::cout << "   cont: " << *af << oper << *bf << " = " << *cf << std::endl;
+    std::cout << "\n";
+}
+
+
+static void test_add(bool show_success)
 {
 //  std::cout << "running test case 0\n";
     Bgnm* a = rand_bgnm();
@@ -225,15 +271,57 @@ static void test_add()
     af = a->to_double();
     bf = b->to_double();
     cf = af + bf;
-    if(c.to_double() != cf)
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," + ");
+    else if ( show_success ) print_success(a,b,&c," + ");
+}
+
+
+static void test_sub(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = rand_bgnm();
+    Bgnm c = *a - *b;
+    double af, bf, cf;
+    af = a->to_double();
+    bf = b->to_double();
+    cf = af - bf;
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," - ");
+    else if ( show_success ) print_success(a,b,&c," - ");
+}
+
+static void test_mult(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = rand_bgnm();
+    Bgnm c = *a * *b;
+    double af, bf, cf;
+    af = a->to_double();
+    bf = b->to_double();
+    cf = af * bf;
+    double diff;
+    if(not_equal(c,cf,&diff))
     {
-        std::cout << "\n---- WE HAVE US A BIG PROBLEM HERE! ----\n";
-        std::cout << "   bgnm: " << *a << " + " << *b << " = " << c << std::endl;
-        std::cout << "   cont: " << af << " + " << bf << " = " << cf << std::endl;
-        std::cout << "\n";
+        print_failure(a,b,&c,&af,&bf,&cf,&diff," x ");
     }
-    else
-    {
-        std::cout << " addition test successful\n";
-    }
+    else if ( show_success ) print_success(a,b,&c," x ");
+}
+
+
+static void test_div(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = rand_bgnm();
+    Bgnm c = *a / *b;
+    double af, bf, cf;
+    af = a->to_double();
+    bf = b->to_double();
+    cf = af / bf;
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," / ");
+    else if ( show_success ) print_success(a,b,&c," / ");
 }
