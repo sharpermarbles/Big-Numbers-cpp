@@ -143,7 +143,7 @@ static Bgnm* rand_bgnm(bool force_possitive = false)
                 for(int i = 0; i < rand_int(1, MAX_NUM_ZEROS);i++) fl.insert(dec_location + 1,"0");
             }
         }
-        
+        if(fl == ".") fl = "0";
         *random = fl;
     }
     else
@@ -172,11 +172,15 @@ static void test_add  ( bool show_success = true);
 static void test_sub  ( bool show_success = true);
 static void test_mult ( bool show_success = true);
 static void test_div  ( bool show_success = true);
+static void test_inc_prefix  ( bool show_success = true);
+static void test_inc_postfix ( bool show_success = true);
+static void test_dec_prefix  ( bool show_success = true);
+static void test_dec_postfix ( bool show_success = true);
 
 static void perform_random_test()
 {
     // how many switch cases are there?
-    int types_of_tests = 4;
+    int types_of_tests = 8;
     // pick one at random
     int rand = rand_int(0, types_of_tests - 1);
     switch (rand) {
@@ -188,6 +192,14 @@ static void perform_random_test()
             test_mult(); break;
         case 3:
             test_div(); break;
+        case 4:
+            test_inc_prefix(); break;
+        case 5:
+            test_inc_postfix(); break;
+        case 6:
+            test_dec_prefix(); break;
+        case 7:
+            test_dec_postfix(); break;
         default:
             //std::cout << "error running test case\n";
             break;
@@ -243,20 +255,28 @@ static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, std::s
     std::string a_ar = ""; a_ar.insert(0,CHAR_ARRAY_SIZE,' ');
     std::string b_ar = ""; b_ar.insert(0,CHAR_ARRAY_SIZE,' ');
     std::string c_ar = ""; c_ar.insert(0,CHAR_ARRAY_SIZE * 2,' ');
+    std::string d_ar = ""; d_ar.insert(0,CHAR_ARRAY_SIZE,' ');
     std::string as = a->to_string(), bs = b->to_string(), cs = c->to_string();
     a_ar.replace(a_ar.size()-as.size(),as.size(),as);
     b_ar.replace(0,bs.size(),bs);
     c_ar.replace(0,cs.size(),cs);
-    std::cout << "    " << a_ar << oper << b_ar << " = " << c_ar << std::endl;
+    if(oper == " ++X" || oper == " --X" || oper == " X++" || oper == " X--")
+    {
+        std::cout << "    " << a_ar << oper << d_ar << " = " << c_ar << std::endl;
+    }
+    else
+    {
+        std::cout << "    " << a_ar << oper << b_ar << " = " << c_ar << std::endl;
+    }
 }
 
 static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, double *af = NULL, double* bf = NULL, double* cf = NULL, double* diff = NULL, std::string oper = "")
 {
     print_success(a,b,c,oper);
     std::cout << "\n---- WE HAVE US A BIG PROBLEM HERE! ----\n";
-    std::cout << "   Difference of " << *diff << " is greater than allowed error threshhold of " << ERROR_THRESHHOLD << std::endl;
-    std::cout << "   bgnm: " << *a << oper << *b << " = " << *c << std::endl;
-    std::cout << "   cont: " << *af << oper << *bf << " = " << *cf << std::endl;
+    std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshhold of " << ERROR_THRESHHOLD << std::endl;
+    std::cout << "   bgnm    operation: " << *a << oper << *b << " = " << *c << std::endl;
+    std::cout << "   control operation: " << *af << oper << *bf << " = " << *cf << std::endl;
     std::cout << "\n";
 }
 
@@ -272,8 +292,8 @@ static void test_add(bool show_success)
     bf = b->to_double();
     cf = af + bf;
     double diff;
-    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," + ");
-    else if ( show_success ) print_success(a,b,&c," + ");
+    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," +  ");
+    else if ( show_success ) print_success(a,b,&c," +  ");
 }
 
 
@@ -288,8 +308,8 @@ static void test_sub(bool show_success)
     bf = b->to_double();
     cf = af - bf;
     double diff;
-    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," - ");
-    else if ( show_success ) print_success(a,b,&c," - ");
+    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," -  ");
+    else if ( show_success ) print_success(a,b,&c," -  ");
 }
 
 static void test_mult(bool show_success)
@@ -305,9 +325,9 @@ static void test_mult(bool show_success)
     double diff;
     if(not_equal(c,cf,&diff))
     {
-        print_failure(a,b,&c,&af,&bf,&cf,&diff," x ");
+        print_failure(a,b,&c,&af,&bf,&cf,&diff," x  ");
     }
-    else if ( show_success ) print_success(a,b,&c," x ");
+    else if ( show_success ) print_success(a,b,&c," x  ");
 }
 
 
@@ -322,6 +342,74 @@ static void test_div(bool show_success)
     bf = b->to_double();
     cf = af / bf;
     double diff;
-    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," / ");
-    else if ( show_success ) print_success(a,b,&c," / ");
+    if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," /  ");
+    else if ( show_success ) print_success(a,b,&c," /  ");
+}
+
+static void test_inc_prefix(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = new Bgnm(0);//rand_bgnm();
+    Bgnm a_temp = *a;
+    Bgnm c = ++*a;
+    double af, bf, cf, af_temp;
+    af = a_temp.to_double();
+    af_temp = af;
+    bf = b->to_double();
+    cf = ++af;
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," ++X");
+    else if ( show_success ) print_success(&a_temp,b,&c," ++X");
+}
+
+static void test_inc_postfix(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = new Bgnm(0);//rand_bgnm();
+    Bgnm a_temp = *a;
+    Bgnm c = *a++;
+    double af, bf, cf, af_temp;
+    af = a_temp.to_double();
+    af_temp = af;
+    bf = b->to_double();
+    cf = af++;
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," X++");
+    else if ( show_success ) print_success(&a_temp,b,&c," X++");
+}
+
+static void test_dec_prefix(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = new Bgnm(0);//rand_bgnm();
+    Bgnm a_temp = *a;
+    Bgnm c = --*a;
+    double af, bf, cf, af_temp;
+    af = a_temp.to_double();
+    af_temp = af;
+    bf = b->to_double();
+    cf = --af;
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," --X");
+    else if ( show_success ) print_success(&a_temp,b,&c," --X");
+}
+
+static void test_dec_postfix(bool show_success)
+{
+//  std::cout << "running test case 0\n";
+    Bgnm* a = rand_bgnm();
+    Bgnm* b = new Bgnm(0);//rand_bgnm();
+    Bgnm a_temp = *a;
+    Bgnm c = *a--;
+    double af, bf, cf, af_temp;
+    af = a_temp.to_double();
+    af_temp = af;
+    bf = b->to_double();
+    cf = af--;
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," X--");
+    else if ( show_success ) print_success(&a_temp,b,&c," X--");
 }
