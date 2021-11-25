@@ -79,8 +79,8 @@
 
 
 
-#ifndef big_nums_hpp
-#define big_nums_hpp
+#ifndef bgnm_hpp
+#define bgnm_hpp
 
 #include <string>
 
@@ -90,7 +90,7 @@
 // MAX_ROOT_GUESS_COUNT sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions.
 #define MAX_ROOT_GUESS_COUNT 200
 
-// DONT_ADJUST_PRECISION is a default constant that instructs functions to not round return values. This value should not be changed. If a different parameter/argument if provided to one of these functions instead of this default value, the function will round the return value to the number of decimal places indicated by the parameter/argument.
+// DONT_ADJUST_PRECISION is a default constant that instructs functions to not round return values. This value should not be changed. If a different parameter/argument is provided to one of these functions instead of this default value, the function will round the return value to the number of decimal places indicated by the parameter/argument.
 #define DONT_ADJUST_PRECISION 0xffffffff
 
 // When finding root, this sets maximum decimal precision for index. In other words, if using a default value of 6, 1.123456789 root of 100 will be calculated as 1.123457 root of 100. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.

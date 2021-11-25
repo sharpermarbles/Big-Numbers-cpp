@@ -1,5 +1,5 @@
 
-#include "command.h"
+#include "testing.h"
 #include <iostream>
 #include <ctime> // for seeding rand() function
 
@@ -9,94 +9,94 @@
 #define MAX_NUM_ZEROS            15 // rand_bgnm() - maximum number of zeros that may be randomly added to random bgnm (floating point)
 #define ERROR_THRESHHOLD 0.000000000000000001 // not_equal() - difference between bgnm calc and control calc which sounds the alarm
 
-const std::string Command::commands[] = {
-    // built in commands
-    "help", "exit",
-    
-    //custom commands - must be entered here exactly as user should enter command
-    "random"
-};
+//const std::string Command::commands[] = {
+//    // built in commands
+//    "help", "exit",
+//
+//    //custom commands - must be entered here exactly as user should enter command
+//    "random"
+//};
 
 // pointers to custom classes should be passed to the Command constructor
-Command::Command()
-{
-    
-    //make sure rand() function is seeded
-    std::srand((uint)std::time(0));
-    
-    // set member pointer equal to pointer to custom class
-    //sc = _sc;
-    
-    std::string s = "";
-    s += "    help          - List all possible user commands.\n";
-    s += "    exit          - Terminate program.\n";
-    
-    // edit list below to include description/help for each custom function
-    s += "    random        - performs random tests on Bgnm class objects and methods.\n";
-    help_text = s;
-}
+//Command::Command()
+//{
+//
+//    //make sure rand() function is seeded
+//    std::srand((uint)std::time(0));
+//
+//    // set member pointer equal to pointer to custom class
+//    //sc = _sc;
+//
+//    std::string s = "";
+//    s += "    help          - List all possible user commands.\n";
+//    s += "    exit          - Terminate program.\n";
+//
+//    // edit list below to include description/help for each custom function
+//    s += "    random        - performs random tests on Bgnm class objects and methods.\n";
+//    help_text = s;
+//}
 
-Command::~Command()
-{
-}
+//Command::~Command()
+//{
+//}
 
-void Command::eval(int c)
-{
-    switch (c)
-    {
-            // built-in functions
-        case 0:
-            help(); //provides list of possible user commands
-            break;
-        case 1:
-            exit_program(); //terminate program
-            break;
-            
-            // custom functions (case number MUST MATCH INDEX of command in commands[] array above
-        case 2:
-            random_tester();
-            break;
-            
-            // default case
-        default:
-            std::cout << "Not a command. Please try again." << std::endl;
-            break;
-    }
-}
+//void Command::eval(int c)
+//{
+//    switch (c)
+//    {
+//            // built-in functions
+//        case 0:
+//            help(); //provides list of possible user commands
+//            break;
+//        case 1:
+//            exit_program(); //terminate program
+//            break;
+//
+//            // custom functions (case number MUST MATCH INDEX of command in commands[] array above
+//        case 2:
+//            random_tester();
+//            break;
+//
+//            // default case
+//        default:
+//            std::cout << "Not a command. Please try again." << std::endl;
+//            break;
+//    }
+//}
 
 // function to get and process user input commands - loops forever until Command member keep_going set to false
-void Command::get()
-{
-    int command_count = sizeof(commands) / sizeof(commands[0]);
-    std::string s;
-    int c = 100; // if no match found, 100 will send eval() function to default error message
-    //std::cout << "Enter command (or type 'help'): ";
-    std::cout << "Enter command: ";
-    getline(std::cin, s);
-    for (int i = 0; i < command_count; i++)
-    {
-        if (s == commands[i])
-        {
-            c = i;
-            break;
-        }
-    }
-    eval(c);
-    std::cout << std::endl;
-    if(keep_going) get();
-}
+//void Command::get()
+//{
+//    int command_count = sizeof(commands) / sizeof(commands[0]);
+//    std::string s;
+//    int c = 100; // if no match found, 100 will send eval() function to default error message
+//    //std::cout << "Enter command (or type 'help'): ";
+//    std::cout << "Enter command: ";
+//    getline(std::cin, s);
+//    for (int i = 0; i < command_count; i++)
+//    {
+//        if (s == commands[i])
+//        {
+//            c = i;
+//            break;
+//        }
+//    }
+//    eval(c);
+//    std::cout << std::endl;
+//    if(keep_going) get();
+//}
 
-// built-int functions
-void Command::help()
-{
-    std::cout << help_text << std::endl;
-}
-
-void Command::exit_program()
-{
-    keep_going = false;
-    std::cout << "Closing program..." << std::endl;
-}
+//// built-int functions
+//void Command::help()
+//{
+//    std::cout << help_text << std::endl;
+//}
+//
+//void Command::exit_program()
+//{
+//    keep_going = false;
+//    std::cout << "Closing program..." << std::endl;
+//}
 
 /////////////////////////
 /////////////////////////
@@ -168,10 +168,10 @@ static Bgnm* rand_bgnm(bool force_possitive = false)
     return random;
 }
 
-static void test_add  ( bool show_success = true);
-static void test_sub  ( bool show_success = true);
-static void test_mult ( bool show_success = true);
-static void test_div  ( bool show_success = true);
+static void test_add         ( bool show_success = true);
+static void test_sub         ( bool show_success = true);
+static void test_mult        ( bool show_success = true);
+static void test_div         ( bool show_success = true);
 static void test_inc_prefix  ( bool show_success = true);
 static void test_inc_postfix ( bool show_success = true);
 static void test_dec_prefix  ( bool show_success = true);
@@ -206,19 +206,9 @@ static void perform_random_test()
     }
 }
 
-void Command::random_tester()
+void Testing::random_tester(int number)
 {
-    
-    int isnt_num, test_count = 0;
-    do {
-        std::cout << "    Number of tests to perform: ";
-        std::cin >> test_count;
-        isnt_num = std::cin.fail();
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    } while (isnt_num == true);
-    
-    for (int i = 0; i < test_count; i++)
+    for (int i = 0; i < number; i++)
     {
         try {
             perform_random_test();
@@ -228,7 +218,6 @@ void Command::random_tester()
             std::cout << e.what() << std::endl;
         }
     }
-    
 }
 
 // provide both the bgnm answer and the float answer, and also a double pointer to put the calculated difference into

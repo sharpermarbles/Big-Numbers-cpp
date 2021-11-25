@@ -17,32 +17,34 @@
 
 #include <string>
 #include <iostream>
-#include "big_nums.hpp"
+#include "bgnm.hpp"
 
 
-class Command
+class Testing
 {
-	static const std::string commands[];
-	std::string help_text;
-	int keep_going = true;
-	void eval(int);
+	//static const std::string commands[];
+	//std::string help_text;
+	//int keep_going = true;
+	//void eval(int);
     
     // member variables to hold pointer to custom project class object
 	//SampleClass * sc;
     
     // built in commands
-    void help();
-    void exit_program();
+//    void help();
+//    void exit_program();
 
 	// custom commands here
-    void random_tester();
+
 
 public:
     
 	//Command(SampleClass *);
-    Command();
-	~Command();
-	void get();
+    Testing();
+	~Testing();
+	//void get();
+    
+    static void random_tester(int number = 20);
 
 };
 

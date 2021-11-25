@@ -13,7 +13,7 @@
 #include <stdexcept> // for Bgnm_error class to inherit std::runtime_error from std::exception
 #include <string.h>  // to convert __FILE__ to __FILENAME__
 
-#include "big_nums.hpp"
+#include "bgnm.hpp"
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // use __FILENAME__ in lieu of __FILE__ if file path not desired
 

@@ -18,7 +18,7 @@
 
 
 //big_nums library
-#include "big_nums.hpp"
+#include "bgnm.hpp"
 #include "command.h"
 
 template <typename T>
@@ -26,7 +26,7 @@ void p(T n){
     //std::cout << n << std::endl;
 }
 
-int  main  () {
+int  mainOLD  () {
     
     try{
 
@@ -386,16 +386,16 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
     //seting up for getting user input
 
     
-    Command cmd;
-    
-    try
-    {
-        cmd.get();
-    }
-    catch (...)
-    {
-        
-    }
+//    Command cmd;
+//
+//    try
+//    {
+//        cmd.get();
+//    }
+//    catch (...)
+//    {
+//
+//    }
     
 
     bgnm bn("7");
@@ -413,3 +413,27 @@ bgnm d00((double)0.31415926535897932384626433832795028841971);
 }
 
 
+#include <iostream>
+
+#include "command.h"
+
+int main()
+{
+    try
+    {
+        // basic program user input loop
+        Command::main_input_loop();
+    }
+    catch (char const * c)
+    {
+        std::cout << "Exception thrown: " << c << std::endl;
+    }
+    catch (std::exception &e)
+    {
+        std::cout << "Exception thrown: " << e.what() << std::endl;
+    }
+    catch(...)
+    {
+        std::cout << "Exception thrown.\n";
+    }
+}
