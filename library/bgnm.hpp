@@ -19,7 +19,7 @@
      %  modulo
 
      << multiply by multiples of ten (base 10 shift left analogous to bitwise shift left in binary)
-     >> divide by multiples of ten (base 10 shift right analogous to bitwise right left in binary)
+     >> divide by multiples of ten (base 10 shift right analogous to bitwise shift right in binary)
 
      <  less than
      >  greater than
@@ -75,6 +75,13 @@
  
      fix exception handling so properly passes exceptions back to parent program - or should I just make the thing crash if error exceptions are thrown??
   
+    fix issue with modulo operator - what to do with negative modulus (or remainder) - need to figure out whether this should be allowed, make modulo operator have exactly the same behavior as c++ % operator and fmod() function
+ 
+    fix issues with power operator - issues with large powers (or negative), find ways to speed it up
+ 
+    << and >> could be more efficient - right now they loop through mult_str_10 and div_str_10 but this isn't efficient
+            one possibility would be to change mult_str_10 and div_str_10 so that they take an int for how many operations to perform, then they can be way more efficient instead of str.erase()/str.append()/str.insert() multiple times in a row
+ 
  */
 
 

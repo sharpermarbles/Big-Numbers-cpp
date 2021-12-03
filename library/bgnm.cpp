@@ -223,13 +223,15 @@ public:
 
 static void strip_leading_0s(std::string &str)
 {
-    int i = 0,count = 0;
-    while(str[i]=='0')
+    int start;
+    str[0] == '-' ? start = 1 : start = 0;
+    int i = start,count = 0;
+    while(str[i]=='0' && i < str.size())
     {
         if(str[i+1] != '.') count++;
         i++;
     }
-    if(str.size() >= count) str.erase(0,count);
+    if(str.size() >= count + start) str.erase(start,count);
     if(str.size() == 0) str = "0";
 }
 
@@ -1481,10 +1483,16 @@ static void mult_str_10(std::string & s)
     if(i!=std::string::npos)
     {
         s.erase(i,1);
-        s.insert(i+1,1,'.');
+        // if decimal is moving off the right end of the string
+        if(i >= s.size())
+        {
+            s.append("0.");
+        }
+        else s.insert(i+1,1,'.');
     }
+    //if no decimal, add '0' to end
     else
-    { //if no decimal, add '0' to end
+    {
         s += '0';
     }
 }
@@ -1492,6 +1500,13 @@ static void mult_str_10(std::string & s)
 // divides string by ten by moving decimal
 static void div_str_10(std::string & s)
 {
+    //if negative, remove and put back later
+    bool negative = false;
+    if(s[0]=='-')
+    {
+        s[0]='0';
+        negative = true;
+    }
     //if there's a decimal, move it
     double i = s.find('.');
     if(i!=std::string::npos)
@@ -1516,12 +1531,26 @@ static void div_str_10(std::string & s)
         }
         if(s[s.size()-1]=='.') s.erase(s.size()-1); //delete lone decimal
     }
+    if(negative)
+    {
+        s.insert(0,1,'-');
+    }
 }
 
 static std::string str_mod(const std::string & number, const std::string & modulo)
 {
     // nothing to do if modulo is greater than number to begin with
     if (comp_strs(modulo,number,true)) return number;
+    // if modulo is zero, throw error
+    bool is_zero = true;
+    int cntr = 0;
+    do
+    {
+        if(modulo[cntr]!='0' && modulo[cntr]!='.' && modulo[cntr]!='-') is_zero = false;
+        cntr++;
+    }
+    while (is_zero && cntr < modulo.size());
+    if(is_zero) throw Bgnm_error("Modulo operator cannot take zero as modulus. Results in undefined behavior.",__FILENAME__,__LINE__,"str_mod",113);
     
     std::string temp = modulo; // temp is modulo or a multiple of modulo
     std::string ret = number;
@@ -1550,6 +1579,7 @@ static std::string str_mod(const std::string & number, const std::string & modul
             ret = sub_num_strings(ret,temp);
         }
     }
+    strip_leading_0s(ret);
     return ret;
 }
 
@@ -1663,6 +1693,16 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
     }
     return ret;
     
+}
+
+// checks a string representing a number for equivelance to zero (will work on strings like "-0.0", "0", ".00000", "-0000.0" and any other possibility)
+static bool equal_to_zero( const std::string & str)
+{
+    for(int i = 0; i < str.size(); i++)
+    {
+        if(str[i] != '-' && str[i] != '.' && str[i] > '0') return false;
+    }
+    return true;
 }
 
 
@@ -2588,18 +2628,24 @@ template<> bool Bgnm::operator != (const std::string & s)
 
 void Bgnm::operator << (const int i)
 {
+    if(equal_to_zero(this->val)) return;
     for(int n = 0; n < i; n++)
     {
         mult_str_10(this->val);
     }
+    strip_leading_0s(this->val);
+    // delete trailing decimal if exists
+    if(this->val[this->val.size()-1] == '.') this->val.erase(this->val.size()-1,1);
 }
 
 void Bgnm::operator >> (const int i)
 {
+    if(equal_to_zero(this->val)) return;
     for(int n = 0; n < i; n++)
     {
         div_str_10(this->val);
     }
+    strip_leading_0s(this->val);
 }
 
 template<> void Bgnm::operator += (const Bgnm & bn)
