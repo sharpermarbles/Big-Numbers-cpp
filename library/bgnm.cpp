@@ -1938,14 +1938,14 @@ template<> void Bgnm::operator = (const std::string & s)
     check_input(s,__FUNCTION__)? val = s: val = "0";
 }
 
-template<> Bgnm Bgnm::operator + (const Bgnm & bn)
+template<> Bgnm Bgnm::operator + (const Bgnm & bn) const
 {
     Bgnm ret_num;
     ret_num.val = add_num_strings(this->val,bn.val);
     return ret_num;
 }
 
-template<> Bgnm Bgnm::operator + (const int & i)
+template<> Bgnm Bgnm::operator + (const int & i) const
 {
     Bgnm ret;
     std::string s;
@@ -1954,7 +1954,7 @@ template<> Bgnm Bgnm::operator + (const int & i)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator + (const long long & ll)
+template<> Bgnm Bgnm::operator + (const long long & ll) const
 {
     Bgnm ret;
     std::string s;
@@ -1963,28 +1963,28 @@ template<> Bgnm Bgnm::operator + (const long long & ll)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator + (const float & f)
+template<> Bgnm Bgnm::operator + (const float & f) const
 {
     Bgnm ret;
     ret.val = add_num_strings(this->val,floatconversion(f));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator + (const double & d)
+template<> Bgnm Bgnm::operator + (const double & d) const
 {
     Bgnm ret;
     ret.val = add_num_strings(this->val,floatconversion(d));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator + (const long double & ld)
+template<> Bgnm Bgnm::operator + (const long double & ld) const
 {
     Bgnm ret;
     ret.val = add_num_strings(this->val,floatconversion(ld));
     return ret;
 }
 
-Bgnm Bgnm::operator + (const char * cs)
+Bgnm Bgnm::operator + (const char * cs) const
 {
     Bgnm ret;
     std::string s(cs);
@@ -1993,7 +1993,7 @@ Bgnm Bgnm::operator + (const char * cs)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator + (const std::string & s)
+template<> Bgnm Bgnm::operator + (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
@@ -2001,14 +2001,14 @@ template<> Bgnm Bgnm::operator + (const std::string & s)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const Bgnm & bn)
+template<> Bgnm Bgnm::operator - (const Bgnm & bn) const
 {
     Bgnm ret;
     ret.val = sub_num_strings(this->val,bn.val);
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const int & i)
+template<> Bgnm Bgnm::operator - (const int & i) const
 {
     Bgnm ret;
     std::string s;
@@ -2017,7 +2017,7 @@ template<> Bgnm Bgnm::operator - (const int & i)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const long long & ll)
+template<> Bgnm Bgnm::operator - (const long long & ll) const
 {
     Bgnm ret;
     std::string s;
@@ -2026,28 +2026,28 @@ template<> Bgnm Bgnm::operator - (const long long & ll)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const float & f)
+template<> Bgnm Bgnm::operator - (const float & f) const
 {
     Bgnm ret;
     ret.val = sub_num_strings(this->val,floatconversion(f));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const double & d)
+template<> Bgnm Bgnm::operator - (const double & d) const
 {
     Bgnm ret;
     ret.val = sub_num_strings(this->val,floatconversion(d));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const long double & ld)
+template<> Bgnm Bgnm::operator - (const long double & ld) const
 {
     Bgnm ret;
     ret.val = sub_num_strings(this->val,floatconversion(ld));
     return ret;
 }
 
-Bgnm Bgnm::operator - (const char * cs)
+Bgnm Bgnm::operator - (const char * cs) const
 {
     Bgnm ret;
     std::string s(cs);
@@ -2056,7 +2056,7 @@ Bgnm Bgnm::operator - (const char * cs)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator - (const std::string & s)
+template<> Bgnm Bgnm::operator - (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
@@ -2064,7 +2064,7 @@ template<> Bgnm Bgnm::operator - (const std::string & s)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const Bgnm & bn)
+template<> Bgnm Bgnm::operator * (const Bgnm & bn) const
 {
     Bgnm ret;
     std::string s = bn.val;
@@ -2072,7 +2072,7 @@ template<> Bgnm Bgnm::operator * (const Bgnm & bn)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const int & i)
+template<> Bgnm Bgnm::operator * (const int & i) const
 {
     Bgnm ret;
     std::string s;
@@ -2081,7 +2081,7 @@ template<> Bgnm Bgnm::operator * (const int & i)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const long long & ll)
+template<> Bgnm Bgnm::operator * (const long long & ll) const
 {
     Bgnm ret;
     std::string s;
@@ -2090,7 +2090,7 @@ template<> Bgnm Bgnm::operator * (const long long & ll)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const float & f)
+template<> Bgnm Bgnm::operator * (const float & f) const
 {
     Bgnm ret;
     std::string s = floatconversion(f);
@@ -2098,7 +2098,7 @@ template<> Bgnm Bgnm::operator * (const float & f)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const double & d)
+template<> Bgnm Bgnm::operator * (const double & d) const
 {
     Bgnm ret;
     std::string s = floatconversion(d);
@@ -2106,7 +2106,7 @@ template<> Bgnm Bgnm::operator * (const double & d)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const long double & ld)
+template<> Bgnm Bgnm::operator * (const long double & ld) const
 {
     Bgnm ret;
     std::string s = floatconversion(ld);
@@ -2114,7 +2114,7 @@ template<> Bgnm Bgnm::operator * (const long double & ld)
     return ret;
 }
 
-Bgnm Bgnm::operator * (const char * cs)
+Bgnm Bgnm::operator * (const char * cs) const
 {
     Bgnm ret;
     std::string s(cs);
@@ -2123,7 +2123,7 @@ Bgnm Bgnm::operator * (const char * cs)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator * (const std::string & s)
+template<> Bgnm Bgnm::operator * (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
@@ -2131,7 +2131,7 @@ template<> Bgnm Bgnm::operator * (const std::string & s)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const Bgnm & bn)
+template<> Bgnm Bgnm::operator / (const Bgnm & bn) const
 {
     Bgnm ret;
     std::string s = bn.val;
@@ -2139,7 +2139,7 @@ template<> Bgnm Bgnm::operator / (const Bgnm & bn)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const int & i)
+template<> Bgnm Bgnm::operator / (const int & i) const
 {
     Bgnm ret;
     std::string s;
@@ -2148,7 +2148,7 @@ template<> Bgnm Bgnm::operator / (const int & i)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const long long & ll)
+template<> Bgnm Bgnm::operator / (const long long & ll) const
 {
     Bgnm ret;
     std::string s;
@@ -2157,7 +2157,7 @@ template<> Bgnm Bgnm::operator / (const long long & ll)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const float & f)
+template<> Bgnm Bgnm::operator / (const float & f) const
 {
     Bgnm ret;
     std::string s = floatconversion(f);
@@ -2165,7 +2165,7 @@ template<> Bgnm Bgnm::operator / (const float & f)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const double & d)
+template<> Bgnm Bgnm::operator / (const double & d) const
 {
     Bgnm ret;
     std::string s = floatconversion(d);
@@ -2173,7 +2173,7 @@ template<> Bgnm Bgnm::operator / (const double & d)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const long double & ld)
+template<> Bgnm Bgnm::operator / (const long double & ld) const
 {
     Bgnm ret;
     std::string s = floatconversion(ld);
@@ -2181,7 +2181,7 @@ template<> Bgnm Bgnm::operator / (const long double & ld)
     return ret;
 }
 
-Bgnm Bgnm::operator / (const char * cs)
+Bgnm Bgnm::operator / (const char * cs) const
 {
     Bgnm ret;
     std::string s(cs);
@@ -2190,7 +2190,7 @@ Bgnm Bgnm::operator / (const char * cs)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator / (const std::string & s)
+template<> Bgnm Bgnm::operator / (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
@@ -2233,28 +2233,28 @@ Bgnm Bgnm::operator -- (int)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const Bgnm & bn)
+template<> Bgnm Bgnm::operator % (const Bgnm & bn) const
 {
     Bgnm ret;
     ret.val = str_mod(this->val,bn.val);
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const int & i)
+template<> Bgnm Bgnm::operator % (const int & i) const
 {
     Bgnm ret;
     ret.val = str_mod(this->val,std::to_string(i));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const long long & ll)
+template<> Bgnm Bgnm::operator % (const long long & ll) const
 {
     Bgnm ret;
     ret.val = str_mod(this->val,std::to_string(ll));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const float & f)
+template<> Bgnm Bgnm::operator % (const float & f) const
 {
     Bgnm ret;
     std::string s = floatconversion(f);
@@ -2262,7 +2262,7 @@ template<> Bgnm Bgnm::operator % (const float & f)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const double & d)
+template<> Bgnm Bgnm::operator % (const double & d) const
 {
     Bgnm ret;
     std::string s = floatconversion(d);
@@ -2270,7 +2270,7 @@ template<> Bgnm Bgnm::operator % (const double & d)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const long double & ld)
+template<> Bgnm Bgnm::operator % (const long double & ld) const
 {
     Bgnm ret;
     std::string s = floatconversion(ld);
@@ -2278,7 +2278,7 @@ template<> Bgnm Bgnm::operator % (const long double & ld)
     return ret;
 }
 
-Bgnm Bgnm::operator % (const char * cs)
+Bgnm Bgnm::operator % (const char * cs) const
 {
     Bgnm ret;
     std::string s(cs);
@@ -2287,7 +2287,7 @@ Bgnm Bgnm::operator % (const char * cs)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator % (const std::string & s)
+template<> Bgnm Bgnm::operator % (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
@@ -2295,21 +2295,21 @@ template<> Bgnm Bgnm::operator % (const std::string & s)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator ^ (const Bgnm & bn)
+template<> Bgnm Bgnm::operator ^ (const Bgnm & bn) const
 {
     Bgnm ret;
     ret.val = str_pow(this->val,bn.val);
     return ret;
 }
 
-template<> Bgnm Bgnm::operator ^ (const int & i)
+template<> Bgnm Bgnm::operator ^ (const int & i) const
 {
     Bgnm ret;
     ret.val = str_pow(this->val,std::to_string(i));
     return ret;
 }
 
-template<> Bgnm Bgnm::operator ^ (const float & f)
+template<> Bgnm Bgnm::operator ^ (const float & f) const
 {
     Bgnm ret;
     std::string s = floatconversion(f);
@@ -2317,7 +2317,7 @@ template<> Bgnm Bgnm::operator ^ (const float & f)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator ^ (const double & d)
+template<> Bgnm Bgnm::operator ^ (const double & d) const
 {
     Bgnm ret;
     std::string s = floatconversion(d);
@@ -2325,7 +2325,7 @@ template<> Bgnm Bgnm::operator ^ (const double & d)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator ^ (const long double & ld)
+template<> Bgnm Bgnm::operator ^ (const long double & ld) const
 {
     Bgnm ret;
     std::string s = floatconversion(ld);
@@ -2333,7 +2333,7 @@ template<> Bgnm Bgnm::operator ^ (const long double & ld)
     return ret;
 }
 
-Bgnm Bgnm::operator ^ (const char * cs)
+Bgnm Bgnm::operator ^ (const char * cs) const
 {
     Bgnm ret;
     std::string s(cs);
@@ -2342,7 +2342,7 @@ Bgnm Bgnm::operator ^ (const char * cs)
     return ret;
 }
 
-template<> Bgnm Bgnm::operator ^ (const std::string & s)
+template<> Bgnm Bgnm::operator ^ (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
@@ -2350,277 +2350,277 @@ template<> Bgnm Bgnm::operator ^ (const std::string & s)
     return ret;
 }
 
-template<> bool Bgnm::operator > (const Bgnm & bn)
+template<> bool Bgnm::operator > (const Bgnm & bn) const
 {
     return comp_strs(this->val,bn.val,true);
 }
 
-template<> bool Bgnm::operator > (const int & i)
+template<> bool Bgnm::operator > (const int & i) const
 {
     return comp_strs(this->val,std::to_string(i),true);
 }
 
-template<> bool Bgnm::operator > (const long long & ll)
+template<> bool Bgnm::operator > (const long long & ll) const
 {
     return comp_strs(this->val,std::to_string(ll),true);
 }
 
-template<> bool Bgnm::operator > (const float & f)
+template<> bool Bgnm::operator > (const float & f) const
 {
     std::string s = floatconversion(f);
     return comp_strs(this->val,s,true);
 }
 
-template<> bool Bgnm::operator > (const double & d)
+template<> bool Bgnm::operator > (const double & d) const
 {
     std::string s = floatconversion(d);
     return comp_strs(this->val,s,true);
 }
 
-template<> bool Bgnm::operator > (const long double & ld)
+template<> bool Bgnm::operator > (const long double & ld) const
 {
     std::string s = floatconversion(ld);
     return comp_strs(this->val,s,true);
 }
 
-bool Bgnm::operator > (const char * cs)
+bool Bgnm::operator > (const char * cs) const
 {
     std::string s(cs);
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(this->val,s,true);
 }
 
-template<> bool Bgnm::operator > (const std::string & s)
+template<> bool Bgnm::operator > (const std::string & s) const
 {
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(this->val,s,true);
 }
 
-template<> bool Bgnm::operator < (const Bgnm & bn)
+template<> bool Bgnm::operator < (const Bgnm & bn) const
 {
     return comp_strs(bn.val,this->val,true);
 }
 
-template<> bool Bgnm::operator < (const int & i)
+template<> bool Bgnm::operator < (const int & i) const
 {
     return comp_strs(std::to_string(i),this->val,true);
 }
 
-template<> bool Bgnm::operator < (const long long & ll)
+template<> bool Bgnm::operator < (const long long & ll) const
 {
     return comp_strs(std::to_string(ll),this->val,true);
 }
 
-template<> bool Bgnm::operator < (const float & f)
+template<> bool Bgnm::operator < (const float & f) const
 {
     std::string s = floatconversion(f);
     return comp_strs(s,this->val,true);
 }
 
-template<> bool Bgnm::operator < (const double & d)
+template<> bool Bgnm::operator < (const double & d) const
 {
     std::string s = floatconversion(d);
     return comp_strs(s,this->val,true);
 }
 
-template<> bool Bgnm::operator < (const long double & ld)
+template<> bool Bgnm::operator < (const long double & ld) const
 {
     std::string s = floatconversion(ld);
     return comp_strs(s,this->val,true);
 }
 
-bool Bgnm::operator < (const char * cs)
+bool Bgnm::operator < (const char * cs) const
 {
     std::string s(cs);
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(s,this->val,true);
 }
 
-template<> bool Bgnm::operator < (const std::string & s)
+template<> bool Bgnm::operator < (const std::string & s) const
 {
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(s,this->val,true);
 }
 
-template<> bool Bgnm::operator >= (const Bgnm & bn)
+template<> bool Bgnm::operator >= (const Bgnm & bn) const
 {
     return comp_strs(this->val,bn.val);
 }
 
-template<> bool Bgnm::operator >= (const int & i)
+template<> bool Bgnm::operator >= (const int & i) const
 {
     return comp_strs(this->val,std::to_string(i));
 }
 
-template<> bool Bgnm::operator >= (const long long & ll)
+template<> bool Bgnm::operator >= (const long long & ll) const
 {
     return comp_strs(this->val,std::to_string(ll));
 }
 
-template<> bool Bgnm::operator >= (const float & f)
+template<> bool Bgnm::operator >= (const float & f) const
 {
     std::string s = floatconversion(f);
     return comp_strs(this->val,s);
 }
 
-template<> bool Bgnm::operator >= (const double & d)
+template<> bool Bgnm::operator >= (const double & d) const
 {
     std::string s = floatconversion(d);
     return comp_strs(this->val,s);
 }
 
-template<> bool Bgnm::operator >= (const long double & ld)
+template<> bool Bgnm::operator >= (const long double & ld) const
 {
     std::string s = floatconversion(ld);
     return comp_strs(this->val,s);
 }
 
-bool Bgnm::operator >= (const char * cs)
+bool Bgnm::operator >= (const char * cs) const
 {
     std::string s(cs);
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(this->val,s);
 }
 
-template<> bool Bgnm::operator >= (const std::string & s)
+template<> bool Bgnm::operator >= (const std::string & s) const
 {
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(this->val,s);
 }
 
-template<> bool Bgnm::operator <= (const Bgnm & bn)
+template<> bool Bgnm::operator <= (const Bgnm & bn) const
 {
     return comp_strs(bn.val,this->val);
 }
 
-template<> bool Bgnm::operator <= (const int & i)
+template<> bool Bgnm::operator <= (const int & i) const
 {
     return comp_strs(std::to_string(i),this->val);
 }
 
-template<> bool Bgnm::operator <= (const long long & ll)
+template<> bool Bgnm::operator <= (const long long & ll) const
 {
     return comp_strs(std::to_string(ll),this->val);
 }
 
-template<> bool Bgnm::operator <= (const float & f)
+template<> bool Bgnm::operator <= (const float & f) const
 {
     std::string s = floatconversion(f);
     return comp_strs(s,this->val);
 }
 
-template<> bool Bgnm::operator <= (const double & d)
+template<> bool Bgnm::operator <= (const double & d) const
 {
     std::string s = floatconversion(d);
     return comp_strs(s,this->val);
 }
 
-template<> bool Bgnm::operator <= (const long double & ld)
+template<> bool Bgnm::operator <= (const long double & ld) const
 {
     std::string s = floatconversion(ld);
     return comp_strs(s,this->val);
 }
 
-bool Bgnm::operator <= (const char * cs)
+bool Bgnm::operator <= (const char * cs) const
 {
     std::string s(cs);
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(s,this->val);
 }
 
-template<> bool Bgnm::operator <= (const std::string & s)
+template<> bool Bgnm::operator <= (const std::string & s) const
 {
     if(!check_input(s,__FUNCTION__)) return false;
     return comp_strs(s,this->val);
 }
 
-template<> bool Bgnm::operator == (const Bgnm & bn)
+template<> bool Bgnm::operator == (const Bgnm & bn) const
 {
     return comp_strs_equal(bn.val,this->val);
 }
 
-template<> bool Bgnm::operator == (const int & i)
+template<> bool Bgnm::operator == (const int & i) const
 {
     return comp_strs_equal(std::to_string(i),this->val);
 }
 
-template<> bool Bgnm::operator == (const long long & ll)
+template<> bool Bgnm::operator == (const long long & ll) const
 {
     return comp_strs_equal(std::to_string(ll),this->val);
 }
 
-template<> bool Bgnm::operator == (const float & f)
+template<> bool Bgnm::operator == (const float & f) const
 {
     std::string s = floatconversion(f);
     return comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator == (const double & d)
+template<> bool Bgnm::operator == (const double & d) const
 {
     std::string s = floatconversion(d);
     return comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator == (const long double & ld)
+template<> bool Bgnm::operator == (const long double & ld) const
 {
     std::string s = floatconversion(ld);
     return comp_strs_equal(s,this->val);
 }
 
-bool Bgnm::operator == (const char * cs)
+bool Bgnm::operator == (const char * cs) const
 {
     std::string s(cs);
     check_input(s,__FUNCTION__);
     return comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator == (const std::string & s)
+template<> bool Bgnm::operator == (const std::string & s) const
 {
     check_input(s,__FUNCTION__);
     return comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator != (const Bgnm & bn)
+template<> bool Bgnm::operator != (const Bgnm & bn) const
 {
     return !comp_strs_equal(bn.val,this->val);
 }
 
-template<> bool Bgnm::operator != (const int & i)
+template<> bool Bgnm::operator != (const int & i) const
 {
     return !comp_strs_equal(std::to_string(i),this->val);
 }
 
-template<> bool Bgnm::operator != (const long long & ll)
+template<> bool Bgnm::operator != (const long long & ll) const
 {
     return !comp_strs_equal(std::to_string(ll),this->val);
 }
 
-template<> bool Bgnm::operator != (const float & f)
+template<> bool Bgnm::operator != (const float & f) const
 {
     std::string s = floatconversion(f);
     return !comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator != (const double & d)
+template<> bool Bgnm::operator != (const double & d) const
 {
     std::string s = floatconversion(d);
     return !comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator != (const long double & ld)
+template<> bool Bgnm::operator != (const long double & ld) const
 {
     std::string s = floatconversion(ld);
     return !comp_strs_equal(s,this->val);
 }
 
-bool Bgnm::operator != (const char * cs)
+bool Bgnm::operator != (const char * cs) const
 {
     std::string s(cs);
     if(!check_input(s,__FUNCTION__)) return false;
     return !comp_strs_equal(s,this->val);
 }
 
-template<> bool Bgnm::operator != (const std::string & s)
+template<> bool Bgnm::operator != (const std::string & s) const
 {
     if(!check_input(s,__FUNCTION__)) return false;
     return !comp_strs_equal(s,this->val);
@@ -2880,19 +2880,19 @@ template<> void Bgnm::operator %= (const std::string & s)
     if(check_input(s,__FUNCTION__)) this->val = str_mod(this->val,s);
 }
 
-Bgnm Bgnm::root(const float & index)
+Bgnm Bgnm::root(const float & index) const
 {
     std::string ind = std::to_string(index);
     return str_root(this->val,ind);
 }
 
-Bgnm Bgnm::sqrt()
+Bgnm Bgnm::sqrt() const
 {
     if(this->val[0] == '-') throw Bgnm_error("Cannot calculate square root of negative value.",__FILENAME__,__LINE__,__FUNCTION__,105);
     return str_root(this->val,"2");
 }
 
-Bgnm Bgnm::cbrt()
+Bgnm Bgnm::cbrt() const
 {
     return str_root(this->val,"3");
 }
@@ -2919,22 +2919,22 @@ unsigned Bgnm::get_max_root_guess_count()
     return bgnm_max_root_guess_count;
 }
 
-int Bgnm::to_int()
+int Bgnm::to_int() const
 {
     return std::stoi(this->val);
 }
 
-long long Bgnm::to_long_long()
+long long Bgnm::to_long_long() const
 {
     return std::stoll(this->val);
 }
 
-float Bgnm::to_float()
+float Bgnm::to_float() const
 {
     return std::stof(this->val);
 }
 
-double Bgnm::to_double()
+double Bgnm::to_double() const
 {
     try { return std::stod(this->val);}
     catch (std::exception e)
@@ -2943,17 +2943,17 @@ double Bgnm::to_double()
     }
 }
 
-long double Bgnm::to_long_double()
+long double Bgnm::to_long_double() const
 {
     return std::stold(this->val);
 }
 
-std::string Bgnm::to_string()
+std::string Bgnm::to_string() const
 {
     return this->val;
 }
 
-char* Bgnm::to_c_string()
+char* Bgnm::to_c_string() const
 {
     char * ret = new char[this->val.length() + 1];
     //const char * sp = this->val.c_str();
@@ -2961,14 +2961,14 @@ char* Bgnm::to_c_string()
     return ret;
 }
 
-Bgnm Bgnm::abs()
+Bgnm Bgnm::abs() const
 {
     Bgnm ret = this->val;
     if(ret.val[0] == '-') ret.val.erase(0,1);
     return ret;
 }
 
-Bgnm Bgnm::floor()
+Bgnm Bgnm::floor() const
 {
     Bgnm ret = this->val;
     unsigned long dec_loc = ret.val.find('.');
@@ -2989,10 +2989,11 @@ Bgnm Bgnm::floor()
     {
         ret.val.erase(dec_loc,std::string::npos);
     }
+    if(ret.val == "" || ret.val == ".") ret.val = "0";
     return ret;
 }
 
-Bgnm Bgnm::ceil()
+Bgnm Bgnm::ceil() const
 {
     Bgnm ret = this->val;
     unsigned long dec_loc = ret.val.find('.');
@@ -3014,15 +3015,16 @@ Bgnm Bgnm::ceil()
         }
         ret.val.erase(dec_loc,std::string::npos);
     }
+    if(ret.val == "" || ret.val == ".") ret.val = "0";
     return ret;
 }
 
-bool Bgnm::equal(const Bgnm & bn, const int precision)
+bool Bgnm::equal(const Bgnm & bn, const int precision) const
 {
     return comp_strs_equal(this->val, bn.val,precision);
 }
 
-Bgnm Bgnm::round(const int i)
+Bgnm Bgnm::round(const int i) const
 {
     std::string ret_str = this->val;
     round_string(ret_str, i);

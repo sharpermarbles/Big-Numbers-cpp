@@ -13,10 +13,10 @@
 
 
 #define MAX_STR_SIZE             20 // rand_bgnm() - maximum size of randomly generated Bgnm to work with (base 10 places)
-#define PROBABILITY_INT           2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be integer instead of floating point
+#define PROBABILITY_INT           1 // rand_bgnm() - bigger number means more likely the returned random bgnm will be integer instead of floating point
 #define PROBABILITY_POSSITIVE     2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be possitive
 #define MAX_NUM_ZEROS            15 // rand_bgnm() - maximum number of zeros that may be randomly added to random bgnm (floating point)
-#define ERROR_THRESHHOLD 0.000000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
+#define ERROR_THRESHHOLD 0.000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
 
 
 // rand_int() will return numbers from flr to ceil inclusive
@@ -83,35 +83,35 @@ static Bgnm* rand_bgnm(bool force_possitive = false, bool allow_float = true)
     return random;
 }
 
-static void test_add         ( bool show_success = true);
-static void test_sub         ( bool show_success = true);
-static void test_mult        ( bool show_success = true);
-static void test_div         ( bool show_success = true);
-static void test_inc_prefix  ( bool show_success = true);
-static void test_inc_postfix ( bool show_success = true);
-static void test_dec_prefix  ( bool show_success = true);
-static void test_dec_postfix ( bool show_success = true);
-static void test_mod         ( bool show_success = true);
-static void test_pow         ( bool show_success = true);
-static void test_grt_than    ( bool show_success = true);
-static void test_lss_than    ( bool show_success = true);
-static void test_grt_eql     ( bool show_success = true);
-static void test_lss_eql     ( bool show_success = true);
-static void test_equal       ( bool show_success = true);
-static void test_not_equal   ( bool show_success = true);
-static void test_shft_rght   ( bool show_success = true);
-static void test_shft_left   ( bool show_success = true);
-static void test_add_eqls    ( bool show_success = true);
-static void test_sub_eqls    ( bool show_success = true);
-static void test_mult_eqls   ( bool show_success = true);
-static void test_div_eqls    ( bool show_success = true);
-static void test_mod_eqls    ( bool show_success = true);
-static void test_root        ( bool show_success = true);
-static void test_sqrt        ( bool show_success = true);
-static void test_cbrt        ( bool show_success = true);
-static void test_abs         ( bool show_success = true);
-static void test_floor       ( bool show_success = true);
-static void test_ceil        ( bool show_success = true);
+static void test_add         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_sub         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_mult        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_div         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_inc_prefix  ( Bgnm * a = NULL, bool show_success = true);
+static void test_inc_postfix ( Bgnm * a = NULL, bool show_success = true);
+static void test_dec_prefix  ( Bgnm * a = NULL, bool show_success = true);
+static void test_dec_postfix ( Bgnm * a = NULL, bool show_success = true);
+static void test_mod         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_pow         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_grt_than    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_lss_than    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_grt_eql     ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_lss_eql     ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_equal       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_not_equal   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_shft_rght   ( Bgnm * a = NULL, unsigned int b = 1, bool show_success = true);
+static void test_shft_left   ( Bgnm * a = NULL, unsigned int b = 1, bool show_success = true);
+static void test_add_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_sub_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_mult_eqls   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_div_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_mod_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_root        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_sqrt        ( Bgnm * a = NULL, bool show_success = true);
+static void test_cbrt        ( Bgnm * a = NULL, bool show_success = true);
+static void test_abs         ( Bgnm * a = NULL, bool show_success = true);
+static void test_floor       ( Bgnm * a = NULL, bool show_success = true);
+static void test_ceil        ( Bgnm * a = NULL, bool show_success = true);
 
 
 static void perform_random_test(bool show_all = true)
@@ -120,68 +120,75 @@ static void perform_random_test(bool show_all = true)
     int types_of_tests = 29;
     // pick one at random
     int rand = rand_int(0, types_of_tests - 1);
-    
-    rand = 21;
+    //int rand = rand_int(26, 28);
 
     switch (rand) {
         case 0:
-            test_add(show_all); break;
+            test_add(NULL, NULL, show_all); break;
         case 1:
-            test_sub(show_all); break;
+            test_sub(NULL, NULL, show_all); break;
         case 2:
-            test_mult(show_all); break;
+            test_mult(NULL, NULL, show_all); break;
         case 3:
-            test_div(show_all); break;
+            test_div(NULL, NULL, show_all); break;
         case 4:
-            test_inc_prefix(show_all); break;
+            test_inc_prefix(NULL, show_all); break;
         case 5:
-            test_inc_postfix(show_all); break;
+            test_inc_postfix(NULL, show_all); break;
         case 6:
-            test_dec_prefix(show_all); break;
+            test_dec_prefix(NULL, show_all); break;
         case 7:
-            test_dec_postfix(show_all); break;
+            test_dec_postfix(NULL, show_all); break;
         case 8:
-            test_mod(show_all); break;
+            test_mod(NULL, NULL, show_all); break;
         case 9:
-            test_pow(show_all); break;
+            std::cout << "    --skiping test_pow()--  \n" << std::endl;
+            //test_pow(NULL, NULL, show_all);
+            break;
         case 10:
-            test_grt_than(show_all); break;
+            test_grt_than(NULL, NULL, show_all); break;
         case 11:
-            test_lss_than(show_all); break;
+            test_lss_than(NULL, NULL, show_all); break;
         case 12:
-            test_grt_eql(show_all); break;
+            test_grt_eql(NULL, NULL, show_all); break;
         case 13:
-            test_lss_eql(show_all); break;
+            test_lss_eql(NULL, NULL, show_all); break;
         case 14:
-            test_equal(show_all); break;
+            test_equal(NULL, NULL, show_all); break;
         case 15:
-            test_not_equal(show_all); break;
+            test_not_equal(NULL, NULL, show_all); break;
         case 16:
-            test_shft_rght(show_all); break;
+            test_shft_rght(NULL, NULL, show_all); break;
         case 17:
-            test_shft_left(show_all); break;
+            test_shft_left(NULL, NULL, show_all); break;
         case 18:
-            test_add_eqls(show_all); break;
+            test_add_eqls(NULL, NULL, show_all); break;
         case 19:
-            test_sub_eqls(show_all); break;
+            test_sub_eqls(NULL, NULL, show_all); break;
         case 20:
-            test_mult_eqls(show_all); break;
+            test_mult_eqls(NULL, NULL, show_all); break;
         case 21:
-            test_div_eqls(show_all); break;
+            test_div_eqls(NULL, NULL, show_all); break;
         case 22:
-            test_mod_eqls(show_all); break;
+            test_mod_eqls(NULL, NULL, show_all); break;
         case 23:
-            test_root(show_all); break;
+            std::cout << "    --skiping test_root()--  \n" << std::endl;
+            //test_root(NULL, NULL, show_all);
+            break;
         case 24:
-            test_sqrt(show_all); break;
+            std::cout << "    --skiping test_sqrt()--  \n" << std::endl;
+            //test_sqrt(NULL, show_all);
+            break;
         case 25:
-            test_cbrt(show_all); break;
+            std::cout << "    --skiping test_cbrt()--  \n" << std::endl;
+            //test_cbrt(NULL, show_all);
+            break;
         case 26:
-            test_abs(show_all); break;
+            test_abs(NULL, show_all); break;
         case 27:
-            test_floor(show_all); break;
+            test_floor(NULL, show_all); break;
         case 28:
-            test_ceil(show_all); break;
+            test_ceil(NULL, show_all); break;
         default:
             throw "types_of_tests does not correspond to number of cases in perform_random_test() in testing.cpp \n";
             break;
@@ -202,6 +209,52 @@ void Testing::random_tester(int number, bool show_all)
     }
 }
 
+void Testing::test(const std::string & op, std::string constants, int number, bool show_all )
+{
+    Bgnm * a = NULL;
+    Bgnm * b = NULL;
+    if(constants != "")
+    {
+        std::string str_a = "";
+        std::string str_b = "";
+        std::string * str = &str_a;
+        for (int i = 0; i < constants.size(); i++)
+        {
+            if (constants[i] != ' ')
+            {
+                str->push_back(constants[i]);
+            }
+            else
+            {
+                str = &str_b;
+            }
+        }
+        try {a = new Bgnm(str_a);} catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
+        try {b = new Bgnm(str_b);} catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
+    }
+    if(op == "add")
+    {
+        for (int i = 0; i < number; i++) test_add(a, b, show_all);
+    }
+    else if (op == "sub")
+    {
+        for (int i = 0; i < number; i++) test_sub(a, b, show_all);
+    }
+    else if (op == "mult")
+    {
+        for (int i = 0; i < number; i++) test_mult(a, b, show_all);
+    }
+    else if (op == "div")
+    {
+        for (int i = 0; i < number; i++) test_div(a, b, show_all);
+    }
+    
+    else
+    {
+        std::cout << op << "    Function \"test\" requires option -o to designate which operation to perform.\n" << std::endl;
+    }
+}
+
 // provide both the bgnm answer and the float answer, and also a double pointer to put the calculated difference into
 static bool not_equal(Bgnm &bn, double &db, double *diff)
 {
@@ -219,10 +272,10 @@ static bool not_equal(Bgnm &bn, double &db, double *diff)
     }
 }
 
-std::string opers[10] = {" ++X"," --X"," X++"," X--"," xV "," 2V "," 3V ", " abs"," flr", " clg"};
+std::string opers[10] = {" ++X"," --X"," X++"," X--"," 2V "," 3V ", " abs"," flr", " clg"};
 static bool single_term(const std::string_view operand)
 {
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 11; i++)
     {
         if (operand == opers[i]) return true;
     }
@@ -295,10 +348,12 @@ static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, bool c = false, double
 }
 
 
-static void test_add(bool show_success)
+static void test_add(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     Bgnm c = *a + *b;
     double af, bf, cf;
     af = a->to_double();
@@ -310,10 +365,12 @@ static void test_add(bool show_success)
 }
 
 
-static void test_sub(bool show_success)
+static void test_sub(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     Bgnm c = *a - *b;
     double af, bf, cf;
     af = a->to_double();
@@ -324,10 +381,12 @@ static void test_sub(bool show_success)
     else if ( show_success ) print_success(a,b,&c," -  ");
 }
 
-static void test_mult(bool show_success)
+static void test_mult(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     Bgnm c = *a * *b;
     double af, bf, cf;
     af = a->to_double();
@@ -342,10 +401,12 @@ static void test_mult(bool show_success)
 }
 
 
-static void test_div(bool show_success)
+static void test_div(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     Bgnm c = *a / *b;
     double af, bf, cf;
     af = a->to_double();
@@ -356,10 +417,11 @@ static void test_div(bool show_success)
     else if ( show_success ) print_success(a,b,&c," /  ");
 }
 
-static void test_inc_prefix(bool show_success)
+static void test_inc_prefix(Bgnm * _a, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = new Bgnm(0);//rand_bgnm();
+    if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = ++*a;
     double af, bf, cf, af_temp;
@@ -372,10 +434,11 @@ static void test_inc_prefix(bool show_success)
     else if ( show_success ) print_success(&a_temp,b,&c," ++X");
 }
 
-static void test_inc_postfix(bool show_success)
+static void test_inc_postfix(Bgnm * _a, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = new Bgnm(0);//rand_bgnm();
+    if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = *a++;
     double af, bf, cf, af_temp;
@@ -388,10 +451,11 @@ static void test_inc_postfix(bool show_success)
     else if ( show_success ) print_success(&a_temp,b,&c," X++");
 }
 
-static void test_dec_prefix(bool show_success)
+static void test_dec_prefix(Bgnm * _a, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = new Bgnm(0);//rand_bgnm();
+    if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = --*a;
     double af, bf, cf, af_temp;
@@ -404,10 +468,11 @@ static void test_dec_prefix(bool show_success)
     else if ( show_success ) print_success(&a_temp,b,&c," --X");
 }
 
-static void test_dec_postfix(bool show_success)
+static void test_dec_postfix(Bgnm * _a, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = new Bgnm(0);//rand_bgnm();
+    if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = *a--;
     double af, bf, cf, af_temp;
@@ -420,10 +485,12 @@ static void test_dec_postfix(bool show_success)
     else if ( show_success ) print_success(&a_temp,b,&c," X--");
 }
 
-static void test_mod(bool show_success)
+static void test_mod(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm(true,false); // forcing possitive numbers until can fix issue with negative modulo operations
     Bgnm* b = rand_bgnm(true,false); // forcing possitive numbers until can fix issue with negative modulo operations
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     Bgnm c = *a % *b;
     double af, bf, cf;
     af = a->to_double();
@@ -437,12 +504,13 @@ static void test_mod(bool show_success)
     else if ( show_success ) print_success(a,b,&c," %  ");
 }
 
-static void test_pow(bool show_success)
+static void test_pow(Bgnm * _a, Bgnm* _b, bool show_success)
 {
-    /*
     Bgnm* a = rand_bgnm(); // forcing possitive numbers until can fix issue with negative modulo operations
     int randint = (int)rand_int(1,9999); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
     Bgnm* b = new Bgnm(randint); // forcing possitive numbers until can fix issue with negative modulo operations
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     Bgnm c = *a ^ *b;
     double af, bf, cf;
     af = a->to_double();
@@ -454,14 +522,15 @@ static void test_pow(bool show_success)
         print_failure(a,b,&c,&af,&bf,&cf,&diff," ^  ");
     }
     else if ( show_success ) print_success(a,b,&c," ^  ");
-     */
 }
 
 
-static void test_grt_than( bool show_success)
+static void test_grt_than( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     // 20% of time Bgnm b should be equal to a for testing purposes
     rand_int(1,5) == 1 ? *b = *a: true;
     bool c = *a > *b;
@@ -477,10 +546,12 @@ static void test_grt_than( bool show_success)
     else if ( show_success ) print_success(a,b,c," >  ");
 }
 
-static void test_lss_than( bool show_success)
+static void test_lss_than( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     // 20% of time Bgnm b should be equal to a for testing purposes
     rand_int(1,5) == 1 ? *b = *a: true;
     bool c = *a < *b;
@@ -496,10 +567,12 @@ static void test_lss_than( bool show_success)
     else if ( show_success ) print_success(a,b,c," <  ");
 }
 
-static void test_grt_eql( bool show_success)
+static void test_grt_eql( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     // 50% of time Bgnm b should be equal to a for testing purposes
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a >= *b;
@@ -515,10 +588,12 @@ static void test_grt_eql( bool show_success)
     else if ( show_success ) print_success(a,b,c," >= ");
 }
 
-static void test_lss_eql( bool show_success)
+static void test_lss_eql( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     // 50% of time Bgnm b should be equal to a for testing purposes
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a <= *b;
@@ -534,10 +609,12 @@ static void test_lss_eql( bool show_success)
     else if ( show_success ) print_success(a,b,c," <= ");
 }
 
-static void test_equal( bool show_success )
+static void test_equal( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     // 50% of time Bgnm b should be equal to a for testing purposes
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a == *b;
@@ -553,10 +630,12 @@ static void test_equal( bool show_success )
     else if ( show_success ) print_success(a,b,c," == ");
 }
 
-static void test_not_equal( bool show_success )
+static void test_not_equal( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
     // 50% of time Bgnm b should be equal to a for testing purposes
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a != *b;
@@ -572,11 +651,13 @@ static void test_not_equal( bool show_success )
     else if ( show_success ) print_success(a,b,c," != ");
 }
 
-static void test_shft_rght( bool show_success )
+static void test_shft_rght( Bgnm * _a, unsigned int _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
+    if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     int shift_x = (int)rand_int(1,MAX_STR_SIZE);
+    if (_b != 1) shift_x = _b ;
     Bgnm* b = new Bgnm(shift_x);
     *a >> shift_x;
     Bgnm c = *a;
@@ -590,11 +671,13 @@ static void test_shft_rght( bool show_success )
     else if ( show_success ) print_success(&a_temp,b,&c," >> ");
 }
 
-static void test_shft_left( bool show_success )
+static void test_shft_left( Bgnm * _a, unsigned int _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
+    if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     int shift_x = (int)rand_int(1,MAX_STR_SIZE);
+    if (_b != 1) shift_x = _b ;
     Bgnm* b = new Bgnm(shift_x);
     *a << shift_x;
     Bgnm c = *a;
@@ -608,11 +691,13 @@ static void test_shft_left( bool show_success )
     else if ( show_success ) print_success(&a_temp,b,&c," << ");
 }
 
-static void test_add_eqls( bool show_success )
+static void test_add_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
-    Bgnm a_temp = *a; // save a
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
+    Bgnm a_temp = *a; // save a
     *a += *b;
     double af, af_temp, bf;
     af = a_temp.to_double(); // save af
@@ -623,11 +708,13 @@ static void test_add_eqls( bool show_success )
     else if ( show_success ) print_success(&a_temp,b,a," += ");
 }
 
-static void test_sub_eqls( bool show_success )
+static void test_sub_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
-    Bgnm a_temp = *a; // save a
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
+    Bgnm a_temp = *a; // save a
     *a -= *b;
     double af, af_temp, bf;
     af = a_temp.to_double(); // save af
@@ -639,11 +726,13 @@ static void test_sub_eqls( bool show_success )
     else if ( show_success ) print_success(&a_temp,b,a," -= ");
 }
 
-static void test_mult_eqls( bool show_success )
+static void test_mult_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
-    Bgnm a_temp = *a; // save a
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
+    Bgnm a_temp = *a; // save a
     *a *= *b;
     double af, af_temp, bf;
     af = a_temp.to_double();
@@ -655,11 +744,13 @@ static void test_mult_eqls( bool show_success )
     else if ( show_success ) print_success(&a_temp,b,a," *= ");
 }
 
-static void test_div_eqls( bool show_success )
+static void test_div_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
-    Bgnm a_temp = *a; // save a
     Bgnm* b = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
+    Bgnm a_temp = *a; // save a
     *a /= *b;
     double af, af_temp, bf;
     af = a_temp.to_double();
@@ -671,46 +762,112 @@ static void test_div_eqls( bool show_success )
     else if ( show_success ) print_success(&a_temp,b,a," /= ");
 }
 
-static void test_mod_eqls( bool show_success )
+static void test_mod_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," %= ");
+    Bgnm* a = rand_bgnm(true,false); // forcing possitive integer numbers until can fix issue with negative modulo operations
+    Bgnm* b = rand_bgnm(true,false); // forcing possitive integer numbers until can fix issue with negative modulo operations
+    if (_a != NULL) a = _a ;
+    if (_b != NULL) b = _b ;
+    Bgnm a_temp = *a; // save a
+    *a %= *b;
+    double af, bf, cf;
+    af = a_temp.to_double();
+    bf = b->to_double();
+    cf = fmod(af,bf);
+    double diff;
+    if(not_equal(*a,cf,&diff)) print_failure(&a_temp,b,a,&af,&bf,&cf,&diff," %= ");
+    else if ( show_success ) print_success(&a_temp,b,a," %= ");
 }
 
-static void test_root( bool show_success )
+static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," xV ");
+    Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
+    if (_a != NULL) a = _a ;
+    float randflt = (float)rand_int(1,99); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
+    Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
+    if (_b != NULL) b = _b ;
+    Bgnm c = a->root(randflt);
+    double af, bf, cf;
+    af = a->to_double();
+    bf = randflt;
+    cf = pow(af,1.0/bf);
+    double diff;
+    if(not_equal(c,cf,&diff))
+    {
+        print_failure(a,b,&c,&af,&bf,&cf,&diff," xV ");
+    }
+    else if ( show_success ) print_success(a,b,&c," xV ");
 }
 
-static void test_sqrt( bool show_success )
+static void test_sqrt( Bgnm * _a, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," 2V ");
+    Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
+    if (_a != NULL) a = _a ;
+    Bgnm c = a->sqrt();
+    double af, cf;
+    af = a->to_double();
+    cf = pow(af,1.0/2.0);
+    double diff;
+    if(not_equal(c,cf,&diff))
+    {
+        print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 2V ");
+    }
+    else if ( show_success ) print_success(a,new Bgnm,&c," 2V ");
 }
 
-static void test_cbrt( bool show_success )
+static void test_cbrt( Bgnm * _a, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," 3V ");
+    Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
+    if (_a != NULL) a = _a ;
+    Bgnm c = a->cbrt();
+    double af, cf;
+    af = a->to_double();
+    cf = pow(af,1.0/3.00);
+    double diff;
+    if(not_equal(c,cf,&diff))
+    {
+        print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 3V ");
+    }
+    else if ( show_success ) print_success(a,new Bgnm,&c," 3V ");
 }
 
-static void test_abs( bool show_success )
+static void test_abs( Bgnm * _a, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," abs");
+    Bgnm* a = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    Bgnm c = a->abs();
+    double af, cf;
+    af = a->to_double();
+    cf = abs(af);
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," abs");
+    else if ( show_success ) print_success(a,new Bgnm,&c," abs");
 }
 
-static void test_floor( bool show_success )
+static void test_floor( Bgnm * _a, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," flr");
+    Bgnm* a = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    Bgnm c = a->floor();
+    double af, cf;
+    af = a->to_double();
+    cf = floor(af);
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," flr");
+    else if ( show_success ) print_success(a,new Bgnm,&c," flr");
 }
 
-static void test_ceil( bool show_success )
+static void test_ceil( Bgnm * _a, bool show_success )
 {
-    bgnm a(1),b(1),c(1);
-    if(show_success) print_success(&a,&b,&c," clg");
+    Bgnm* a = rand_bgnm();
+    if (_a != NULL) a = _a ;
+    Bgnm c = a->ceil();
+    double af, cf;
+    af = a->to_double();
+    cf = ceil(af);
+    double diff;
+    if(not_equal(c,cf,&diff)) print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," clg");
+    else if ( show_success ) print_success(a,new Bgnm,&c," clg");
 }
 
 

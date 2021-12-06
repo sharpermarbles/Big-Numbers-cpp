@@ -127,9 +127,9 @@ void Com::print()
 
 // STEP 2: PROVIDE CUSTOM FUNCTION PROTOTYPES HERE (MUST TAKE A const POINTER
 //         TO A const Parsed OBJECT AS AN ARGUMENT - CAN BE NULL IF DESIRED)
-static void func1  ( Parsed const * const );
-static void random ( Parsed const * const );
 static void demo   ( Parsed const * const );
+static void random ( Parsed const * const );
+static void test   ( Parsed const * const );
 
 // STEP 3: ADD COMMANDS AND THEIR OPTIONS TO THE Com::load() FUNCTION BELOW.
 //         USE _CREATE_COMMAND_ AND _ADD_OPTION_ WITH PROPER ARGUMENTS
@@ -142,28 +142,11 @@ void Com::load( std::vector<Com*> * const vec)
     // revise welcome and exit message as desired
     welcome_msg = "Test module for Big Numbers library. Type \"help\" if needed.";
     exit_msg    = "Exiting program.";
-
     
-    // EXAMPLE FUNCTION
-    _CREATE_COMMAND_
-        func1,
-        "func1",
-        "func1 has several options with nicknames and/or fullnames, some of which take or require arguments."
-        ____
-        _ADD_OPTION_ // option 2
-             'b', "",
-             "Option b may take an argument.", true, false
-             ____
-        _ADD_OPTION_ // option 6
-             '!', "zanzibar",
-             "Option may only be called using the fullname '--zanzibar'. Option may accept an argument.", true, false
-             ____
-    
-    // CUSTOM FUNCTION
     _CREATE_COMMAND_
         random,
         "random",
-        "random will perform a default of 50 random operations with bgnm objects and check for errors or discrepencies."
+        "Performs a default of 50 random operations with bgnm objects and check for errors or discrepencies."
         ____
         _ADD_OPTION_ // option 1
              'n', "number",
@@ -171,15 +154,36 @@ void Com::load( std::vector<Com*> * const vec)
              ____
         _ADD_OPTION_ // option 1
              'e', "",
-             "Only show test results that indicate discrepencies."
+             "Only show test results that indicate errors or discrepencies."
              ____
     
-    // EXAMPLE FUNCTION
     _CREATE_COMMAND_
         demo,
         "demo",
         "Demo runs a demonstration, testing all the overrides of the Bgnm constructor for various data types. The results will be printed out in comparison to the original data to confirm fidelity."
         ____
+    
+    _CREATE_COMMAND_
+        test,
+        "test",
+        "Executes a specific operation (option -o) on Bgnm objects to check for errors or discrepencies."
+        ____
+        _ADD_OPTION_ // option 1
+             'n', "number",
+             "Number of operations to perform if not the default number.", true, true
+             ____
+        _ADD_OPTION_ // option 1
+             'o', "operation",
+             "Name of operation to be tested. Possibilities are:\n             add      (add)\n             sub      (subtract)\n             mult     (multiply)\n             div      (divide)\n             inc_pre  (increment prefix)\n             inc_post (increment postfix)\n             dec_pre  (decriment prefix)\n             dec_post (decriment postfix)\n", true, true
+             ____
+        _ADD_OPTION_ // option 1
+             'e', "",
+             "Only show test results that indicate discrepencies."
+             ____
+        _ADD_OPTION_ // option 1
+             'c', "constants",
+             "Provide the constants(s) that the operation (add, sub, mult, etc.) should evaluate. If providing two numbers (e.g. a and b), separate b from a with at least one space. If either a or b are negative, enclose entire string in quotes (e.g. \"-0.02352 -26234.734409\").", true, true
+             ____
     
 }
 
@@ -191,12 +195,6 @@ void Com::load( std::vector<Com*> * const vec)
 //     YOU MAY USE EITHER THE METHOD parsed->check(const char& nickname) OR THE
 //     METHOD parsed->check(const std::string& fullname). IT WILL NOT MATTER WHICH ONE YOU USE.
 
-void func1( Parsed const * const parsed )
-{
-    // example using static methods from class SampleClass
-    //SampleClass::function_1();
-}
-
 void random (Parsed const * const parsed )
 {
     bool n,e=true;
@@ -204,16 +202,57 @@ void random (Parsed const * const parsed )
     std::string number;
     n = parsed->check('n',number);
     e = !(parsed->check('e'));
-    if(n && (n_int = std::stoi(number)))
+    bool stoi_valid = true;
+    try
+    {
+        n_int = std::stoi(number);
+    }
+    catch (...)
+    {
+        stoi_valid = false;
+    }
+    if(n && stoi_valid)
     {
         Testing::random_tester(n_int, e);
     }
     else
     {
-        Testing::random_tester(50, e);
+        Testing::random_tester(20, e);
     }
 }
 
+void test (Parsed const * const parsed )
+{
+    bool n,e=true,c=false,o=false;
+    int n_int;
+    std::string number = "",operation = "",constants = "";
+    n = parsed->check('n',number);
+    o = parsed->check('o',operation);
+    e = !(parsed->check('e'));
+    c = parsed->check('c',constants);
+    bool stoi_valid = true;
+    try
+    {
+        n_int = std::stoi(number);
+    }
+    catch (...)
+    {
+        stoi_valid = false;
+    }
+    if(c)
+    {
+        if(n) std::cout << "     [ -n (--number) is not a valid option together with -c (--constants). -n will be ignored.\n";
+        Testing::test(operation, constants, 1, e);
+    }
+    else if(n && stoi_valid)
+    {
+        Testing::test(operation, constants, n_int, e);
+    }
+    else
+    {
+        Testing::test(operation, constants, 20, e);
+    }
+}
 
 void demo (Parsed const * const parsed )
 {

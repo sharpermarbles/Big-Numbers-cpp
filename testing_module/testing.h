@@ -19,6 +19,7 @@ public:
 	~Testing();
     
     static void random_tester(int number = 20, bool show_all = true);
+    static void test(const std::string & operation, std::string constants, int number = 20, bool show_all = true );
     static void demo ();
 
 };
