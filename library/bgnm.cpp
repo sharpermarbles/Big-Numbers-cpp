@@ -2945,7 +2945,12 @@ double Bgnm::to_double() const
 
 long double Bgnm::to_long_double() const
 {
-    return std::stold(this->val);
+    //return std::stold(this->val);
+    try { return std::stold(this->val);}
+    catch (std::exception e)
+    {
+        throw Bgnm_error("Could not convert Bgnm type to long double.",__FILENAME__,__LINE__,__FUNCTION__,198);
+    }
 }
 
 std::string Bgnm::to_string() const

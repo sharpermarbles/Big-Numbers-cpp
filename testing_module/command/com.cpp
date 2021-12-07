@@ -127,9 +127,25 @@ void Com::print()
 
 // STEP 2: PROVIDE CUSTOM FUNCTION PROTOTYPES HERE (MUST TAKE A const POINTER
 //         TO A const Parsed OBJECT AS AN ARGUMENT - CAN BE NULL IF DESIRED)
-static void demo   ( Parsed const * const );
-static void random ( Parsed const * const );
-static void test   ( Parsed const * const );
+static void demo     ( Parsed const * const );
+static void random   ( Parsed const * const );
+//static void test   ( Parsed const * const );
+
+static void add      ( Parsed const * const );
+static void sub      ( Parsed const * const );
+static void mult     ( Parsed const * const );
+static void div      ( Parsed const * const );
+static void inc_pre  ( Parsed const * const );
+static void inc_post ( Parsed const * const );
+static void dec_pre  ( Parsed const * const );
+static void dec_post ( Parsed const * const );
+static void mod      ( Parsed const * const );
+static void pow      ( Parsed const * const );
+
+static void great    ( Parsed const * const );
+static void less     ( Parsed const * const );
+static void great_eql( Parsed const * const );
+static void less_eql ( Parsed const * const );
 
 // STEP 3: ADD COMMANDS AND THEIR OPTIONS TO THE Com::load() FUNCTION BELOW.
 //         USE _CREATE_COMMAND_ AND _ADD_OPTION_ WITH PROPER ARGUMENTS
@@ -137,6 +153,13 @@ static void test   ( Parsed const * const );
 //         A SIMPLE TEXT STRING (NO OPTION NICKNAME OR FULLNAME), THEN SHOW NICKNAME
 //         AND FULLNAME AS '!' and "" RESPECTIVELY. IF DESIRED, REVISE WELCOME AND EXIT
 //         FOR YOUR PROGRAM.
+
+
+#define   _ADD_TEST_FUNCTION_OPTIONS_A_B_   vec->back()->add_opt( new Opt( 'n', "number", "Number of operations to perform if not the default number.", true, true)); vec->back()->add_opt( new Opt( 'e', "", "Only show test results that indicate discrepencies." )); vec->back()->add_opt( new Opt('c', "constants", "Provide a and b separated by space. If a or b is negative, enclose string in quotes (e.g. \"0.02352 -26234.734409\").", true, true ));
+
+#define   _ADD_TEST_FUNCTION_OPTIONS_A_   vec->back()->add_opt( new Opt( 'n', "number", "Number of operations to perform if not the default number.", true, true)); vec->back()->add_opt( new Opt( 'e', "", "Only show test results that indicate discrepencies." )); vec->back()->add_opt( new Opt('c', "constants", "Provide constant a. If a is negative, enclose in quotes (e.g. \"-26234.00734409\").", true, true ));
+
+
 void Com::load( std::vector<Com*> * const vec)
 {
     // revise welcome and exit message as desired
@@ -163,27 +186,125 @@ void Com::load( std::vector<Com*> * const vec)
         "Demo runs a demonstration, testing all the overrides of the Bgnm constructor for various data types. The results will be printed out in comparison to the original data to confirm fidelity."
         ____
     
+//    _CREATE_COMMAND_
+//        test,
+//        "test",
+//        "Executes a specific operation (option -o) on Bgnm objects to check for errors or discrepencies."
+//        ____
+//        _ADD_OPTION_ // option 1
+//             'n', "number",
+//             "Number of operations to perform if not the default number.", true, true
+//             ____
+//        _ADD_OPTION_ // option 1
+//             'o', "operation",
+//             "Name of operation to be tested. Possibilities are:\n             add      (add)\n             sub      (subtract)\n             mult     (multiply)\n             div      (divide)\n             inc_pre  (increment prefix)\n             inc_post (increment postfix)\n             dec_pre  (decriment prefix)\n             dec_post (decriment postfix)\n", true, true
+//             ____
+//        _ADD_OPTION_ // option 1
+//             'e', "",
+//             "Only show test results that indicate discrepencies."
+//             ____
+//        _ADD_OPTION_ // option 1
+//             'c', "constants",
+//             "Provide the constants(s) that the operation (add, sub, mult, etc.) should evaluate. If providing two numbers (e.g. a and b), separate b from a with at least one space. If either a or b are negative, enclose entire string in quotes (e.g. \"-0.02352 -26234.734409\").", true, true
+//             ____
+
     _CREATE_COMMAND_
-        test,
-        "test",
-        "Executes a specific operation (option -o) on Bgnm objects to check for errors or discrepencies."
+        add,
+        "add",
+        "(add) Executes a + b."
         ____
-        _ADD_OPTION_ // option 1
-             'n', "number",
-             "Number of operations to perform if not the default number.", true, true
-             ____
-        _ADD_OPTION_ // option 1
-             'o', "operation",
-             "Name of operation to be tested. Possibilities are:\n             add      (add)\n             sub      (subtract)\n             mult     (multiply)\n             div      (divide)\n             inc_pre  (increment prefix)\n             inc_post (increment postfix)\n             dec_pre  (decriment prefix)\n             dec_post (decriment postfix)\n", true, true
-             ____
-        _ADD_OPTION_ // option 1
-             'e', "",
-             "Only show test results that indicate discrepencies."
-             ____
-        _ADD_OPTION_ // option 1
-             'c', "constants",
-             "Provide the constants(s) that the operation (add, sub, mult, etc.) should evaluate. If providing two numbers (e.g. a and b), separate b from a with at least one space. If either a or b are negative, enclose entire string in quotes (e.g. \"-0.02352 -26234.734409\").", true, true
-             ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        sub,
+        "sub",
+        "(subtract) Executes a - b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        mult,
+        "mult",
+        "(greater than) Executes a x b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        div,
+        "div",
+        "(divide) Executes a / b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        inc_pre,
+        "inc_pre",
+        "(increment prefix) Executes ++a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        inc_post,
+        "inc_post",
+        "(increment postfix) Executes a++."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        dec_pre,
+        "dec_pre",
+        "(decrement prefix) Executes --a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        dec_post,
+        "dec_post",
+        "(decrement postfix) Executes a--."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        mod,
+        "mod",
+        "(modulo) Executes a % b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        pow,
+        "pow",
+        "(power) Executes a ^ b. (NOTE: in Bgnm library, '^' operator is the power operator, not XOR operator)"
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        great,
+        "great",
+        "(greater than) Answers true if a > b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        less,
+        "less",
+        "(less than) Answers true if a < b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        great_eql,
+        "great_eql",
+        "(greater than or equal) Answers true if a >= b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        less_eql,
+        "less_eql",
+        "(less than or equal) Answers true if a <= b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
     
 }
 
@@ -221,19 +342,24 @@ void random (Parsed const * const parsed )
     }
 }
 
-void test (Parsed const * const parsed )
+
+
+void demo (Parsed const * const parsed )
 {
-    bool n,e=true,c=false,o=false;
-    int n_int;
-    std::string number = "",operation = "",constants = "";
-    n = parsed->check('n',number);
-    o = parsed->check('o',operation);
-    e = !(parsed->check('e'));
-    c = parsed->check('c',constants);
+    Testing::demo();
+}
+
+bool prepare_parameters(Parsed const * const parsed, std::string & constants, int & count, bool & e)
+{
+    std::string count_str;
+    int temp = 1;
+    bool n = parsed->check('n',count_str);
+    e      = !(parsed->check('e'));
+    bool c = parsed->check('c',constants);
     bool stoi_valid = true;
     try
     {
-        n_int = std::stoi(number);
+        temp = std::stoi(count_str);
     }
     catch (...)
     {
@@ -241,20 +367,141 @@ void test (Parsed const * const parsed )
     }
     if(c)
     {
-        if(n) std::cout << "     [ -n (--number) is not a valid option together with -c (--constants). -n will be ignored.\n";
-        Testing::test(operation, constants, 1, e);
+        if(n) std::cout << "     -n (--number) is not a valid option together with -c (--constants). -n will be ignored.\n";
+        count = 1;
     }
-    else if(n && stoi_valid)
-    {
-        Testing::test(operation, constants, n_int, e);
-    }
-    else
-    {
-        Testing::test(operation, constants, 20, e);
-    }
+    else if (n && stoi_valid) count = temp;
+    else count = 50;
+    return true;
 }
 
-void demo (Parsed const * const parsed )
+//void test (Parsed const * const parsed )
+//{
+//    bool n,e=true,c=false,o=false;
+//    int n_int;
+//    std::string number = "",operation = "",constants = "";
+//    n = parsed->check('n',number);
+//    o = parsed->check('o',operation);
+//    e = !(parsed->check('e'));
+//    c = parsed->check('c',constants);
+//    bool stoi_valid = true;
+//    try
+//    {
+//        n_int = std::stoi(number);
+//    }
+//    catch (...)
+//    {
+//        stoi_valid = false;
+//    }
+//    if(c)
+//    {
+//        if(n) std::cout << "     -n (--number) is not a valid option together with -c (--constants). -n will be ignored.\n";
+//        Testing::test(operation, constants, 1, e);
+//    }
+//    else if(n && stoi_valid)
+//    {
+//        Testing::test(operation, constants, n_int, e);
+//    }
+//    else
+//    {
+//        Testing::test(operation, constants, 50, e);
+//    }
+//}
+
+void add( Parsed const * parsed)
 {
-    Testing::demo();
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("add", constants, count, e);
+}
+
+void sub( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("sub", constants, count, e);
+}
+
+void mult( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("mult", constants, count, e);
+}
+
+void div( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("div", constants, count, e);
+}
+
+void inc_pre( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("inc_pre", constants, count, e);
+}
+
+void inc_post( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("inc_post", constants, count, e);
+}
+
+void dec_pre( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("dec_pre", constants, count, e);
+}
+
+void dec_post( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("dec_post", constants, count, e);
+}
+
+void mod( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("mod", constants, count, e);
+}
+
+void pow( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("pow", constants, count, e);
+}
+
+void great( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("great", constants, count, e);
+}
+
+void less( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("less", constants, count, e);
+}
+
+void great_eql( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("great_eql", constants, count, e);
+}
+
+void less_eql( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("less_eql", constants, count, e);
 }

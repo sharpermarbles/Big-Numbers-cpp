@@ -93,10 +93,10 @@ static void test_dec_prefix  ( Bgnm * a = NULL, bool show_success = true);
 static void test_dec_postfix ( Bgnm * a = NULL, bool show_success = true);
 static void test_mod         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_pow         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_grt_than    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_lss_than    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_grt_eql     ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_lss_eql     ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_great       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_less        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_great_eql   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_less_eql    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_equal       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_not_equal   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_shft_rght   ( Bgnm * a = NULL, unsigned int b = 1, bool show_success = true);
@@ -142,17 +142,17 @@ static void perform_random_test(bool show_all = true)
         case 8:
             test_mod(NULL, NULL, show_all); break;
         case 9:
-            std::cout << "    --skiping test_pow()--  \n" << std::endl;
+            std::cout << "    --skipping test_pow()--" << std::endl;
             //test_pow(NULL, NULL, show_all);
             break;
         case 10:
-            test_grt_than(NULL, NULL, show_all); break;
+            test_great(NULL, NULL, show_all); break;
         case 11:
-            test_lss_than(NULL, NULL, show_all); break;
+            test_less(NULL, NULL, show_all); break;
         case 12:
-            test_grt_eql(NULL, NULL, show_all); break;
+            test_great_eql(NULL, NULL, show_all); break;
         case 13:
-            test_lss_eql(NULL, NULL, show_all); break;
+            test_less_eql(NULL, NULL, show_all); break;
         case 14:
             test_equal(NULL, NULL, show_all); break;
         case 15:
@@ -172,15 +172,15 @@ static void perform_random_test(bool show_all = true)
         case 22:
             test_mod_eqls(NULL, NULL, show_all); break;
         case 23:
-            std::cout << "    --skiping test_root()--  \n" << std::endl;
+            std::cout << "    --skipping test_root()--" << std::endl;
             //test_root(NULL, NULL, show_all);
             break;
         case 24:
-            std::cout << "    --skiping test_sqrt()--  \n" << std::endl;
+            std::cout << "    --skipping test_sqrt()--" << std::endl;
             //test_sqrt(NULL, show_all);
             break;
         case 25:
-            std::cout << "    --skiping test_cbrt()--  \n" << std::endl;
+            std::cout << "    --skipping test_cbrt()--" << std::endl;
             //test_cbrt(NULL, show_all);
             break;
         case 26:
@@ -248,10 +248,49 @@ void Testing::test(const std::string & op, std::string constants, int number, bo
     {
         for (int i = 0; i < number; i++) test_div(a, b, show_all);
     }
-    
+    else if (op == "inc_pre")
+    {
+        for (int i = 0; i < number; i++) test_inc_prefix(a, show_all);
+    }
+    else if (op == "inc_post")
+    {
+        for (int i = 0; i < number; i++) test_inc_postfix(a, show_all);
+    }
+    else if (op == "dec_pre")
+    {
+        for (int i = 0; i < number; i++) test_dec_prefix(a, show_all);
+    }
+    else if (op == "dec_post")
+    {
+        for (int i = 0; i < number; i++) test_dec_postfix(a, show_all);
+    }
+    else if (op == "mod")
+    {
+        for (int i = 0; i < number; i++) test_mod(a, b, show_all);
+    }
+    else if (op == "pow")
+    {
+        for (int i = 0; i < number; i++) test_pow(a, b, show_all);
+    }
+    else if (op == "great")
+    {
+        for (int i = 0; i < number; i++) test_great(a, b, show_all);
+    }
+    else if (op == "less")
+    {
+        for (int i = 0; i < number; i++) test_less(a, b, show_all);
+    }
+    else if (op == "great_eql")
+    {
+        for (int i = 0; i < number; i++) test_great_eql(a, b, show_all);
+    }
+    else if (op == "less_eql")
+    {
+        for (int i = 0; i < number; i++) test_less_eql(a, b, show_all);
+    }
     else
     {
-        std::cout << op << "    Function \"test\" requires option -o to designate which operation to perform.\n" << std::endl;
+        std::cout << "    Invalid operator provided to function \"test\" ( option -o ).\n" << std::endl;
     }
 }
 
@@ -525,7 +564,7 @@ static void test_pow(Bgnm * _a, Bgnm* _b, bool show_success)
 }
 
 
-static void test_grt_than( Bgnm * _a, Bgnm* _b, bool show_success)
+static void test_great( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
@@ -546,7 +585,7 @@ static void test_grt_than( Bgnm * _a, Bgnm* _b, bool show_success)
     else if ( show_success ) print_success(a,b,c," >  ");
 }
 
-static void test_lss_than( Bgnm * _a, Bgnm* _b, bool show_success)
+static void test_less( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
@@ -567,7 +606,7 @@ static void test_lss_than( Bgnm * _a, Bgnm* _b, bool show_success)
     else if ( show_success ) print_success(a,b,c," <  ");
 }
 
-static void test_grt_eql( Bgnm * _a, Bgnm* _b, bool show_success)
+static void test_great_eql( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
@@ -588,7 +627,7 @@ static void test_grt_eql( Bgnm * _a, Bgnm* _b, bool show_success)
     else if ( show_success ) print_success(a,b,c," >= ");
 }
 
-static void test_lss_eql( Bgnm * _a, Bgnm* _b, bool show_success)
+static void test_less_eql( Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm();
     Bgnm* b = rand_bgnm();
@@ -1021,7 +1060,7 @@ void Testing::demo ()
     std::cout << bla.str() << std::endl;
     int places = floor(xxx * 0.30102999566); // convert from binary exponent to base ten exponent
     int precision = 19;
-    int rightofdecimal = precision - places;
+    //int rightofdecimal = precision - places;
     std::cout << "digits: " << places << std::endl;
     std::cout << ddd << " - " << xxx << std::endl;
 
