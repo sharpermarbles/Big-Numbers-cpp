@@ -87,6 +87,12 @@ the following operators are overloaded to facilitate seamless math operations an
  
     need a power mod function (for use by encryption libraries)
  
+    for divide function - can't remember if I already fixed this or not - !!!! STILL NEED TO PROVIDE FOR PRECISION TO BE GREATER THAN 2 x DIVISOR + 5 !!! FOR EXAMPLE, WHAT ABOUT IN THE CALCULATION OF PI?
+
+    div_num_str() - another idea to speed it up.... for the part where you see how many divisors fit in the numerator, - //ANOTHER IDEA - INSTEAD OF SUBTRACTING ONE AT A TIME UNTIL NUM_SUBST IS TOO SMALL, WHAT IF I ADDED DIV UP UNTIL JUST SMALLER THAN NUM_SUBST, THEN SUBTRACTED THAT NUMBER - THAT MEANS MULTIPLE ADDS AND ONE SUBTRACT, INSTEAD OF MULTIPLE SUBTRACTS - MAYBE IT WOULD BE FASTER???
+ 
+    for now add_num_strings can be used for increment (and sub_num_strings for decremebt) - but really this should be a new function to perform the operation much faster to add and subtract one
+ 
  */
 
 
@@ -107,7 +113,7 @@ the following operators are overloaded to facilitate seamless math operations an
 // When finding root, this sets maximum decimal precision for index. In other words, if using a default value of 6, 1.123456789 root of 100 will be calculated as 1.123457 root of 100. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.
 #define ROOT_INDEX_MAX_PRECISION 6
 
-class Bgnm_error;
+//class Bgnm_error;
 
 //  define main Bgnm (big number) class
 class Bgnm

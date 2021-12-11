@@ -16,7 +16,7 @@
 #define PROBABILITY_INT           1 // rand_bgnm() - bigger number means more likely the returned random bgnm will be integer instead of floating point
 #define PROBABILITY_POSSITIVE     2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be possitive
 #define MAX_NUM_ZEROS            15 // rand_bgnm() - maximum number of zeros that may be randomly added to random bgnm (floating point)
-#define ERROR_THRESHHOLD 0.000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
+#define ERROR_THRESHHOLD 0.000000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
 
 
 // rand_int() will return numbers from flr to ceil inclusive
@@ -63,7 +63,7 @@ static Bgnm* rand_bgnm(bool force_possitive = false, bool allow_float = true)
     }
     else
     {
-        //create a int bgnm
+        //create an int bgnm
         std::string int_num = "";
         for(int i = 0; i < size; i++)
         {
@@ -99,8 +99,8 @@ static void test_great_eql   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_succe
 static void test_less_eql    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_equal       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_not_equal   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_shft_rght   ( Bgnm * a = NULL, unsigned int b = 1, bool show_success = true);
-static void test_shft_left   ( Bgnm * a = NULL, unsigned int b = 1, bool show_success = true);
+static void test_shft_rght   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+static void test_shft_left   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_add_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_sub_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
 static void test_mult_eqls   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
@@ -204,9 +204,22 @@ void Testing::random_tester(int number, bool show_all)
         }
         catch (std::exception& e)
         {
+            std::cout << "    Issue with test number " << i + 1 << std::endl;
             std::cout << e.what() << std::endl;
         }
     }
+}
+
+static void try_test(void (*f)(Bgnm* a, Bgnm* b, bool show_all), Bgnm* a, Bgnm* b, bool show_all)
+{
+    try { f(a,b,show_all);}
+    catch (std::exception &e) { std::cout << "    " << e.what() << std::endl;}
+}
+
+static void try_test(void (*f)(Bgnm* a, bool show_all), Bgnm* a, bool show_all)
+{
+    try { f(a,show_all);}
+    catch (std::exception &e) { std::cout << "    " << e.what() << std::endl;}
 }
 
 void Testing::test(const std::string & op, std::string constants, int number, bool show_all )
@@ -229,69 +242,207 @@ void Testing::test(const std::string & op, std::string constants, int number, bo
                 str = &str_b;
             }
         }
-        try {a = new Bgnm(str_a);} catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
-        try {b = new Bgnm(str_b);} catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
+        try {a = new Bgnm(str_a);}      catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
+        try {b = new Bgnm(str_b);}      catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
     }
-    if(op == "add")
+    if      (op == "add")
     {
-        for (int i = 0; i < number; i++) test_add(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_add, a, b, show_all);
     }
     else if (op == "sub")
     {
-        for (int i = 0; i < number; i++) test_sub(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_sub, a, b, show_all);
     }
     else if (op == "mult")
     {
-        for (int i = 0; i < number; i++) test_mult(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_mult, a, b, show_all);
     }
     else if (op == "div")
     {
-        for (int i = 0; i < number; i++) test_div(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_div, a, b, show_all);
     }
     else if (op == "inc_pre")
     {
-        for (int i = 0; i < number; i++) test_inc_prefix(a, show_all);
+        for (int i = 0; i < number; i++) try_test( test_inc_prefix, a, show_all);
     }
     else if (op == "inc_post")
     {
-        for (int i = 0; i < number; i++) test_inc_postfix(a, show_all);
+        for (int i = 0; i < number; i++) try_test( test_inc_postfix, a, show_all);
     }
     else if (op == "dec_pre")
     {
-        for (int i = 0; i < number; i++) test_dec_prefix(a, show_all);
+        for (int i = 0; i < number; i++) try_test( test_dec_prefix, a, show_all);
     }
     else if (op == "dec_post")
     {
-        for (int i = 0; i < number; i++) test_dec_postfix(a, show_all);
+        for (int i = 0; i < number; i++) try_test( test_dec_postfix, a, show_all);
     }
     else if (op == "mod")
     {
-        for (int i = 0; i < number; i++) test_mod(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_mod, a, b, show_all);
     }
     else if (op == "pow")
     {
-        for (int i = 0; i < number; i++) test_pow(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_pow, a, b, show_all);
     }
     else if (op == "great")
     {
-        for (int i = 0; i < number; i++) test_great(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_great, a, b, show_all);
     }
     else if (op == "less")
     {
-        for (int i = 0; i < number; i++) test_less(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_less, a, b, show_all);
     }
     else if (op == "great_eql")
     {
-        for (int i = 0; i < number; i++) test_great_eql(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_great_eql, a, b, show_all);
     }
     else if (op == "less_eql")
     {
-        for (int i = 0; i < number; i++) test_less_eql(a, b, show_all);
+        for (int i = 0; i < number; i++) try_test( test_less_eql, a, b, show_all);
+    }
+    else if (op == "equal")
+    {
+        for (int i = 0; i < number; i++) try_test( test_equal, a, b, show_all);
+    }
+    else if (op == "not_equal")
+    {
+        for (int i = 0; i < number; i++) try_test( test_not_equal, a, b, show_all);
+    }
+    else if (op == "shift_r")
+    {
+        for (int i = 0; i < number; i++) try_test( test_shft_rght, a, b, show_all);
+    }
+    else if (op == "shift_l")
+    {
+        for (int i = 0; i < number; i++) try_test( test_shft_left, a, b, show_all);
+    }
+    else if (op == "add_assign")
+    {
+        for (int i = 0; i < number; i++) try_test( test_add_eqls, a, b, show_all);
+    }
+    else if (op == "sub_assign")
+    {
+        for (int i = 0; i < number; i++) try_test( test_sub_eqls, a, b, show_all);
+    }
+    else if (op == "mult_assign")
+    {
+        for (int i = 0; i < number; i++) try_test( test_mult_eqls, a, b, show_all);
+    }
+    else if (op == "div_assign")
+    {
+        for (int i = 0; i < number; i++) try_test( test_div_eqls, a, b, show_all);
+    }
+    else if (op == "mod_assign")
+    {
+        for (int i = 0; i < number; i++) try_test( test_mod_eqls, a, b, show_all);
+    }
+    else if (op == "root")
+    {
+        for (int i = 0; i < number; i++) try_test( test_root, a, b, show_all);
+    }
+    else if (op == "sqrt")
+    {
+        for (int i = 0; i < number; i++) try_test( test_sqrt, a, show_all);
+    }
+    else if (op == "cbrt")
+    {
+        for (int i = 0; i < number; i++) try_test( test_cbrt, a, show_all);
+    }
+    else if (op == "abs")
+    {
+        for (int i = 0; i < number; i++) try_test( test_abs, a, show_all);
+    }
+    else if (op == "floor")
+    {
+        for (int i = 0; i < number; i++) try_test( test_floor, a, show_all);
+    }
+    else if (op == "ceil")
+    {
+        for (int i = 0; i < number; i++) try_test( test_ceil, a, show_all);
     }
     else
     {
-        std::cout << "    Invalid operator provided to function \"test\" ( option -o ).\n" << std::endl;
+        std::cout << "    \"" << op << "\" is an invalid command. Please try again.\n" << std::endl;
     }
+}
+
+static void print_e(std::exception &e)
+{
+    std::cout << "      " << e.what() << std::endl;
+}
+
+void Testing::exceptions()
+{
+    std::cout << "    All Bgnm library exceptions:\n";
+    
+    // division by zero
+    try { Bgnm b1 = 1; Bgnm b2 = b1 / 0; }
+    catch(std::exception &e) { print_e(e); }
+    
+    // string will not parse properly to a number
+    try { Bgnm b2("-123..345"); }
+    catch(std::exception &e) { print_e(e); }
+    
+    // provided modulo is zero
+    try { Bgnm b3, b4(123); b3 = b4 % 0; }
+    catch(std::exception &e) { print_e(e); }
+    
+    // root of base with zero index 1743
+    try { Bgnm b6(123), b7; b7 = b6.root(0);}
+    catch(std::exception &e) { print_e(e); }
+    
+    // exceeded max_root_guess_count 1820
+    try
+    {
+        Bgnm::set_max_root_guess_count(2);
+        Bgnm b8(1234); Bgnm b9 = b8.root(5.6);
+    }
+    catch(std::exception &e)
+    {
+        Bgnm::set_max_root_guess_count(0);
+        print_e(e);
+    }
+    
+    // calculate square root of negative value 2891
+    try { Bgnm b10(-1234); Bgnm b11 = b10.sqrt(); }
+    catch(std::exception &e) { print_e(e); }
+    
+    // bgnm_internal_precision_limit out of range 2902
+    try { Bgnm::set_bgnm_internal_precision_limit(1);}
+    catch(std::exception &e) { print_e(e); }
+    
+    // bgnm_max_root_guess_count out of range 2913
+    try { Bgnm::set_max_root_guess_count(1);}
+    catch(std::exception &e) { print_e(e); }
+    
+    Bgnm b12 ("98765432198765432100098717623984619273846832423451650239847523451362356234523462069384209837405826340587230498572304860238475023984752063452384523745623452345265976293874517823416529387461234013456234875019382475623049857203845623745069872364723984523045983266234562345623462562654321598764325676697005198769238745629387423094857203948750293847520348752039847520938457203948572039845720398475203984752039847520983748783405923740987348758236419298376452734052938452936459238745623847028345982763452374058256293876106203485203.7456");
+    
+    // cannot convert Bgnm to int (std::stoi error)
+    try { std::cout << b12.to_int() << std::endl;}
+    catch(std::exception &e) { print_e(e); }
+
+    // cannot convert Bgnm to long long (sdt::stoll error)
+    try { std::cout << b12.to_long_long() << std::endl;}
+    catch(std::exception &e) { print_e(e); }
+    
+    // cannot convert Bgnm to float (std::stof error)
+    try { std::cout << b12.to_float() << std::endl;}
+    catch(std::exception &e) { print_e(e); }
+    
+    // cannot convert Bgnm to double (std::stod error)
+    try { std::cout << b12.to_double() << std::endl;}
+    catch(std::exception &e) { print_e(e); }
+    
+    // cannot convert Bgnm to long double (std::stold error)
+    // would need a number with over 2000 decimal places to get this exception to throw even though long_doubles only have about 15 to 20 decimal places of accuracy
+    try { std::cout << "    Succesfully converted Bgnm to long double: " << b12.to_long_double() << std::endl;}
+    catch(std::exception &e) { print_e(e); }
+    
+    // in str_pow() the exponent provided as a string is converted to a float - if this is not possible, this exception is thrown
+    try { Bgnm b13(1234); b13^1.1234; }
+    catch(std::exception &e) { print_e(e); }
+
 }
 
 // provide both the bgnm answer and the float answer, and also a double pointer to put the calculated difference into
@@ -369,8 +520,15 @@ static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, double
     std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHHOLD ----\n";
     print_success(a,b,c,oper);
     std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshhold of " << ERROR_THRESHHOLD << std::endl;
-    std::cout << "   bgnm    operation: " << *a << oper << *b << " = " << *c << std::endl;
-    std::cout << "   control operation: " << *af << oper << *bf << " = " << *cf << std::endl;
+    if(bf == NULL)
+    {
+        std::cout << "   bgnm    operation: " << *a << oper << " = " << *c << std::endl;
+        std::cout << "   control operation: " << *af << oper << " = " << *cf << std::endl;
+    }
+    else{
+        std::cout << "   bgnm    operation: " << *a << oper << *b << " = " << *c << std::endl;
+        std::cout << "   control operation: " << *af << oper << *bf << " = " << *cf << std::endl;
+    }
     std::cout << "\n";
 }
 
@@ -526,7 +684,7 @@ static void test_dec_postfix(Bgnm * _a, bool show_success)
 
 static void test_mod(Bgnm * _a, Bgnm* _b, bool show_success)
 {
-    Bgnm* a = rand_bgnm(true,false); // forcing possitive numbers until can fix issue with negative modulo operations
+    Bgnm* a = rand_bgnm(true,true); // forcing possitive numbers until can fix issue with negative modulo operations
     Bgnm* b = rand_bgnm(true,false); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
@@ -690,18 +848,32 @@ static void test_not_equal( Bgnm * _a, Bgnm* _b, bool show_success )
     else if ( show_success ) print_success(a,b,c," != ");
 }
 
-static void test_shft_rght( Bgnm * _a, unsigned int _b, bool show_success )
+static void test_shft_rght( Bgnm * _a, Bgnm * _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
-    int shift_x = (int)rand_int(1,MAX_STR_SIZE);
-    if (_b != 1) shift_x = _b ;
+    int shift_x = 1;
+    if (_b != NULL)
+    {
+        shift_x = _b->to_int() ;
+    }
+    else
+    {
+        shift_x = (int)rand_int(1,MAX_STR_SIZE);
+    }
     Bgnm* b = new Bgnm(shift_x);
     *a >> shift_x;
     Bgnm c = *a;
     double af, af_temp, bf, cf;
-    af = a_temp.to_double();
+    try
+    {
+        af = a_temp.to_double();
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
     af_temp = af;
     bf = (double)shift_x;
     cf = af / pow(10,shift_x);
@@ -710,18 +882,32 @@ static void test_shft_rght( Bgnm * _a, unsigned int _b, bool show_success )
     else if ( show_success ) print_success(&a_temp,b,&c," >> ");
 }
 
-static void test_shft_left( Bgnm * _a, unsigned int _b, bool show_success )
+static void test_shft_left( Bgnm * _a, Bgnm * _b, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
-    int shift_x = (int)rand_int(1,MAX_STR_SIZE);
-    if (_b != 1) shift_x = _b ;
+    int shift_x = 1;
+    if (_b != NULL)
+    {
+        shift_x = _b->to_int() ;
+    }
+    else
+    {
+        shift_x = (int)rand_int(1,MAX_STR_SIZE);
+    }
     Bgnm* b = new Bgnm(shift_x);
     *a << shift_x;
     Bgnm c = *a;
     double af, af_temp, bf, cf;
-    af = a_temp.to_double();
+    try
+    {
+        af = a_temp.to_double();
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
     af_temp = af;
     bf = (double)shift_x;
     cf = af * (double)pow(10,shift_x);

@@ -127,25 +127,41 @@ void Com::print()
 
 // STEP 2: PROVIDE CUSTOM FUNCTION PROTOTYPES HERE (MUST TAKE A const POINTER
 //         TO A const Parsed OBJECT AS AN ARGUMENT - CAN BE NULL IF DESIRED)
-static void demo     ( Parsed const * const );
-static void random   ( Parsed const * const );
+static void demo       ( Parsed const * const );
+static void random     ( Parsed const * const );
+static void exceptions ( Parsed const * const );
 //static void test   ( Parsed const * const );
 
-static void add      ( Parsed const * const );
-static void sub      ( Parsed const * const );
-static void mult     ( Parsed const * const );
-static void div      ( Parsed const * const );
-static void inc_pre  ( Parsed const * const );
-static void inc_post ( Parsed const * const );
-static void dec_pre  ( Parsed const * const );
-static void dec_post ( Parsed const * const );
-static void mod      ( Parsed const * const );
-static void pow      ( Parsed const * const );
+static void add        ( Parsed const * const );
+static void sub        ( Parsed const * const );
+static void mult       ( Parsed const * const );
+static void div        ( Parsed const * const );
+static void inc_pre    ( Parsed const * const );
+static void inc_post   ( Parsed const * const );
+static void dec_pre    ( Parsed const * const );
+static void dec_post   ( Parsed const * const );
+static void mod        ( Parsed const * const );
+static void pow        ( Parsed const * const );
+static void great      ( Parsed const * const );
+static void less       ( Parsed const * const );
+static void great_eql  ( Parsed const * const );
+static void less_eql   ( Parsed const * const );
+static void equal      ( Parsed const * const );
+static void not_equal  ( Parsed const * const );
+static void shift_r    ( Parsed const * const );
+static void shift_l    ( Parsed const * const );
+static void add_assign ( Parsed const * const );
+static void sub_assign ( Parsed const * const );
+static void mult_assign( Parsed const * const );
+static void div_assign ( Parsed const * const );
+static void mod_assign ( Parsed const * const );
+static void root       ( Parsed const * const );
+static void sqrt       ( Parsed const * const );
+static void cbrt       ( Parsed const * const );
+static void abs        ( Parsed const * const );
+static void floor      ( Parsed const * const );
+static void ceil       ( Parsed const * const );
 
-static void great    ( Parsed const * const );
-static void less     ( Parsed const * const );
-static void great_eql( Parsed const * const );
-static void less_eql ( Parsed const * const );
 
 // STEP 3: ADD COMMANDS AND THEIR OPTIONS TO THE Com::load() FUNCTION BELOW.
 //         USE _CREATE_COMMAND_ AND _ADD_OPTION_ WITH PROPER ARGUMENTS
@@ -306,6 +322,117 @@ void Com::load( std::vector<Com*> * const vec)
         ____
         _ADD_TEST_FUNCTION_OPTIONS_A_B_
     
+    _CREATE_COMMAND_
+        equal,
+        "equal",
+        "(equal) Answers true if a == b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        not_equal,
+        "not_equal",
+        "(not equal) Answers true if a != b."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        shift_r,
+        "shift_r",
+        "(shift right) Base-ten operation analogous to bitwise shift right. Executes a / (10^b)."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        shift_l,
+        "shift_l",
+        "(shift left) Base-ten operation analogous to bitwise shift left. Executes a x (10^b)."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        add_assign,
+        "add_assign",
+        "(add and assign) Executes a + b and assigns result to a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        sub_assign,
+        "sub_assign",
+        "(subtract and assign) Executes a - b and assigns result to a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        mult_assign,
+        "mult_assign",
+        "(multiply and assign) Executes a x b and assigns result to a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        div_assign,
+        "div_assign",
+        "(divide and assign) Executes a / b and assigns result to a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        mod_assign,
+        "mod_assign",
+        "(modulo and assign) Executes a % b and assigns result to a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        root,
+        "root",
+        "(find nth root) Calculates b(th) root of a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_B_
+    
+    _CREATE_COMMAND_
+        sqrt,
+        "sqrt",
+        "(square root) Calculates square root of a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        cbrt,
+        "cbrt",
+        "(cube root) Calculates cube root of a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        abs,
+        "abs",
+        "(absolute) Finds absolute value of a."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        floor,
+        "floor",
+        "(round down) Round a (floating point) down to nearest integer."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        ceil,
+        "ceil",
+        "(round up) Round a (floating point) up to nearest integer."
+        ____
+        _ADD_TEST_FUNCTION_OPTIONS_A_
+    
+    _CREATE_COMMAND_
+        exceptions,
+        "exceptions",
+        "Test all Bgnm exceptions included in Bgnm library."
+        ____
+    
 }
 
 // STEP 4: ADD CUSTOM FUNCTION DEFINITIONS HERE
@@ -349,6 +476,11 @@ void demo (Parsed const * const parsed )
     Testing::demo();
 }
 
+void exceptions (Parsed const * const parsed)
+{
+    Testing::exceptions();
+}
+
 bool prepare_parameters(Parsed const * const parsed, std::string & constants, int & count, bool & e)
 {
     std::string count_str;
@@ -374,6 +506,8 @@ bool prepare_parameters(Parsed const * const parsed, std::string & constants, in
     else count = 50;
     return true;
 }
+
+
 
 //void test (Parsed const * const parsed )
 //{
@@ -505,3 +639,110 @@ void less_eql( Parsed const * parsed)
     prepare_parameters(parsed, constants, count, e);
     Testing::test("less_eql", constants, count, e);
 }
+
+void equal( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("equal", constants, count, e);
+}
+
+void not_equal( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("not_equal", constants, count, e);
+}
+
+void shift_r( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("shift_r", constants, count, e);
+}
+
+void shift_l( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("shift_l", constants, count, e);
+}
+
+void add_assign( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("add_assign", constants, count, e);
+}
+
+void sub_assign( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("sub_assign", constants, count, e);
+}
+
+void mult_assign( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("mult_assign", constants, count, e);
+}
+
+void div_assign( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("div_assign", constants, count, e);
+}
+
+void mod_assign( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("mod_assign", constants, count, e);
+}
+
+void root( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("root", constants, count, e);
+}
+
+void sqrt( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("sqrt", constants, count, e);
+}
+
+void cbrt( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("cbrt", constants, count, e);
+}
+
+void abs( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("abs", constants, count, e);
+}
+
+void floor( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("floor", constants, count, e);
+}
+
+void ceil( Parsed const * parsed)
+{
+    bool e; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e);
+    Testing::test("ceil", constants, count, e);
+}
+
+

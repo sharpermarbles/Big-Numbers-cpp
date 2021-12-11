@@ -45,182 +45,6 @@ public:
     }
 };
 
-////helper struct for Bgnm::???_num_strings() functions
-//struct Num_str
-//{
-//
-//    friend Bgnm;
-//
-//    std::string num;
-//    int bef_dec; // places before decimal
-//    int dec_loc; // decimal location
-//    int aft_dec; // places after decimal
-//    int size; // count of places in number
-//    bool neg;// negative?
-//
-//    Num_str(const std::string & s, bool clean = false)
-//    {
-//        num = s;
-//        neg = false;
-//        if(s[0]=='-')
-//        {
-//            neg = true;
-//            num[0]= '0';
-//        }
-//        size=(int)s.size();
-//        dec_loc = locate_decimal(num);
-//        bef_dec = dec_loc;
-//        aft_dec = size-(dec_loc + 1);
-//        if(aft_dec < 0) aft_dec=0;
-//        if(clean)
-//        {
-//            for(int i=0;i<num.size();i++)
-//            {
-//                if(s[i]=='.')
-//                {
-//                    num.erase(i,1);
-//                }
-//            }
-//            size=(int)num.size();
-//            aft_dec = size-dec_loc;
-//        }
-//    }
-//
-//    ~Num_str(){}
-//
-//    int locate_decimal(std::string & s)
-//    {
-//        int i = 0;
-//        for(std::string::iterator it=s.begin();it!=s.end();it++)
-//        {
-//            if(s[i] == '.')return i;
-//            i++;
-//        }
-//        return i;
-//    }
-//
-//    //add zeros to end of num string
-//    void add_zeros(const int zero_amnt)
-//    {
-//        char c = '0';
-//        if(aft_dec<1)
-//        {
-//            bef_dec += zero_amnt;
-//            size    += zero_amnt;
-//        }
-//        else
-//        {
-//            aft_dec += zero_amnt;
-//            size    += zero_amnt;
-//        }
-//        for(int x=0; x< zero_amnt; x++)
-//        {
-//            num.append(&c,1);
-//        }
-//        dec_loc = locate_decimal( num);
-//    }
-//
-//    //subtracts a substring number from a number string by swaping digits w zeros
-//    void zero_out(const int & start, const int & howmany)
-//    {
-//        int last=(int)num.size();
-//        for(int i=0;i<howmany;i++)
-//        {
-//            if((start+i)>=last) throw Bgnm_error("Num_str::zero_out() - Went out of range.",__FILENAME__,__LINE__,__FUNCTION__,110);
-//            num[start+i]= '0';
-//        }
-//    }
-//
-//};
-
-//helper functions
-//static int max(int a, int b){
-//   if (a > b) return a; return b;
-//}
-
-//static void add_to_vector(std::vector<int> & vec, const Num_str & ns, const int bef){
-//    int start = bef - ns.bef_dec;
-//    for (int i = 0; i < ns.num.size();i++){
-//        if(ns.num[i] != '.'){
-//            vec[start] += ns.num[i] - '0';
-//            start++;
-//        }
-//    }
-//}
-//
-//static void sub_from_vector(std::vector<int> & vec, Num_str & ns, const int bef){
-//    int start = bef - ns.bef_dec;
-//    for (int i = 0; i < ns.num.size();i++){
-//        if(ns.num[i] != '.'){
-//            vec[start] -= ns.num[i] - '0';
-//            start++;
-//        }
-//    }
-//}
-
-//// carry() version 2.0
-//// note that carry() will not carry off the end of the vector - if number carries off either end of vector, it is lost
-//static void carry(std::vector<int> & vec, bool reverse = false)
-//{
-//    int x, size = (int)vec.size();
-//    if(!reverse)
-//    {
-//        for (int it = size-1; it >=0; it--)
-//        {
-//            if(vec[it] > 9)
-//            {
-//                x = vec[it];
-//                vec[it] = x%10;
-//                if(it > 0)
-//                {
-//                    vec.at(it-1)+=(x-vec[it])/ 10;
-//                }
-//            }
-//        }
-//    }
-//    else
-//    {
-//        for (int it = 0; it < size; it++)
-//        {
-//            if(vec[it] > 9)
-//            {
-//                x = vec[it];
-//                vec[it]=x%10;
-//                if(it < size - 1)
-//                {
-//                    vec.at(it+1)+=(x-vec[it])/ 10;
-//                }
-//            }
-//        }
-//    }
-//}
-
-//static void vec_to_string(const std::vector<int> & vec, std::string & str, bool reverse = false)
-//{
-//    if(!reverse)
-//    {
-//        for(int i = 0; i < vec.size(); i++)
-//        {
-//            str += (char)(vec[i] + '0');
-//        }
-//    }
-//    else
-//    {
-//        for(int i = (int)vec.size() -1; i >= 0; i--)
-//        {
-//            str += (char)(vec[i] + '0');
-//        }
-//    }
-//}
-
-//static void add_dec(std::string &str, const int bef)
-//{
-//    if(bef < str.size())
-//    {
-//        str.insert(bef,1,'.');
-//    }
-//}
-
 static void strip_leading_0s(std::string &str)
 {
     int start;
@@ -375,14 +199,15 @@ static void round_string(char* str, const int max_dec_prec = 0)
     if(str[location-1]=='.') str[location-1] = '\0';
 }
 
-//static void tens_comp_stp1(std::vector<int> & vec){
-//    int x = 10;
-//    for(int i=(int)vec.size()-1;i>=0;i--){
-//        vec[i] += x;
-//        x = 9;
-//    }
-//}
-
+// checks a string representing a number for equivelance to zero (will work on strings like "-0.0", "0", ".00000", "-0000.0" and any other possibility)
+static bool equal_to_zero( const std::string_view & str)
+{
+    for(int i = 0; i < str.size(); i++)
+    {
+        if(str[i] != '-' && str[i] != '.' && str[i] > '0') return false;
+    }
+    return true;
+}
 
 // compare two string numbers (integer or floating point) return true if a is larger or equal
 // to force (a > b) in lieu of (a >= b), set strict_comp to true
@@ -549,42 +374,6 @@ static bool comp_strs_equal(const std::string_view & a_str, const std::string_vi
 //forward declare sub_num_strings() (note strip_zeros = true)
 static std::string sub_num_strings(std::string_view num1, std::string_view num2);
 
-// ADDITION
-//static std::string add_num_strings( const std::string & num1, const std::string & num2, bool strip_zeros = true){
-//    int bef, aft, vec_max;
-//    std::string result;
-//
-//    Num_str n1(num1);
-//    Num_str n2(num2);
-//
-//    //check for negatives
-//    if(n1.neg==true && n2.neg==true){
-//        std::string s = "-" + add_num_strings(n1.num,n2.num, strip_zeros);
-//        return s;
-//    } else if(n1.neg==true){
-//        return sub_num_strings(n2.num,n1.num, strip_zeros);
-//    } else if(n2.neg==true){
-//        return sub_num_strings(n1.num,n2.num, strip_zeros);
-//    }
-//
-//    bef = max(n1.bef_dec, n2.bef_dec) + 1; // 1 extra for carry
-//    aft = max(n1.aft_dec, n2.aft_dec);
-//    vec_max = bef + aft;
-//
-//    std::vector<int> digits (vec_max);
-//    add_to_vector(digits, n1, bef);
-//    add_to_vector(digits, n2, bef);
-//
-//    carry(digits);
-//    vec_to_string(digits, result);
-//    add_dec(result, bef);
-//    if(strip_zeros) {
-//        strip_leading_0s(result);
-//    } else {
-//        if(result[0]=='0' && result[1]!='.') result.erase(0,1);
-//    }
-//    return result;
-//}
 static std::string add_num_strings(std::string_view a, std::string_view b)
 {
     
@@ -657,7 +446,6 @@ static std::string add_num_strings(std::string_view a, std::string_view b)
         b_int_cursor--;
     }
     
-    
     //carry
     for(int i = digit_count-1; i > 0;i--)
     {
@@ -677,62 +465,6 @@ static std::string add_num_strings(std::string_view a, std::string_view b)
     return digits_p;
 }
 
-// SUBTRACT (this function is forward-declared above add_num_strings() )
-//static std::string sub_num_strings( const std::string & num1, const std::string & num2, bool strip_zeros){
-//    int bef, aft, vec_max;
-//    std::string result;
-//
-//    Num_str n1(num1);
-//    Num_str n2(num2);
-//
-//    //check for negatives
-//    if(n1.neg==true && n2.neg==true){
-//        return sub_num_strings(n2.num,n1.num, strip_zeros);
-//    } else if(n1.neg==true){
-//        std::string s = "-" + add_num_strings(n1.num,n2.num, strip_zeros);
-//        return s;
-//    } else if(n2.neg==true){
-//        return add_num_strings(n1.num,n2.num, strip_zeros);
-//    }
-//
-//    bef = max(n1.bef_dec, n2.bef_dec) + 1; // 1 extra for carry
-//    aft = max(n1.aft_dec, n2.aft_dec);
-//    vec_max = bef + aft;
-//
-//    std::vector<int> digits (vec_max);
-//    add_to_vector(digits, n1, bef);
-//
-//    //compute 10's compliment in two steps
-//    tens_comp_stp1(digits);
-//    sub_from_vector(digits, n2, bef);
-//
-//    carry(digits);
-//
-//    vec_to_string(digits, result);
-//
-//    //check to see if negative - if so, do 10s compliment again
-//    bool negative = false;
-//    if(digits[0]==9){
-//        int comp = 10 + '0';
-//        for(int i=(int)result.size()-1;i>=0;i--){
-//            result[i]=comp-result[i] + '0';
-//            comp = 9 + '0';
-//        }
-//        negative=true;
-//    }
-//
-//    add_dec(result, bef);
-//    if(strip_zeros){
-//        strip_leading_0s(result);
-//    } else {
-//        if(result[0]=='0' && result.size()>1){
-//            result.erase(0,1);
-//        }
-//    }
-//    if(negative)result = "-" + result;
-//
-//    return result;
-//}
 static std::string sub_num_strings(std::string_view a, std::string_view b)
 {
     
@@ -809,7 +541,6 @@ static std::string sub_num_strings(std::string_view a, std::string_view b)
         b_int_cursor--;
     }
     
-    
     // carry to the right
     for(int i = digit_count-1; i > 0;i--)
     {
@@ -836,59 +567,6 @@ static std::string sub_num_strings(std::string_view a, std::string_view b)
     }
 }
 
-///MULTIPLY
-//static std::string mult_num_strings( const std::string & num1, const std::string & num2, const int max_dec_prec = DONT_ADJUST_PRECISION){
-//    int aft, vec_max;
-//    std::string result;
-//
-//    Num_str n1(num1, true);
-//    Num_str n2(num2, true);
-//
-//    //check for negatives
-//    bool negative = false;
-//    if(n1.neg==true && n2.neg==true){
-//        negative = false;
-//    } else if(n1.neg==true || n2.neg==true){
-//        negative = true;
-//    }
-//
-//    //count dec place from right
-//    aft = n1.aft_dec + n2.aft_dec;
-//    //maximum size of product
-//    vec_max = n1.size + n2.size + 1;
-//    std::vector<int> digits (vec_max);
-//
-//    //multiply loop
-//    int offset=0;
-//    int buff;
-//    for(int x=n2.size -1;x>=0;x--){
-//        for(int y=n1.size -1;y>=0;y--){
-//            if(n1.num[y]==0){
-//                n1.num[y]='0';
-//            }
-//            buff = (n1.num[y]-'0')*(n2.num[x]-'0');
-//
-//            digits[vec_max-1-(n1.size-1-y)-offset]+=buff;
-//        }
-//        offset++;
-//    }
-//
-//    carry(digits);
-//    vec_to_string(digits, result);
-//    //add decimal to string
-//    int bef = (int)result.size()-aft;
-//    add_dec(result,bef);
-//
-//    strip_leading_0s(result);
-//    if(negative)result = "-" + result;
-//
-//    // Following code is ignored by default. It can be used to set precision level of result. Bignum library needs this function for loops that call div_num_strings() because decimal precision grows with each consecutive division due to the step where precision zeros are added to the numerator. In such cases, this trimming is needed to prevent adding decimal places which with each loop.
-//    if(max_dec_prec != DONT_ADJUST_PRECISION){
-//        round_string(result, max_dec_prec);
-//    }
-//
-//    return result;
-//}
 static std::string mult_num_strings( std::string_view a, std::string_view b, const int max_dec_prec = DONT_ADJUST_PRECISION)
 {
     
@@ -1039,110 +717,7 @@ static std::string mult_num_strings( std::string_view a, std::string_view b, con
     return final_result;
 }
 
-//DIVIDE
-//static std::string div_num_strings( const std::string & numerator, const std::string & divisor, const int max_dec_prec = DONT_ADJUST_PRECISION)
-//{
-//
-//    //division by zero?!
-//    bool div_by_0_error = true;
-//    for(int n = 0; n < divisor.size(); n++)
-//    {
-//        if(divisor[n] > '0') div_by_0_error = false;
-//    }
-//
-//    if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
-//
-//    std::string result, subst;
-//
-//    //check for negatives
-//    bool negative = false;
-//    if(numerator[0]=='-' && divisor[0]=='-')
-//    {
-//        negative = false;
-//    }
-//    else if(numerator[0]=='-' || divisor[0]=='-')
-//    {
-//        negative = true;
-//    }
-//
-//    Num_str nu(numerator,true);
-//    Num_str di(divisor,true);
-//
-//    int global_dec_loc = nu.aft_dec - di.aft_dec;
-//    int gl_crs; //global cursor
-//    int cntr; //counter
-//
-//    //add zeros to numerator
-//    //then update global_dec_loc
-//    int zero_amnt = (di.size * 2)+5;
-//    nu.add_zeros(zero_amnt);
-//    global_dec_loc += zero_amnt;
-//    std::vector<int> vec(nu.size, 0);
-//
-//    //in case divisor has many leading zeros, get rid of zeros and adjust global_dec_loc, otherwise division loop does way too many iterations in cases like 80 / .00000001
-//    while(di.num[0] == '0')
-//    {
-//        di.num.erase(0,1);
-//        di.size--;
-//    }
-//
-//    //main divisor loop, loops until global cursor hits zero
-//    gl_crs=nu.size;
-//    cntr=di.size;
-//
-//    while(comp_strs(nu.num,di.num) && (gl_crs > 0))
-//    {
-//        // 1. get smallest part of numerator that's larger than divisor
-//        gl_crs=nu.size - cntr + 1;//adjust cursor
-//        bool check = false;
-//        while(check==false && cntr <= nu.size)
-//        {
-//            subst = nu.num.substr(0,cntr);
-//            if(comp_strs(subst, di.num))
-//            {
-//                check=true; // got a chunk to work with
-//                // so need to take it to work with and remove it (subtract) it from the numerator while working with it
-//                nu.zero_out(0,cntr);
-//            }
-//            else
-//            {
-//                cntr++;
-//                gl_crs--;
-//            }
-//        }
-//        // 2. now how many divisors fit in numerator?
-//        while(comp_strs(subst, di.num))
-//        {
-//            subst= sub_num_strings(subst, di.num);
-//            vec[gl_crs-1] ++ ;
-//        }
-//
-//        // 3. now take remainder and add it back to main numerator
-//        subst.append(gl_crs-1,'0');
-//        nu.num = add_num_strings(subst, nu.num);
-//
-//        // 4. loop back to the next
-//    } // end main divisor loop
-//
-//    carry(vec, true);
-//    vec_to_string(vec, result, true);
-//
-//    add_dec(result,((int)result.size()-global_dec_loc ));
-//
-//    strip_leading_0s(result);
-//    strip_trailing_0s(result);
-//    if(negative) result = "-" + result;
-//
-//    // Following code is ignored by default. It can be used to set precision level of result. Bignum library needs this function for loops that call div_num_strings() because decimal precision grows with each consecutive division due to the step where precision zeros are added to the numerator. In such cases, this trimming is needed to prevent adding decimal places which with each loop.
-//    if(max_dec_prec != DONT_ADJUST_PRECISION)
-//    {
-//        round_string(result, max_dec_prec);
-//    }
-//
-//    return result;
-//}
-
-// This is a custom (more efficient) subtraction function used ONLY by div_num_strings. Runs about 5 times faster than div_num_string(). It's more efficient because there's no need to deal with negatives or decimals, the size of b is gauranteed to be <= to a, and the char array[] c is gauranteed big enough. So no new memory allocation, strings, or arrays are needed.
+// This is a custom (more efficient) subtraction function used ONLY by div_num_strings. Runs about 5 times faster than div_num_string(). It's more efficient because there's no need to deal with negatives or decimals, the size of b is gauranteed to be <= to a, and the char array[] c is gauranteed big enough. So no new memory allocation, strings, or arrays are needed and no need to compare location of decimals, add places, etc.
 static void sub_num_array(std::string_view a, std::string_view b, char * c)
 {
     int right_most_digit_index = (int)a.size() - 1;
@@ -1167,30 +742,11 @@ static void sub_num_array(std::string_view a, std::string_view b, char * c)
 }
 
 //DIVIDE
-// !!!! STILL NEED TO PROVIDE FOR PRECISION TO BE GREATER THAN 2 x DIVISOR + 5 !!! FOR EXAMPLE, WHAT ABOUT IN THE CALCULATION OF PI?
 static std::string div_num_strings( std::string_view num_view, std::string_view div_view, const int max_dec_prec = DONT_ADJUST_PRECISION)
 {
     
     //division by zero?!
-    bool div_by_0_error = true;
-    for(int n = 0; n < div_view.size(); n++)
-    {
-        if(div_view[n] > '0')
-        {
-            div_by_0_error = false;
-            break;
-        }
-    }
-    if(div_by_0_error) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
-//    for(int n = 0; n < divisor.size(); n++)
-//    {
-//        if(divisor[n] > '0') div_by_0_error = false;
-//    }
-//
-//    if(div_by_0_error)
-//    {
-//        throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
-//    }
+    if(equal_to_zero(div_view)) throw Bgnm_error("Cannot divide by 0.",__FILENAME__,__LINE__,__FUNCTION__,101);
     
     // check for negatives
     bool negative = false;
@@ -1214,8 +770,7 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
     // check for decimals and create temporary char arrays and divisor
     int num_dec = (int)num_view.find('.');
     int div_dec = (int)div_view.find('.');
-    //bool num_has_dec = false, div_has_dec = false;
-    //bool div_has_dec = false;
+
     // how many decimal places to the right?
     int num_aft_dec, div_aft_dec;
     
@@ -1344,7 +899,6 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
         // 2. now how many divisors fit in numerator?
         while(comp_strs(num_subst, div_clean_ptr))
         {
-            //ANOTHER IDEA - INSTEAD OF SUBTRACTING ONE AT A TIME UNTIL NUM_SUBST IS TOO SMALL, WHAT IF I ADDED DIV UP UNTIL JUST SMALLER THAN NUM_SUBST, THEN SUBTRACTED THAT NUMBER - THAT MEANS MULTIPLE ADDS AND ONE SUBTRACT, INSTEAD OF MULTIPLE SUBTRACTS - MAYBE IT WOULD BE FASTER???
             sub_num_array(num_subst, div_clean_ptr, num_subst);
             digits[gl_crs-1] ++ ;
         }
@@ -1471,7 +1025,7 @@ static bool examine_text_number(const std::string & s)
 
 static bool check_input(const std::string & s, const char* f)
 {
-    if(!examine_text_number(s)) throw Bgnm_error("Invalid string or c_string provided.",__FILENAME__,__LINE__,f,108);
+    if(!examine_text_number(s)) throw Bgnm_error("Invalid string or c_string provided.",__FILENAME__,__LINE__,f,102);
     return true;
 }
 
@@ -1542,15 +1096,7 @@ static std::string str_mod(const std::string & number, const std::string & modul
     // nothing to do if modulo is greater than number to begin with
     if (comp_strs(modulo,number,true)) return number;
     // if modulo is zero, throw error
-    bool is_zero = true;
-    int cntr = 0;
-    do
-    {
-        if(modulo[cntr]!='0' && modulo[cntr]!='.' && modulo[cntr]!='-') is_zero = false;
-        cntr++;
-    }
-    while (is_zero && cntr < modulo.size());
-    if(is_zero) throw Bgnm_error("Modulo operator cannot take zero as modulus. Results in undefined behavior.",__FILENAME__,__LINE__,"str_mod",113);
+    if(equal_to_zero(modulo)) throw Bgnm_error("Modulo operator cannot take zero as modulus. Results in undefined behavior.",__FILENAME__,__LINE__,"str_mod",103);
     
     std::string temp = modulo; // temp is modulo or a multiple of modulo
     std::string ret = number;
@@ -1629,8 +1175,8 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
     }
     
     // anything to power of zero equals 1
-    if(comp_strs_equal(base, "0")) return "0";
-    if(comp_strs_equal(power, "0")) return "1";
+    if(equal_to_zero(base)) return "0";
+    if(equal_to_zero(power)) return "1";
     
     //if power is floating point, convert decimal portion to fraction for use later
     bool floating_point_power = false;
@@ -1641,7 +1187,7 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
         str_convert_float_to_fraction_components(power, integer, numerator, denominator,true);
         power = integer;
         // ingnore floating point in case of a power such as XXXX.0
-        if(comp_strs_equal(numerator,"0")) floating_point_power = false;
+        if(equal_to_zero(numerator)) floating_point_power = false;
     }
     
     std::string ret = "1", zero = "0", one = "1", two = "2";
@@ -1654,7 +1200,8 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
         }
         catch(std::exception &e)
         {
-            std::cout << "error with " << fl << " e is : " << e.what() << std::endl;
+            throw Bgnm_error("Error converting str_mod(power,2) result to float type in str_pow().",__FILENAME__,__LINE__,"str_pow",114);
+            //std::cout << "error with " << fl << " e is : " << e.what() << std::endl;
         }
         if(fl == 1.0 )
         { // if power % 2 = 1
@@ -1695,22 +1242,12 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
     
 }
 
-// checks a string representing a number for equivelance to zero (will work on strings like "-0.0", "0", ".00000", "-0000.0" and any other possibility)
-static bool equal_to_zero( const std::string & str)
-{
-    for(int i = 0; i < str.size(); i++)
-    {
-        if(str[i] != '-' && str[i] != '.' && str[i] > '0') return false;
-    }
-    return true;
-}
-
 
 //uses a Newton-Raphson type algorithm to find exp root of base
 static std::string str_root(std::string base, std::string initial_exp, const unsigned max_dec_prec)
 {
     
-    const unsigned internal_dec_limit = Bgnm::get_bgnm_internal_precision_limit();
+    const unsigned internal_dec_limit   = Bgnm::get_bgnm_internal_precision_limit();
     const unsigned max_root_guess_count = Bgnm::get_max_root_guess_count();
     
     // exp or intitial_exp stand for exponent - but since we're talking roots, I really should have named it index - as in index of the radical
@@ -1718,12 +1255,10 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
     std::string numerator = "0", denominator = "1", integer = initial_exp, exp = initial_exp;
     
     // negative exponent means issue error
-    // There is no universally accepted definition for how to handle Negative exponents (indices) for radicals. Here we will define a negative index as -index root of x = index root of (1/x)
-    try{
-        if(exp[0]=='-') throw Bgnm_error("Negative index provided.",__FILENAME__,__LINE__,__FUNCTION__,102);
-    } catch (std::exception & e)
+    // There is no universally accepted definition for how to handle Negative exponents (indices) for radicals. Here we will define a negative index as:
+    //           -index root of x = index root of (1/x)
+    if(exp[0]=='-')
     {
-        std::cout << e.what() << std::endl;
         exp.erase(0,1);
         initial_exp.erase(0,1);
         base = div_num_strings("1", base);
@@ -1737,10 +1272,10 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
         negative_base = true;
     }
     
-    if(comp_strs_equal(base, "0")) return "0";
+    if(equal_to_zero(base)) return "0";
     
     // need to issue exception/error in this case, cannot have a zero root
-    if(comp_strs_equal(initial_exp, "0"))  throw Bgnm_error("Cannot calculate a root of base with a zero index.",__FILENAME__,__LINE__,__FUNCTION__,103);
+    if(equal_to_zero(initial_exp))  throw Bgnm_error("Cannot calculate a root of base with a zero index.",__FILENAME__,__LINE__,__FUNCTION__,104);
     
     //if exp is floating point, convert decimal portion to fraction for use later
     bool floating_point_power = false;
@@ -1750,7 +1285,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
         str_convert_float_to_fraction_components(initial_exp, integer, numerator, denominator,true);
         exp = integer;
         // ingnore floating point in case of a power such as XXXX.0
-        if(comp_strs_equal(numerator,"0")) floating_point_power = false;
+        if(equal_to_zero(numerator)) floating_point_power = false;
     }
     
     //come up with initial guess
@@ -1786,7 +1321,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
     
     while(
           (!comp_strs_equal(prev_root, root, internal_dec_limit-1)) && // once guessing is good enough, these two will become equal, in which case you're done (required to be equal except for last decimal place in order to prevent unnending loops that toggle the last decimal place due to rounding
-          (x < max_root_guess_count) // max_root_guess_count - sets an absolute max amount of work that the function is allowed to put in - if reaches max_root_guess_count, returns zero and should issue error
+          (x < max_root_guess_count) // max_root_guess_count - sets an absolute max amount of work that the function is allowed to put in - if reaches max_root_guess_count, returns zero and should throw exception
           )
     {
         //set a limit to not allow root to increase or decrease over previously attempted root by more than a factor of ten. If that happens, instead replace root with slightly adjusted root. (In testing, found that the second guess was sometimes astronomically greater, and the algorithm would take forever to come back to reality.
@@ -1818,7 +1353,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
         if(x >= max_root_guess_count)
         {
             std::string e = "Number of attempts to find root exceeded max_root_guess_count (" + std::to_string(max_root_guess_count) + "). Review use of str_root() or use set_max_root_guess_count(unsigned count) to increase number of allowed attempts.";
-            throw Bgnm_error(e.c_str(),__FILENAME__,__LINE__,__FUNCTION__,104);
+            throw Bgnm_error(e.c_str(),__FILENAME__,__LINE__,__FUNCTION__,105);
             
         }
     }
@@ -2198,7 +1733,6 @@ template<> Bgnm Bgnm::operator / (const std::string & s) const
     return ret;
 }
 
-//for now add_num_strings can be used for increment - but really this should be a new function to perform the operation much faster
 // prefix ++ overload
 Bgnm& Bgnm::operator ++ ()
 {
@@ -2888,7 +2422,7 @@ Bgnm Bgnm::root(const float & index) const
 
 Bgnm Bgnm::sqrt() const
 {
-    if(this->val[0] == '-') throw Bgnm_error("Cannot calculate square root of negative value.",__FILENAME__,__LINE__,__FUNCTION__,105);
+    if(this->val[0] == '-') throw Bgnm_error("Cannot calculate square root of negative value.",__FILENAME__,__LINE__,__FUNCTION__,106);
     return str_root(this->val,"2");
 }
 
@@ -2899,8 +2433,13 @@ Bgnm Bgnm::cbrt() const
 
 void Bgnm::set_bgnm_internal_precision_limit(unsigned precision)
 {
-    if(precision < 0 || precision > 0xffffffff) throw Bgnm_error("Provided precision was out of range.",__FILENAME__,__LINE__,__FUNCTION__,106);
-    bgnm_internal_precision_limit = precision;
+    // set back to default if zero passed as argument
+    if(precision == 0) bgnm_internal_precision_limit = DEC_LIMIT;
+    else if(precision < 2 || precision > 0xffffffff)
+    {
+        throw Bgnm_error("Provided precision for internal calculations was out of range.",__FILENAME__,__LINE__,__FUNCTION__,107);
+    }
+    else bgnm_internal_precision_limit = precision;
 }
 
 unsigned Bgnm::get_bgnm_internal_precision_limit()
@@ -2910,8 +2449,10 @@ unsigned Bgnm::get_bgnm_internal_precision_limit()
 
 void Bgnm::set_max_root_guess_count(unsigned count)
 {
-    if(count < 0 || count > 0xffffffff) throw Bgnm_error("Provided count was out of range.",__FILENAME__,__LINE__,__FUNCTION__,107);
-    bgnm_max_root_guess_count = count;
+    // set back to default if zero passed as argument
+    if(count == 0) bgnm_max_root_guess_count = MAX_ROOT_GUESS_COUNT;
+    else if(count < 2 || count > 0xffffffff) throw Bgnm_error("Provided number for max root guess count was out of range.",__FILENAME__,__LINE__,__FUNCTION__,108);
+    else bgnm_max_root_guess_count = count;
 }
 
 unsigned Bgnm::get_max_root_guess_count()
@@ -2921,17 +2462,29 @@ unsigned Bgnm::get_max_root_guess_count()
 
 int Bgnm::to_int() const
 {
-    return std::stoi(this->val);
+    try { return std::stoi(this->val);}
+    catch (std::exception e)
+    {
+        throw Bgnm_error("Could not convert Bgnm type to int.",__FILENAME__,__LINE__,__FUNCTION__,109);
+    }
 }
 
 long long Bgnm::to_long_long() const
 {
-    return std::stoll(this->val);
+    try { return std::stoll(this->val);}
+    catch (std::exception e)
+    {
+        throw Bgnm_error("Could not convert Bgnm type to long long.",__FILENAME__,__LINE__,__FUNCTION__,110);
+    }
 }
 
 float Bgnm::to_float() const
 {
-    return std::stof(this->val);
+    try { return std::stof(this->val);}
+    catch (std::exception e)
+    {
+        throw Bgnm_error("Could not convert Bgnm type to float.",__FILENAME__,__LINE__,__FUNCTION__,111);
+    }
 }
 
 double Bgnm::to_double() const
@@ -2939,7 +2492,7 @@ double Bgnm::to_double() const
     try { return std::stod(this->val);}
     catch (std::exception e)
     {
-        throw Bgnm_error("Could not convert Bgnm type to double.",__FILENAME__,__LINE__,__FUNCTION__,198);
+        throw Bgnm_error("Could not convert Bgnm type to double.",__FILENAME__,__LINE__,__FUNCTION__,112);
     }
 }
 
@@ -2949,7 +2502,7 @@ long double Bgnm::to_long_double() const
     try { return std::stold(this->val);}
     catch (std::exception e)
     {
-        throw Bgnm_error("Could not convert Bgnm type to long double.",__FILENAME__,__LINE__,__FUNCTION__,198);
+        throw Bgnm_error("Could not convert Bgnm type to long double.",__FILENAME__,__LINE__,__FUNCTION__,113);
     }
 }
 
@@ -2961,7 +2514,6 @@ std::string Bgnm::to_string() const
 char* Bgnm::to_c_string() const
 {
     char * ret = new char[this->val.length() + 1];
-    //const char * sp = this->val.c_str();
     std::strcpy(ret,this->val.c_str());
     return ret;
 }
