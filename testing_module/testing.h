@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 #include "bgnm.hpp"
-
+#include "testing_timer.hpp"
 
 class Testing
 {

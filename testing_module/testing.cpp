@@ -1245,7 +1245,7 @@ void Testing::demo ()
     bla << pow(2,xxx);
     std::cout << bla.str() << std::endl;
     int places = floor(xxx * 0.30102999566); // convert from binary exponent to base ten exponent
-    int precision = 19;
+    //int precision = 19;
     //int rightofdecimal = precision - places;
     std::cout << "digits: " << places << std::endl;
     std::cout << ddd << " - " << xxx << std::endl;
