@@ -18,56 +18,74 @@
 
 class Timer
 {
-public:
-    Timer(const std::string_view func, int iter)
-    {
-        start_time = std::chrono::high_resolution_clock::now();
-        function = func;
-        iterations = iter;
-    }
-    Timer(const std::string_view func)
-    {
-        start_time = std::chrono::high_resolution_clock::now();
-        function = func;
-        iterations = 1;
-    }
-    Timer(int iter)
-    {
-        start_time = std::chrono::high_resolution_clock::now();
-        function = FUNCTION;
-        iterations = iter;
-    }
-    Timer()
-    {
-        start_time = std::chrono::high_resolution_clock::now();
-        function = FUNCTION;
-        iterations = 1;
-    }
-    ~Timer()
-    {
-        Stop();
-    }
 private:
-    void Stop()
+    
+    std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
+    std::string function;
+    unsigned iterations;
+    bool auto_report;
+    std::string time_txt;
+    
+    void Done()
     {
         auto end_time = std::chrono::high_resolution_clock::now();
-        
         auto start = std::chrono::time_point_cast<std::chrono::microseconds>(start_time).time_since_epoch().count();
         auto end = std::chrono::time_point_cast<std::chrono::microseconds>(end_time).time_since_epoch().count();
         auto howlong = end - start;
-        long double ms = howlong * 0.001;
-        if(iterations == 1)
+        auto ms = howlong * 0.001;
+        time_txt = "" + std::to_string(ms) + " milliseconds";
+        if(iterations == 1 && auto_report)
         {
-            std::cout << function << " took " << ms << " milliseconds to complete.\n";
+            std::cout << function << " took " << time_txt << " to complete.\n";
         }
-        else
+        else if (auto_report)
         {
-            std::cout << function << " took " << ms << " milliseconds to complete " << iterations << " iterations.\n";
+            std::cout << function << " took " << time_txt << " to complete " << iterations << " iterations.\n";
         }
     }
-    std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
-    std::string function;
-    int iterations;
+    
+public:
+    Timer(const std::string_view func, int iter, bool aut = false)
+    {
+        start_time = std::chrono::high_resolution_clock::now();
+        function = func;
+        iterations = iter;
+        auto_report = aut;
+    }
+    Timer(const std::string_view func, bool aut = false)
+    {
+        start_time = std::chrono::high_resolution_clock::now();
+        function = func;
+        iterations = 1;
+        auto_report = aut;
+    }
+    Timer(int iter, bool aut = false)
+    {
+        start_time = std::chrono::high_resolution_clock::now();
+        function = FUNCTION;
+        iterations = iter;
+        auto_report = aut;
+    }
+    Timer( bool aut = false)
+    {
+        start_time = std::chrono::high_resolution_clock::now();
+        function = FUNCTION;
+        iterations = 1;
+        auto_report = aut;
+    }
+    ~Timer()
+    {
+        //Done();
+    }
+    void stop()
+    {
+        Done();
+    }
+    std::string report()
+    {
+        Done();
+        return time_txt;
+    }
 };
 
 #endif /* testing_timer_hpp */

@@ -130,6 +130,7 @@ void Com::print()
 static void demo       ( Parsed const * const );
 static void random     ( Parsed const * const );
 static void exceptions ( Parsed const * const );
+static void threshhold ( Parsed const * const );
 //static void test   ( Parsed const * const );
 
 static void add        ( Parsed const * const );
@@ -171,9 +172,9 @@ static void ceil       ( Parsed const * const );
 //         FOR YOUR PROGRAM.
 
 
-#define   _ADD_TEST_FUNCTION_OPTIONS_A_B_   vec->back()->add_opt( new Opt( 'n', "number", "Number of operations to perform if not the default number.", true, true)); vec->back()->add_opt( new Opt( 'e', "", "Only show test results that indicate discrepencies." )); vec->back()->add_opt( new Opt('c', "constants", "Provide a and b separated by space. If a or b is negative, enclose string in quotes (e.g. \"0.02352 -26234.734409\").", true, true ));
+#define   _ADD_TEST_FUNCTION_OPTIONS_A_B_   vec->back()->add_opt( new Opt( 'n', "number", "Number of operations to perform if not the default number.", true, true)); vec->back()->add_opt( new Opt( 'e', "", "Only show test results that indicate discrepencies." )); vec->back()->add_opt( new Opt('c', "constants", "Provide a and b separated by space. If a or b is negative, enclose string in quotes (e.g. \"0.02352 -26234.734409\").", true, true ));  vec->back()->add_opt( new Opt('t', "", "Time execution of all tests and report at the end."));
 
-#define   _ADD_TEST_FUNCTION_OPTIONS_A_   vec->back()->add_opt( new Opt( 'n', "number", "Number of operations to perform if not the default number.", true, true)); vec->back()->add_opt( new Opt( 'e', "", "Only show test results that indicate discrepencies." )); vec->back()->add_opt( new Opt('c', "constants", "Provide constant a. If a is negative, enclose in quotes (e.g. \"-26234.00734409\").", true, true ));
+#define   _ADD_TEST_FUNCTION_OPTIONS_A_   vec->back()->add_opt( new Opt( 'n', "number", "Number of operations to perform if not the default number.", true, true)); vec->back()->add_opt( new Opt( 'e', "", "Only show test results that indicate discrepencies." )); vec->back()->add_opt( new Opt('c', "constants", "Provide constant a. If a is negative, enclose in quotes (e.g. \"-26234.00734409\").", true, true )); vec->back()->add_opt( new Opt('t', "", "Time execution of all tests and report at the end."));
 
 
 void Com::load( std::vector<Com*> * const vec)
@@ -183,17 +184,31 @@ void Com::load( std::vector<Com*> * const vec)
     exit_msg    = "Exiting program.";
     
     _CREATE_COMMAND_
+        threshhold,
+        "threshhold",
+        "Set or view error threshhold. When a test is performed with Bgnm objects, the result is compared against the same operation with type double. If there is a discrepency between the two results, the error threshhold sets whether the discrepency is reported. Remember that the discrepency is calculated as a fraction of the difference between the results divided by the Bgnm result. Therefore in most cases the discrepency will be something like 3.412e-16. Therefore the error threshhold should be set to something in the range of 1e-15 to 1e-18. However the only rule is that it be a possitive number."
+        ____
+        _ADD_OPTION_
+             '!', "",
+             "Enter new threshhold or leave empty to view current threshhold. Type \"threshhold 0\" to reset error threshhold to default value.", true, false
+             ____
+    
+    _CREATE_COMMAND_
         random,
         "random",
         "Performs a default of 50 random operations with bgnm objects and check for errors or discrepencies."
         ____
-        _ADD_OPTION_ // option 1
+        _ADD_OPTION_
              'n', "number",
              "Number of operations to perform if not the default number.", true, true
              ____
-        _ADD_OPTION_ // option 1
+        _ADD_OPTION_
              'e', "",
              "Only show test results that indicate errors or discrepencies."
+             ____
+        _ADD_OPTION_
+             't', "",
+             "Time execution of all tests and report at the end."
              ____
     
     _CREATE_COMMAND_
@@ -201,28 +216,6 @@ void Com::load( std::vector<Com*> * const vec)
         "demo",
         "Demo runs a demonstration, testing all the overrides of the Bgnm constructor for various data types. The results will be printed out in comparison to the original data to confirm fidelity."
         ____
-    
-//    _CREATE_COMMAND_
-//        test,
-//        "test",
-//        "Executes a specific operation (option -o) on Bgnm objects to check for errors or discrepencies."
-//        ____
-//        _ADD_OPTION_ // option 1
-//             'n', "number",
-//             "Number of operations to perform if not the default number.", true, true
-//             ____
-//        _ADD_OPTION_ // option 1
-//             'o', "operation",
-//             "Name of operation to be tested. Possibilities are:\n             add      (add)\n             sub      (subtract)\n             mult     (multiply)\n             div      (divide)\n             inc_pre  (increment prefix)\n             inc_post (increment postfix)\n             dec_pre  (decriment prefix)\n             dec_post (decriment postfix)\n", true, true
-//             ____
-//        _ADD_OPTION_ // option 1
-//             'e', "",
-//             "Only show test results that indicate discrepencies."
-//             ____
-//        _ADD_OPTION_ // option 1
-//             'c', "constants",
-//             "Provide the constants(s) that the operation (add, sub, mult, etc.) should evaluate. If providing two numbers (e.g. a and b), separate b from a with at least one space. If either a or b are negative, enclose entire string in quotes (e.g. \"-0.02352 -26234.734409\").", true, true
-//             ____
 
     _CREATE_COMMAND_
         add,
@@ -443,13 +436,34 @@ void Com::load( std::vector<Com*> * const vec)
 //     YOU MAY USE EITHER THE METHOD parsed->check(const char& nickname) OR THE
 //     METHOD parsed->check(const std::string& fullname). IT WILL NOT MATTER WHICH ONE YOU USE.
 
+void threshhold (Parsed const * const parsed)
+{
+    std::string new_thresh = parsed->check();
+    double nt;
+    if(new_thresh != "")
+    {
+        try {nt = std::stod(new_thresh);}
+        catch (...)
+        {
+            std::cout << "    Provided argument is not a number" << std::endl;
+        }
+        Testing::set_error_threshhold(nt);
+        std::cout << "    Error threshhold successfully changed to " << Testing::get_error_threshhold() << ". \n";
+    }
+    else
+    {
+        std::cout << "    Error threshhold currently set to " << Testing::get_error_threshhold() << ". \n";
+    }
+}
+
 void random (Parsed const * const parsed )
 {
-    bool n,e=true;
+    bool n,e=true,t=false;
     int n_int;
     std::string number;
     n = parsed->check('n',number);
     e = !(parsed->check('e'));
+    t = parsed->check('t');
     bool stoi_valid = true;
     try
     {
@@ -461,15 +475,13 @@ void random (Parsed const * const parsed )
     }
     if(n && stoi_valid)
     {
-        Testing::random_tester(n_int, e);
+        Testing::random_tester(n_int, e, t);
     }
     else
     {
-        Testing::random_tester(20, e);
+        Testing::random_tester(20, e, t);
     }
 }
-
-
 
 void demo (Parsed const * const parsed )
 {
@@ -481,13 +493,14 @@ void exceptions (Parsed const * const parsed)
     Testing::exceptions();
 }
 
-bool prepare_parameters(Parsed const * const parsed, std::string & constants, int & count, bool & e)
+bool prepare_parameters(Parsed const * const parsed, std::string & constants, int & count, bool & e, bool & t)
 {
     std::string count_str;
     int temp = 1;
     bool n = parsed->check('n',count_str);
     e      = !(parsed->check('e'));
     bool c = parsed->check('c',constants);
+    t = parsed->check('t');
     bool stoi_valid = true;
     try
     {
@@ -507,242 +520,207 @@ bool prepare_parameters(Parsed const * const parsed, std::string & constants, in
     return true;
 }
 
-
-
-//void test (Parsed const * const parsed )
-//{
-//    bool n,e=true,c=false,o=false;
-//    int n_int;
-//    std::string number = "",operation = "",constants = "";
-//    n = parsed->check('n',number);
-//    o = parsed->check('o',operation);
-//    e = !(parsed->check('e'));
-//    c = parsed->check('c',constants);
-//    bool stoi_valid = true;
-//    try
-//    {
-//        n_int = std::stoi(number);
-//    }
-//    catch (...)
-//    {
-//        stoi_valid = false;
-//    }
-//    if(c)
-//    {
-//        if(n) std::cout << "     -n (--number) is not a valid option together with -c (--constants). -n will be ignored.\n";
-//        Testing::test(operation, constants, 1, e);
-//    }
-//    else if(n && stoi_valid)
-//    {
-//        Testing::test(operation, constants, n_int, e);
-//    }
-//    else
-//    {
-//        Testing::test(operation, constants, 50, e);
-//    }
-//}
-
 void add( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("add", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("add", constants, count, e, t);
 }
 
 void sub( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("sub", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("sub", constants, count, e, t);
 }
 
 void mult( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("mult", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("mult", constants, count, e, t);
 }
 
 void div( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("div", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("div", constants, count, e, t);
 }
 
 void inc_pre( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("inc_pre", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("inc_pre", constants, count, e, t);
 }
 
 void inc_post( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("inc_post", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("inc_post", constants, count, e, t);
 }
 
 void dec_pre( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("dec_pre", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("dec_pre", constants, count, e, t);
 }
 
 void dec_post( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("dec_post", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("dec_post", constants, count, e, t);
 }
 
 void mod( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("mod", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("mod", constants, count, e, t);
 }
 
 void pow( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("pow", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("pow", constants, count, e, t);
 }
 
 void great( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("great", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("great", constants, count, e, t);
 }
 
 void less( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("less", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("less", constants, count, e, t);
 }
 
 void great_eql( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("great_eql", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("great_eql", constants, count, e, t);
 }
 
 void less_eql( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("less_eql", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("less_eql", constants, count, e, t);
 }
 
 void equal( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("equal", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("equal", constants, count, e, t);
 }
 
 void not_equal( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("not_equal", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("not_equal", constants, count, e, t);
 }
 
 void shift_r( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("shift_r", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("shift_r", constants, count, e, t);
 }
 
 void shift_l( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("shift_l", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("shift_l", constants, count, e, t);
 }
 
 void add_assign( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("add_assign", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("add_assign", constants, count, e, t);
 }
 
 void sub_assign( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("sub_assign", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("sub_assign", constants, count, e, t);
 }
 
 void mult_assign( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("mult_assign", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("mult_assign", constants, count, e, t);
 }
 
 void div_assign( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("div_assign", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("div_assign", constants, count, e, t);
 }
 
 void mod_assign( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("mod_assign", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("mod_assign", constants, count, e, t);
 }
 
 void root( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("root", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("root", constants, count, e, t);
 }
 
 void sqrt( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("sqrt", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("sqrt", constants, count, e, t);
 }
 
 void cbrt( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("cbrt", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("cbrt", constants, count, e, t);
 }
 
 void abs( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("abs", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("abs", constants, count, e, t);
 }
 
 void floor( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("floor", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("floor", constants, count, e, t);
 }
 
 void ceil( Parsed const * parsed)
 {
-    bool e; int count; std::string constants;
-    prepare_parameters(parsed, constants, count, e);
-    Testing::test("ceil", constants, count, e);
+    bool e, t; int count; std::string constants;
+    prepare_parameters(parsed, constants, count, e, t);
+    Testing::test("ceil", constants, count, e, t);
 }
 
 

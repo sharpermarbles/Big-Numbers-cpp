@@ -16,8 +16,24 @@
 #define PROBABILITY_INT           1 // rand_bgnm() - bigger number means more likely the returned random bgnm will be integer instead of floating point
 #define PROBABILITY_POSSITIVE     2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be possitive
 #define MAX_NUM_ZEROS            15 // rand_bgnm() - maximum number of zeros that may be randomly added to random bgnm (floating point)
-#define ERROR_THRESHHOLD 0.000000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
+#define ERROR_THRESHHOLD 0.000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
 
+double Testing::error_threshhold = ERROR_THRESHHOLD;
+
+void Testing::set_error_threshhold( const double threshhold)
+{
+    if (threshhold == 0) error_threshhold = ERROR_THRESHHOLD;
+    else if (threshhold > 0)
+    {
+        error_threshhold = threshhold;
+    }
+    else throw "    Error threshhold must be greater than zero.\n";
+}
+
+double Testing::get_error_threshhold()
+{
+    return error_threshhold;
+}
 
 // rand_int() will return numbers from flr to ceil inclusive
 static uint rand_int(int flr, int ceil)
@@ -83,289 +99,43 @@ static Bgnm* rand_bgnm(bool force_possitive = false, bool allow_float = true)
     return random;
 }
 
-static void test_add         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_sub         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_mult        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_div         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_inc_prefix  ( Bgnm * a = NULL, bool show_success = true);
-static void test_inc_postfix ( Bgnm * a = NULL, bool show_success = true);
-static void test_dec_prefix  ( Bgnm * a = NULL, bool show_success = true);
-static void test_dec_postfix ( Bgnm * a = NULL, bool show_success = true);
-static void test_mod         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_pow         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_great       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_less        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_great_eql   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_less_eql    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_equal       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_not_equal   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_shft_rght   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_shft_left   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_add_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_sub_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_mult_eqls   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_div_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_mod_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_root        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-static void test_sqrt        ( Bgnm * a = NULL, bool show_success = true);
-static void test_cbrt        ( Bgnm * a = NULL, bool show_success = true);
-static void test_abs         ( Bgnm * a = NULL, bool show_success = true);
-static void test_floor       ( Bgnm * a = NULL, bool show_success = true);
-static void test_ceil        ( Bgnm * a = NULL, bool show_success = true);
-
-
-static void perform_random_test(bool show_all = true)
+static void timer_report( Timer &t, int number = 1 )
 {
-    // how many switch cases are there?
-    int types_of_tests = 29;
-    // pick one at random
-    int rand = rand_int(0, types_of_tests - 1);
-    //int rand = rand_int(26, 28);
-
-    switch (rand) {
-        case 0:
-            test_add(NULL, NULL, show_all); break;
-        case 1:
-            test_sub(NULL, NULL, show_all); break;
-        case 2:
-            test_mult(NULL, NULL, show_all); break;
-        case 3:
-            test_div(NULL, NULL, show_all); break;
-        case 4:
-            test_inc_prefix(NULL, show_all); break;
-        case 5:
-            test_inc_postfix(NULL, show_all); break;
-        case 6:
-            test_dec_prefix(NULL, show_all); break;
-        case 7:
-            test_dec_postfix(NULL, show_all); break;
-        case 8:
-            test_mod(NULL, NULL, show_all); break;
-        case 9:
-            std::cout << "    --skipping test_pow()--" << std::endl;
-            //test_pow(NULL, NULL, show_all);
-            break;
-        case 10:
-            test_great(NULL, NULL, show_all); break;
-        case 11:
-            test_less(NULL, NULL, show_all); break;
-        case 12:
-            test_great_eql(NULL, NULL, show_all); break;
-        case 13:
-            test_less_eql(NULL, NULL, show_all); break;
-        case 14:
-            test_equal(NULL, NULL, show_all); break;
-        case 15:
-            test_not_equal(NULL, NULL, show_all); break;
-        case 16:
-            test_shft_rght(NULL, NULL, show_all); break;
-        case 17:
-            test_shft_left(NULL, NULL, show_all); break;
-        case 18:
-            test_add_eqls(NULL, NULL, show_all); break;
-        case 19:
-            test_sub_eqls(NULL, NULL, show_all); break;
-        case 20:
-            test_mult_eqls(NULL, NULL, show_all); break;
-        case 21:
-            test_div_eqls(NULL, NULL, show_all); break;
-        case 22:
-            test_mod_eqls(NULL, NULL, show_all); break;
-        case 23:
-            std::cout << "    --skipping test_root()--" << std::endl;
-            //test_root(NULL, NULL, show_all);
-            break;
-        case 24:
-            std::cout << "    --skipping test_sqrt()--" << std::endl;
-            //test_sqrt(NULL, show_all);
-            break;
-        case 25:
-            std::cout << "    --skipping test_cbrt()--" << std::endl;
-            //test_cbrt(NULL, show_all);
-            break;
-        case 26:
-            test_abs(NULL, show_all); break;
-        case 27:
-            test_floor(NULL, show_all); break;
-        case 28:
-            test_ceil(NULL, show_all); break;
-        default:
-            throw "types_of_tests does not correspond to number of cases in perform_random_test() in testing.cpp \n";
-            break;
-    }
+    t.stop();
+    std::cout << "\n    Excecution of " << number << " tests took " << t.report() << std::endl << std::endl;
 }
 
-void Testing::random_tester(int number, bool show_all)
-{
-    for (int i = 0; i < number; i++)
-    {
-        try {
-            perform_random_test(show_all);
-        }
-        catch (std::exception& e)
-        {
-            std::cout << "    Issue with test number " << i + 1 << std::endl;
-            std::cout << e.what() << std::endl;
-        }
-    }
-}
+//static void test_add         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_sub         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_mult        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_div         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_inc_prefix  ( Bgnm * a = NULL, bool show_success = true);
+//static void test_inc_postfix ( Bgnm * a = NULL, bool show_success = true);
+//static void test_dec_prefix  ( Bgnm * a = NULL, bool show_success = true);
+//static void test_dec_postfix ( Bgnm * a = NULL, bool show_success = true);
+//static void test_mod         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_pow         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_great       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_less        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_great_eql   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_less_eql    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_equal       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_not_equal   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_shft_rght   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_shft_left   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_add_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_sub_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_mult_eqls   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_div_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_mod_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_root        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
+//static void test_sqrt        ( Bgnm * a = NULL, bool show_success = true);
+//static void test_cbrt        ( Bgnm * a = NULL, bool show_success = true);
+//static void test_abs         ( Bgnm * a = NULL, bool show_success = true);
+//static void test_floor       ( Bgnm * a = NULL, bool show_success = true);
+//static void test_ceil        ( Bgnm * a = NULL, bool show_success = true);
 
-static void try_test(void (*f)(Bgnm* a, Bgnm* b, bool show_all), Bgnm* a, Bgnm* b, bool show_all)
-{
-    try { f(a,b,show_all);}
-    catch (std::exception &e) { std::cout << "    " << e.what() << std::endl;}
-}
 
-static void try_test(void (*f)(Bgnm* a, bool show_all), Bgnm* a, bool show_all)
-{
-    try { f(a,show_all);}
-    catch (std::exception &e) { std::cout << "    " << e.what() << std::endl;}
-}
-
-void Testing::test(const std::string & op, std::string constants, int number, bool show_all )
-{
-    Bgnm * a = NULL;
-    Bgnm * b = NULL;
-    if(constants != "")
-    {
-        std::string str_a = "";
-        std::string str_b = "";
-        std::string * str = &str_a;
-        for (int i = 0; i < constants.size(); i++)
-        {
-            if (constants[i] != ' ')
-            {
-                str->push_back(constants[i]);
-            }
-            else
-            {
-                str = &str_b;
-            }
-        }
-        try {a = new Bgnm(str_a);}      catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
-        try {b = new Bgnm(str_b);}      catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
-    }
-    if      (op == "add")
-    {
-        for (int i = 0; i < number; i++) try_test( test_add, a, b, show_all);
-    }
-    else if (op == "sub")
-    {
-        for (int i = 0; i < number; i++) try_test( test_sub, a, b, show_all);
-    }
-    else if (op == "mult")
-    {
-        for (int i = 0; i < number; i++) try_test( test_mult, a, b, show_all);
-    }
-    else if (op == "div")
-    {
-        for (int i = 0; i < number; i++) try_test( test_div, a, b, show_all);
-    }
-    else if (op == "inc_pre")
-    {
-        for (int i = 0; i < number; i++) try_test( test_inc_prefix, a, show_all);
-    }
-    else if (op == "inc_post")
-    {
-        for (int i = 0; i < number; i++) try_test( test_inc_postfix, a, show_all);
-    }
-    else if (op == "dec_pre")
-    {
-        for (int i = 0; i < number; i++) try_test( test_dec_prefix, a, show_all);
-    }
-    else if (op == "dec_post")
-    {
-        for (int i = 0; i < number; i++) try_test( test_dec_postfix, a, show_all);
-    }
-    else if (op == "mod")
-    {
-        for (int i = 0; i < number; i++) try_test( test_mod, a, b, show_all);
-    }
-    else if (op == "pow")
-    {
-        for (int i = 0; i < number; i++) try_test( test_pow, a, b, show_all);
-    }
-    else if (op == "great")
-    {
-        for (int i = 0; i < number; i++) try_test( test_great, a, b, show_all);
-    }
-    else if (op == "less")
-    {
-        for (int i = 0; i < number; i++) try_test( test_less, a, b, show_all);
-    }
-    else if (op == "great_eql")
-    {
-        for (int i = 0; i < number; i++) try_test( test_great_eql, a, b, show_all);
-    }
-    else if (op == "less_eql")
-    {
-        for (int i = 0; i < number; i++) try_test( test_less_eql, a, b, show_all);
-    }
-    else if (op == "equal")
-    {
-        for (int i = 0; i < number; i++) try_test( test_equal, a, b, show_all);
-    }
-    else if (op == "not_equal")
-    {
-        for (int i = 0; i < number; i++) try_test( test_not_equal, a, b, show_all);
-    }
-    else if (op == "shift_r")
-    {
-        for (int i = 0; i < number; i++) try_test( test_shft_rght, a, b, show_all);
-    }
-    else if (op == "shift_l")
-    {
-        for (int i = 0; i < number; i++) try_test( test_shft_left, a, b, show_all);
-    }
-    else if (op == "add_assign")
-    {
-        for (int i = 0; i < number; i++) try_test( test_add_eqls, a, b, show_all);
-    }
-    else if (op == "sub_assign")
-    {
-        for (int i = 0; i < number; i++) try_test( test_sub_eqls, a, b, show_all);
-    }
-    else if (op == "mult_assign")
-    {
-        for (int i = 0; i < number; i++) try_test( test_mult_eqls, a, b, show_all);
-    }
-    else if (op == "div_assign")
-    {
-        for (int i = 0; i < number; i++) try_test( test_div_eqls, a, b, show_all);
-    }
-    else if (op == "mod_assign")
-    {
-        for (int i = 0; i < number; i++) try_test( test_mod_eqls, a, b, show_all);
-    }
-    else if (op == "root")
-    {
-        for (int i = 0; i < number; i++) try_test( test_root, a, b, show_all);
-    }
-    else if (op == "sqrt")
-    {
-        for (int i = 0; i < number; i++) try_test( test_sqrt, a, show_all);
-    }
-    else if (op == "cbrt")
-    {
-        for (int i = 0; i < number; i++) try_test( test_cbrt, a, show_all);
-    }
-    else if (op == "abs")
-    {
-        for (int i = 0; i < number; i++) try_test( test_abs, a, show_all);
-    }
-    else if (op == "floor")
-    {
-        for (int i = 0; i < number; i++) try_test( test_floor, a, show_all);
-    }
-    else if (op == "ceil")
-    {
-        for (int i = 0; i < number; i++) try_test( test_ceil, a, show_all);
-    }
-    else
-    {
-        std::cout << "    \"" << op << "\" is an invalid command. Please try again.\n" << std::endl;
-    }
-}
 
 static void print_e(std::exception &e)
 {
@@ -452,7 +222,7 @@ static bool not_equal(Bgnm &bn, double &db, double *diff)
     double denominator;
     db == 0 ? denominator = 1 : denominator = db ; // just in case div by zero problem
     *diff =  (temp - db)/denominator; // difference is the difference between the two numbers divided by the size of one of them (to give it relative weighting)
-    if(*diff < ERROR_THRESHHOLD) // determine both to be equivelant if the two results are within one one-hundred-millionth of each other
+    if(*diff < Testing::get_error_threshhold()) // determine both to be equivelant if the two results are within one one-hundred-millionth of each other
     {
         return false;
     }
@@ -518,8 +288,7 @@ static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, double
 {
     
     std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHHOLD ----\n";
-    print_success(a,b,c,oper);
-    std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshhold of " << ERROR_THRESHHOLD << std::endl;
+    std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshhold of " << Testing::get_error_threshhold() << std::endl;
     if(bf == NULL)
     {
         std::cout << "   bgnm    operation: " << *a << oper << " = " << *c << std::endl;
@@ -538,7 +307,6 @@ static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, bool c = false, double
     if(!c) ans1 = str_false;
     if(!cf) ans2 = str_false;
     std::cout << "\n   ---- NOTICE! CONTROL ANSWER DOES NOT AGREE ----\n";
-    print_success(a,b,c,oper);
     std::cout << "   bgnm    operation: " << *a << oper << *b << " = " << ans1 << std::endl;
     std::cout << "   control operation: " << *af << oper << *bf << " = " << ans2 << std::endl;
     std::cout << "\n";
@@ -1095,6 +863,272 @@ static void test_ceil( Bgnm * _a, bool show_success )
     else if ( show_success ) print_success(a,new Bgnm,&c," clg");
 }
 
+static void try_test(void (*f)(Bgnm* a, Bgnm* b, bool show_all), int number, Bgnm* a, Bgnm* b, bool show_all, bool timer)
+{
+    Timer t;
+    for (int i = 0; i < number; i++)
+    {
+        try { f(a,b,show_all);}
+        catch (std::exception &e) { std::cout << "    " << e.what() << std::endl;}
+    }
+    if(timer) timer_report(t,number);
+}
+
+static void try_test(void (*f)(Bgnm* a, bool show_all), int number, Bgnm* a, bool show_all, bool timer)
+{
+    Timer t;
+    for (int i = 0; i < number; i++)
+    {
+        try { f(a,show_all);}
+        catch (std::exception &e) { std::cout << "    " << e.what() << std::endl;}
+    }
+    if(timer) timer_report(t,number);
+}
+
+void Testing::test(const std::string & op, std::string constants, int number, bool show_all, bool timer )
+{
+    Bgnm * a = NULL;
+    Bgnm * b = NULL;
+    if(constants != "")
+    {
+        std::string str_a = "";
+        std::string str_b = "";
+        std::string * str = &str_a;
+        for (int i = 0; i < constants.size(); i++)
+        {
+            if (constants[i] != ' ')
+            {
+                str->push_back(constants[i]);
+            }
+            else
+            {
+                str = &str_b;
+            }
+        }
+        try {a = new Bgnm(str_a);}      catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
+        try {b = new Bgnm(str_b);}      catch (...){ std::cout << "     Could not convert string to Bgnm type. Please try again.\n";return;}
+    }
+    if      (op == "add")
+    {
+        try_test( test_add, number, a, b, show_all, timer);
+    }
+    else if (op == "sub")
+    {
+        try_test( test_sub, number, a, b, show_all, timer);
+    }
+    else if (op == "mult")
+    {
+        try_test( test_mult, number, a, b, show_all, timer);
+    }
+    else if (op == "div")
+    {
+        try_test( test_div, number, a, b, show_all, timer);
+    }
+    else if (op == "inc_pre")
+    {
+        try_test( test_inc_prefix, number, a, show_all, timer);
+    }
+    else if (op == "inc_post")
+    {
+        try_test( test_inc_postfix, number, a, show_all, timer);
+    }
+    else if (op == "dec_pre")
+    {
+        try_test( test_dec_prefix, number, a, show_all, timer);
+    }
+    else if (op == "dec_post")
+    {
+        try_test( test_dec_postfix, number, a, show_all, timer);
+    }
+    else if (op == "mod")
+    {
+        try_test( test_mod, number, a, b, show_all, timer);
+    }
+    else if (op == "pow")
+    {
+        try_test( test_pow, number, a, b, show_all, timer);
+    }
+    else if (op == "great")
+    {
+        try_test( test_great, number, a, b, show_all, timer);
+    }
+    else if (op == "less")
+    {
+        try_test( test_less, number, a, b, show_all, timer);
+    }
+    else if (op == "great_eql")
+    {
+       try_test( test_great_eql, number, a, b, show_all, timer);
+    }
+    else if (op == "less_eql")
+    {
+        try_test( test_less_eql, number, a, b, show_all, timer);
+    }
+    else if (op == "equal")
+    {
+        try_test( test_equal, number, a, b, show_all, timer);
+    }
+    else if (op == "not_equal")
+    {
+        try_test( test_not_equal, number, a, b, show_all, timer);
+    }
+    else if (op == "shift_r")
+    {
+        try_test( test_shft_rght, number, a, b, show_all, timer);
+    }
+    else if (op == "shift_l")
+    {
+        try_test( test_shft_left, number, a, b, show_all, timer);
+    }
+    else if (op == "add_assign")
+    {
+        try_test( test_add_eqls, number, a, b, show_all, timer);
+    }
+    else if (op == "sub_assign")
+    {
+        try_test( test_sub_eqls, number, a, b, show_all, timer);
+    }
+    else if (op == "mult_assign")
+    {
+        try_test( test_mult_eqls, number, a, b, show_all, timer);
+    }
+    else if (op == "div_assign")
+    {
+        try_test( test_div_eqls, number, a, b, show_all, timer);
+    }
+    else if (op == "mod_assign")
+    {
+        try_test( test_mod_eqls, number, a, b, show_all, timer);
+    }
+    else if (op == "root")
+    {
+        try_test( test_root, number, a, b, show_all, timer);
+    }
+    else if (op == "sqrt")
+    {
+        try_test( test_sqrt, number, a, show_all, timer);
+    }
+    else if (op == "cbrt")
+    {
+        try_test( test_cbrt, number, a, show_all, timer);
+    }
+    else if (op == "abs")
+    {
+        try_test( test_abs, number, a, show_all, timer);
+    }
+    else if (op == "floor")
+    {
+        try_test( test_floor, number, a, show_all, timer);
+    }
+    else if (op == "ceil")
+    {
+        try_test( test_ceil, number, a, show_all, timer);
+    }
+    else
+    {
+        std::cout << "    \"" << op << "\" is an invalid command. Please try again.\n" << std::endl;
+    }
+}
+
+static void perform_random_test(bool show_all = true)
+{
+    // how many switch cases are there?
+    int types_of_tests = 29;
+    // pick one at random
+    int rand = rand_int(0, types_of_tests - 1);
+    //int rand = rand_int(26, 28);
+
+    switch (rand) {
+        case 0:
+            test_add(NULL, NULL, show_all); break;
+        case 1:
+            test_sub(NULL, NULL, show_all); break;
+        case 2:
+            test_mult(NULL, NULL, show_all); break;
+        case 3:
+            test_div(NULL, NULL, show_all); break;
+        case 4:
+            test_inc_prefix(NULL, show_all); break;
+        case 5:
+            test_inc_postfix(NULL, show_all); break;
+        case 6:
+            test_dec_prefix(NULL, show_all); break;
+        case 7:
+            test_dec_postfix(NULL, show_all); break;
+        case 8:
+            test_mod(NULL, NULL, show_all); break;
+        case 9:
+            std::cout << "    --skipping test_pow()--" << std::endl;
+            //test_pow(NULL, NULL, show_all);
+            break;
+        case 10:
+            test_great(NULL, NULL, show_all); break;
+        case 11:
+            test_less(NULL, NULL, show_all); break;
+        case 12:
+            test_great_eql(NULL, NULL, show_all); break;
+        case 13:
+            test_less_eql(NULL, NULL, show_all); break;
+        case 14:
+            test_equal(NULL, NULL, show_all); break;
+        case 15:
+            test_not_equal(NULL, NULL, show_all); break;
+        case 16:
+            test_shft_rght(NULL, NULL, show_all); break;
+        case 17:
+            test_shft_left(NULL, NULL, show_all); break;
+        case 18:
+            test_add_eqls(NULL, NULL, show_all); break;
+        case 19:
+            test_sub_eqls(NULL, NULL, show_all); break;
+        case 20:
+            test_mult_eqls(NULL, NULL, show_all); break;
+        case 21:
+            test_div_eqls(NULL, NULL, show_all); break;
+        case 22:
+            test_mod_eqls(NULL, NULL, show_all); break;
+        case 23:
+            std::cout << "    --skipping test_root()--" << std::endl;
+            //test_root(NULL, NULL, show_all);
+            break;
+        case 24:
+            std::cout << "    --skipping test_sqrt()--" << std::endl;
+            //test_sqrt(NULL, show_all);
+            break;
+        case 25:
+            std::cout << "    --skipping test_cbrt()--" << std::endl;
+            //test_cbrt(NULL, show_all);
+            break;
+        case 26:
+            test_abs(NULL, show_all); break;
+        case 27:
+            test_floor(NULL, show_all); break;
+        case 28:
+            test_ceil(NULL, show_all); break;
+        default:
+            throw "types_of_tests does not correspond to number of cases in perform_random_test() in testing.cpp \n";
+            break;
+    }
+}
+
+void Testing::random_tester(int number, bool show_all, bool timer)
+{
+    Timer t;
+    for (int i = 0; i < number; i++)
+    {
+        try {
+            perform_random_test(show_all);
+        }
+        catch (std::exception& e)
+        {
+            std::cout << "    Issue with test number " << i + 1 << std::endl;
+            std::cout << e.what() << std::endl;
+        }
+    }
+    if(timer) timer_report(t, number);
+}
+
+
 
 template <typename T>
 void pt(T n){
@@ -1465,3 +1499,5 @@ void Testing::demo ()
     //
     
 }
+
+
