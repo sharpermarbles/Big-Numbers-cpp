@@ -8,6 +8,7 @@
 *.perspectivev3
 *.xcuserstate
 project.xcworkspace/
+*.xcodeproj/
 xcuserdata/
 
 # Generated files
