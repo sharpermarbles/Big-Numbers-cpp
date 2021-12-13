@@ -1,5 +1,5 @@
 // Timer class for testing purposes
-// Just create a block of code and create an object of type Timer at the begining of the block. When the block completes, the destructor stops the timer and prints the elapsed time.
+// Just create a block of code and create an object of type Timer at the begining of the block. When the block completes (if auto_report is true), the destructor stops the timer and prints the elapsed time. Otherwise use the stop() and report() functions at the end of the code block to get the time ellapsed.
 
 // Optional to provide to the Timer constructor
 //  - Name or Description of block of code or function being timed
@@ -75,7 +75,7 @@ public:
     }
     ~Timer()
     {
-        //Done();
+        Done();
     }
     void stop()
     {
