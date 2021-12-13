@@ -101,16 +101,16 @@ the following operators are overloaded to facilitate seamless math operations an
 
 #include <string>
 
-// DEC_LIMIT sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions.
-#define DEC_LIMIT 25
+// GLOBAL_INTERNAL_PRECISION_LIMIT sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy.
+#define GLOBAL_INTERNAL_PRECISION_LIMIT 25
 
 // MAX_ROOT_GUESS_COUNT sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions.
 #define MAX_ROOT_GUESS_COUNT 200
 
-// DONT_ADJUST_PRECISION is a default constant that instructs functions to not round return values. This value should not be changed. If a different parameter/argument is provided to one of these functions instead of this default value, the function will round the return value to the number of decimal places indicated by the parameter/argument.
+// DONT_ADJUST_PRECISION is a default constant that instructs functions to not round return values. This value should not be changed. If a different parameter/argument is provided to one of these functions instead of this default value, the function will round the return value to the number of decimal places indicated by the parameter/argument. DO NOT CHANGE!
 #define DONT_ADJUST_PRECISION 0xffffffff
 
-// When finding root, this sets maximum decimal precision for index. In other words, if using a default value of 6, 1.123456789 root of 100 will be calculated as 1.123457 root of 100. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.
+// When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.
 #define ROOT_INDEX_MAX_PRECISION 6
 
 //class Bgnm_error;
@@ -121,6 +121,7 @@ class Bgnm
     
     static unsigned bgnm_internal_precision_limit;
     static unsigned bgnm_max_root_guess_count;
+    static unsigned bgnm_root_index_max_precision;
     
     std::string val;
 
@@ -155,8 +156,10 @@ class Bgnm
     
     static      void set_bgnm_internal_precision_limit(unsigned precision);
     static  unsigned get_bgnm_internal_precision_limit();
-    static      void set_max_root_guess_count(unsigned count);
-    static  unsigned get_max_root_guess_count();
+    static      void set_bgnm_max_root_guess_count(unsigned count);
+    static  unsigned get_bgnm_max_root_guess_count();
+    static      void set_bgnm_root_index_max_precision(unsigned count);
+    static  unsigned get_bgnm_root_index_max_precision();
     
     //  Overloaded operators
     //  NOTE: function templates for overloading operators accept the following parameter types:

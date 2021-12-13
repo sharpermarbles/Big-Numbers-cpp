@@ -1248,7 +1248,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
 {
     
     const unsigned internal_dec_limit   = Bgnm::get_bgnm_internal_precision_limit();
-    const unsigned max_root_guess_count = Bgnm::get_max_root_guess_count();
+    const unsigned max_root_guess_count = Bgnm::get_bgnm_max_root_guess_count();
     
     // exp or intitial_exp stand for exponent - but since we're talking roots, I really should have named it index - as in index of the radical
     
@@ -1363,7 +1363,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
     {
         //final root = base^integer * 1/base^(1/integer - 1/exp)
         std::string temp_power = sub_num_strings(div_num_strings("1", integer), div_num_strings("1", initial_exp));
-        round_string(temp_power,ROOT_INDEX_MAX_PRECISION);
+        round_string(temp_power,Bgnm::get_bgnm_root_index_max_precision());
         std::string factor = div_num_strings("1", str_pow(base, temp_power,internal_dec_limit));
         root = mult_num_strings(root, factor);
     }
@@ -1375,7 +1375,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
         if(str_mod(integer, "2") != "0" && numerator == "0") root.insert(0,"-");
     }
     
-    if(floating_point_power) round_string(root,ROOT_INDEX_MAX_PRECISION);
+    if(floating_point_power) round_string(root,Bgnm::get_bgnm_root_index_max_precision());
     
     return root;
 }
@@ -1429,8 +1429,9 @@ Bgnm::Bgnm(const std::string & str)
     check_input(str,__FUNCTION__)? val = str: val = "0";
 }
 
-unsigned Bgnm::bgnm_internal_precision_limit = DEC_LIMIT;
-unsigned Bgnm::bgnm_max_root_guess_count = MAX_ROOT_GUESS_COUNT;
+unsigned Bgnm::bgnm_internal_precision_limit = GLOBAL_INTERNAL_PRECISION_LIMIT;
+unsigned Bgnm::bgnm_max_root_guess_count     = MAX_ROOT_GUESS_COUNT;
+unsigned Bgnm::bgnm_root_index_max_precision = ROOT_INDEX_MAX_PRECISION;
 
 template<> void Bgnm::operator = (const Bgnm & bn)
 {
@@ -2434,7 +2435,7 @@ Bgnm Bgnm::cbrt() const
 void Bgnm::set_bgnm_internal_precision_limit(unsigned precision)
 {
     // set back to default if zero passed as argument
-    if(precision == 0) bgnm_internal_precision_limit = DEC_LIMIT;
+    if(precision == 0) bgnm_internal_precision_limit = GLOBAL_INTERNAL_PRECISION_LIMIT;
     else if(precision < 2 || precision > 0xffffffff)
     {
         throw Bgnm_error("Provided precision for internal calculations was out of range.",__FILENAME__,__LINE__,__FUNCTION__,107);
@@ -2447,18 +2448,39 @@ unsigned Bgnm::get_bgnm_internal_precision_limit()
     return bgnm_internal_precision_limit;
 }
 
-void Bgnm::set_max_root_guess_count(unsigned count)
+void Bgnm::set_bgnm_max_root_guess_count(unsigned count)
 {
     // set back to default if zero passed as argument
     if(count == 0) bgnm_max_root_guess_count = MAX_ROOT_GUESS_COUNT;
-    else if(count < 2 || count > 0xffffffff) throw Bgnm_error("Provided number for max root guess count was out of range.",__FILENAME__,__LINE__,__FUNCTION__,108);
+    else if(count < 2 || count > 0xffffffff)
+    {
+        throw Bgnm_error("Provided number for max root guess count was out of range.",__FILENAME__,__LINE__,__FUNCTION__,108);
+    }
     else bgnm_max_root_guess_count = count;
 }
 
-unsigned Bgnm::get_max_root_guess_count()
+unsigned Bgnm::get_bgnm_max_root_guess_count()
 {
     return bgnm_max_root_guess_count;
 }
+
+void Bgnm::set_bgnm_root_index_max_precision(unsigned number)
+{
+    // set back to default if zero passed as argument
+    if(number == 0) bgnm_root_index_max_precision = ROOT_INDEX_MAX_PRECISION;
+    else if(number < 0 || number > 200)
+    {
+        throw Bgnm_error("Provided number for root index max precision was out of range (must be between 1 and 200. Enter '0' to reset to default).",__FILENAME__,__LINE__,__FUNCTION__,115);
+    }
+    else bgnm_root_index_max_precision = number;
+}
+
+unsigned Bgnm::get_bgnm_root_index_max_precision()
+{
+    return bgnm_root_index_max_precision;
+}
+
+
 
 int Bgnm::to_int() const
 {

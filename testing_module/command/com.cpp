@@ -133,6 +133,10 @@ static void exceptions ( Parsed const * const );
 static void threshhold ( Parsed const * const );
 //static void test   ( Parsed const * const );
 
+static void bgnm_int_prec_limit    ( Parsed const * const );
+static void bgnm_max_root_guess    ( Parsed const * const );
+static void bgnm_root_ind_max_prec ( Parsed const * const );
+
 static void add        ( Parsed const * const );
 static void sub        ( Parsed const * const );
 static void mult       ( Parsed const * const );
@@ -192,6 +196,37 @@ void Com::load( std::vector<Com*> * const vec)
              '!', "",
              "Enter new threshhold or leave empty to view current threshhold. Type \"threshhold 0\" to reset error threshhold to default value.", true, false
              ____
+    
+    _CREATE_COMMAND_
+        bgnm_int_prec_limit,
+        "bgnm_int_prec_limit",
+        "Set or view static Bgnm::bgnm_internal_precision_limit that sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy."
+        ____
+        _ADD_OPTION_
+             '!', "",
+             "Enter new precision limit or leave empty to view current threshhold. Enter \"0\" to reset Bgnm::bgnm_internal_precision_limit to default value.", true, false
+             ____
+    
+    _CREATE_COMMAND_
+        bgnm_max_root_guess,
+        "bgnm_max_root_guess",
+        "Set or view static Bgnm::bgnm_max_root_guess_count that sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time."
+        ____
+        _ADD_OPTION_
+             '!', "",
+             "Enter new guess count limit or leave empty to view current limit. Enter \"0\" to reset Bgnm::bgnm_max_root_guess_count to default value.", true, false
+             ____
+    
+    _CREATE_COMMAND_
+        bgnm_root_ind_max_prec,
+        "bgnm_root_ind_max_prec",
+        "When finding x root of a number where x is a floating point value, this sets Bgnm::bgnm_root_index_max_precision controling the maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations."
+        ____
+        _ADD_OPTION_
+             '!', "",
+             "Enter new precision limit or leave empty to view current limit. Enter \"0\" to reset Bgnm::bgnm_root_index_max_precision to default value.", true, false
+             ____
+    
     
     _CREATE_COMMAND_
         random,
@@ -453,6 +488,66 @@ void threshhold (Parsed const * const parsed)
     else
     {
         std::cout << "    Error threshhold currently set to " << Testing::get_error_threshhold() << ". \n";
+    }
+}
+
+void bgnm_int_prec_limit (Parsed const * const parsed)
+{
+    std::string new_lim = parsed->check();
+    unsigned nl;
+    if(new_lim != "")
+    {
+        try {nl = (unsigned)std::stoi(new_lim);}
+        catch (...)
+        {
+            std::cout << "    Provided argument is not a number" << std::endl;
+        }
+        Testing::set_bgnm_internal_precision_limit(nl);
+        std::cout << "    Bgnm::bgnm_internal_precision_limit successfully changed to " << Testing::get_bgnm_internal_precision_limit() << ". \n";
+    }
+    else
+    {
+        std::cout << "    Bgnm::bgnm_internal_precision_limit currently set to " << Testing::get_bgnm_internal_precision_limit() << ". \n";
+    }
+}
+
+void bgnm_max_root_guess (Parsed const * const parsed)
+{
+    std::string new_lim = parsed->check();
+    unsigned nl;
+    if(new_lim != "")
+    {
+        try {nl = (unsigned)std::stoi(new_lim);}
+        catch (...)
+        {
+            std::cout << "    Provided argument is not a number" << std::endl;
+        }
+        Testing::set_bgnm_max_root_guess_count(nl);
+        std::cout << "    Bgnm::bgnm_max_root_guess_count successfully changed to " << Testing::get_bgnm_max_root_guess_count() << ". \n";
+    }
+    else
+    {
+        std::cout << "    Bgnm::bgnm_max_root_guess_count currently set to " << Testing::get_bgnm_max_root_guess_count() << ". \n";
+    }
+}
+
+void bgnm_root_ind_max_prec (Parsed const * const parsed)
+{
+    std::string new_lim = parsed->check();
+    unsigned nl;
+    if(new_lim != "")
+    {
+        try {nl = (unsigned)std::stoi(new_lim);}
+        catch (...)
+        {
+            std::cout << "    Provided argument is not a number" << std::endl;
+        }
+        Testing::set_bgnm_root_index_max_precision(nl);
+        std::cout << "    Bgnm::bgnm_root_index_max_precision successfully changed to " << Testing::get_bgnm_root_index_max_precision() << ". \n";
+    }
+    else
+    {
+        std::cout << "    Bgnm::bgnm_root_index_max_precision set to " << Testing::get_bgnm_root_index_max_precision() << ". \n";
     }
 }
 

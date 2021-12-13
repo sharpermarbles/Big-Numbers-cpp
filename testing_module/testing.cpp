@@ -35,6 +35,36 @@ double Testing::get_error_threshhold()
     return error_threshhold;
 }
 
+void Testing::set_bgnm_internal_precision_limit(unsigned lim)
+{
+    Bgnm::set_bgnm_internal_precision_limit(lim);
+}
+
+unsigned Testing::get_bgnm_internal_precision_limit()
+{
+    return Bgnm::get_bgnm_internal_precision_limit();
+}
+
+void Testing::set_bgnm_max_root_guess_count(unsigned count)
+{
+    Bgnm::set_bgnm_max_root_guess_count(count);
+}
+
+unsigned Testing::get_bgnm_max_root_guess_count()
+{
+    return Bgnm::get_bgnm_max_root_guess_count();
+}
+
+void Testing::set_bgnm_root_index_max_precision(unsigned prec)
+{
+    Bgnm::set_bgnm_root_index_max_precision(prec);
+}
+
+unsigned Testing::get_bgnm_root_index_max_precision()
+{
+    return Bgnm::get_bgnm_root_index_max_precision();
+}
+
 // rand_int() will return numbers from flr to ceil inclusive
 static uint rand_int(int flr, int ceil)
 {
@@ -105,38 +135,6 @@ static void timer_report( Timer &t, int number = 1 )
     std::cout << "\n    Excecution of " << number << " tests took " << t.report() << std::endl << std::endl;
 }
 
-//static void test_add         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_sub         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_mult        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_div         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_inc_prefix  ( Bgnm * a = NULL, bool show_success = true);
-//static void test_inc_postfix ( Bgnm * a = NULL, bool show_success = true);
-//static void test_dec_prefix  ( Bgnm * a = NULL, bool show_success = true);
-//static void test_dec_postfix ( Bgnm * a = NULL, bool show_success = true);
-//static void test_mod         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_pow         ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_great       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_less        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_great_eql   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_less_eql    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_equal       ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_not_equal   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_shft_rght   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_shft_left   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_add_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_sub_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_mult_eqls   ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_div_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_mod_eqls    ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_root        ( Bgnm * a = NULL, Bgnm * b = NULL, bool show_success = true);
-//static void test_sqrt        ( Bgnm * a = NULL, bool show_success = true);
-//static void test_cbrt        ( Bgnm * a = NULL, bool show_success = true);
-//static void test_abs         ( Bgnm * a = NULL, bool show_success = true);
-//static void test_floor       ( Bgnm * a = NULL, bool show_success = true);
-//static void test_ceil        ( Bgnm * a = NULL, bool show_success = true);
-
-
-
 static void print_e(std::exception &e)
 {
     std::cout << "      " << e.what() << std::endl;
@@ -165,12 +163,12 @@ void Testing::exceptions()
     // exceeded max_root_guess_count 1820
     try
     {
-        Bgnm::set_max_root_guess_count(2);
+        Bgnm::set_bgnm_max_root_guess_count(2);
         Bgnm b8(1234); Bgnm b9 = b8.root(5.6);
     }
     catch(std::exception &e)
     {
-        Bgnm::set_max_root_guess_count(0);
+        Bgnm::set_bgnm_max_root_guess_count(0);
         print_e(e);
     }
     
@@ -183,7 +181,7 @@ void Testing::exceptions()
     catch(std::exception &e) { print_e(e); }
     
     // bgnm_max_root_guess_count out of range 2913
-    try { Bgnm::set_max_root_guess_count(1);}
+    try { Bgnm::set_bgnm_max_root_guess_count(1);}
     catch(std::exception &e) { print_e(e); }
     
     Bgnm b12 ("98765432198765432100098717623984619273846832423451650239847523451362356234523462069384209837405826340587230498572304860238475023984752063452384523745623452345265976293874517823416529387461234013456234875019382475623049857203845623745069872364723984523045983266234562345623462562654321598764325676697005198769238745629387423094857203948750293847520348752039847520938457203948572039845720398475203984752039847520983748783405923740987348758236419298376452734052938452936459238745623847028345982763452374058256293876106203485203.7456");
