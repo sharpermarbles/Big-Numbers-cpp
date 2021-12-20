@@ -717,7 +717,7 @@ static std::string mult_num_strings( std::string_view a, std::string_view b, con
     return final_result;
 }
 
-// This is a custom (more efficient) subtraction function used ONLY by div_num_strings. Runs about 5 times faster than div_num_string(). It's more efficient because there's no need to deal with negatives or decimals, the size of b is gauranteed to be <= to a, and the char array[] c is gauranteed big enough. So no new memory allocation, strings, or arrays are needed and no need to compare location of decimals, add places, etc.
+// This is a custom (more efficient) subtraction function used ONLY by div_num_strings. Runs about 5 times faster than sub_num_string(). It's more efficient because there's no need to deal with negatives or decimals, the size of b is gauranteed to be <= to a, and the char array[] c is gauranteed big enough. So no new memory allocation, strings, or arrays are needed and no need to compare location of decimals, add places, etc.
 static void sub_num_array(std::string_view a, std::string_view b, char * c)
 {
     int right_most_digit_index = (int)a.size() - 1;
@@ -784,7 +784,8 @@ static std::string div_num_strings( std::string_view num_view, std::string_view 
     {
         //num_has_dec = true;
         num_clean_size--; // cuz we're going to ignore the decimal for now
-        num_aft_dec = (int)num_view.size() - (num_dec + 1); if(num_aft_dec < 0) num_aft_dec = 0;
+        num_aft_dec = (int)num_view.size() - (num_dec + 1);
+        if(num_aft_dec < 0) num_aft_dec = 0;
     }
     
     int div_clean_size = (int)div_view.size();
@@ -1129,7 +1130,7 @@ static std::string str_mod(const std::string & number, const std::string & modul
     return ret;
 }
 
-// takes a floating point number as a string and converts it to the integer, numerator, and denominator components (to be used by str_pow and str_root functions when they are given floating point exponents
+// takes a floating point number as a string and converts it to the integer, numerator, and denominator components (to be used by str_pow and str_root functions when they are given floating point exponents)
 // if strip_zeros = true, gets rid of extra zeros in numerator - e.g. if numerator is 0034200, numerator will become 342 and denominator will become 100000 - or essentially 342/100000
 static void str_convert_float_to_fraction_components(const std::string & s, std::string & integer, std::string & numerator, std::string & denominator, bool strip_zeros = false)
 {
@@ -1362,7 +1363,7 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
     if(floating_point_power)
     {
         //final root = base^integer * 1/base^(1/integer - 1/exp)
-        std::string temp_power = sub_num_strings(div_num_strings("1", integer), div_num_strings("1", initial_exp));
+        std::string temp_power = sub_num_strings(div_num_strings("1", integer,internal_dec_limit), div_num_strings("1", initial_exp,internal_dec_limit));
         round_string(temp_power,Bgnm::get_bgnm_root_index_max_precision());
         std::string factor = div_num_strings("1", str_pow(base, temp_power,internal_dec_limit));
         root = mult_num_strings(root, factor);

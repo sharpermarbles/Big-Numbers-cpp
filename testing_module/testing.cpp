@@ -777,10 +777,10 @@ static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
     float randflt = (float)rand_int(1,99); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
     Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_b != NULL) b = _b ;
-    Bgnm c = a->root(randflt);
+    Bgnm c = a->root(b->to_float());
     double af, bf, cf;
     af = a->to_double();
-    bf = randflt;
+    bf = b->to_float();
     cf = pow(af,1.0/bf);
     double diff;
     if(not_equal(c,cf,&diff))
