@@ -245,7 +245,7 @@ class Bgnm
     void operator %= (const N & number);
     void operator %= (const char * cs);
     
-    Bgnm        root(const float & index) const;
+    Bgnm        root(const double & index) const;
     Bgnm        sqrt()  const;     // return square root
     Bgnm        cbrt()  const;     // return cube root
     Bgnm        abs()   const;     // return absolute value

@@ -1130,40 +1130,89 @@ static std::string str_mod(const std::string & number, const std::string & modul
     return ret;
 }
 
-// takes a floating point number as a string and converts it to the integer, numerator, and denominator components (to be used by str_pow and str_root functions when they are given floating point exponents)
-// if strip_zeros = true, gets rid of extra zeros in numerator - e.g. if numerator is 0034200, numerator will become 342 and denominator will become 100000 - or essentially 342/100000
-static void str_convert_float_to_fraction_components(const std::string & s, std::string & integer, std::string & numerator, std::string & denominator, bool strip_zeros = false)
+unsigned find_gcd(unsigned int a, unsigned int b)
 {
-    integer = numerator = "0";
-    denominator = "1";
-    int dec_loc = (int)s.find('.');
-    integer = s.substr(0,dec_loc);
-    if(integer == "") integer = "0";
-    if(s.size() > dec_loc)
+    // using euclidean algorithm
+    //std::cout << "running euclid algorithm recursively... \n";
+    if (a == b) return a;
+    while (a != b)
     {
-        numerator = s.substr(dec_loc +1);
-        if(strip_zeros) strip_trailing_0s(numerator,false,true);
-        denominator.append(numerator.size(),'0');
-        if(strip_zeros) strip_leading_0s(numerator);
-        if(numerator == "") numerator = "0";
+        if(a > b)
+        {
+            if (b==0) return a;
+            return find_gcd(a % b,b);
+        }
+        else
+        {
+            if (a==0) return b;
+            return find_gcd(b % a,a);
+        }
+    }
+    return 1;
+}
+
+void simplify_fraction(unsigned & numerator, unsigned & denominator)
+{
+    // Euclid's algorithm for computing GCD
+    unsigned gcd = find_gcd(numerator,denominator);
+    
+    numerator = numerator/gcd;
+    denominator = denominator/gcd;
+}
+
+// Takes a floating point number as a string and converts it to the integer, numerator, and denominator components (to be used by str_pow and str_root functions when they are given floating point exponents/indeces)
+// Default is to return floating point number (2.375) as a mixed fraction (2 3/8). If "improper" is set to true, then will instead return improper fraction (19/8) - in this case, integer is set to 0.
+
+static void str_convert_float_to_fraction_components(const double & floatpoint, unsigned & integer, unsigned & numerator, unsigned & denominator, bool improper = false)
+{
+    integer = floor(floatpoint);
+    unsigned places = Bgnm::get_bgnm_root_index_max_precision();
+    numerator = floor((floatpoint - integer) * (pow(10,places)));
+    denominator = 1 * pow(10,places);
+ 
+    // now simplify the fraction if possible
+    simplify_fraction(numerator,denominator);
+    
+    if(improper)
+    {
+        numerator = (integer * denominator) + numerator;
+        integer = 0;
     }
 }
 
 // forward declare str_root();
-static std::string str_root(std::string base, std::string exp, const unsigned max_dec_prec = DONT_ADJUST_PRECISION);
+static std::string str_root(std::string base, double exp, const unsigned max_dec_prec = DONT_ADJUST_PRECISION);
 
-// power function, works with integer and floating point base and power numbers
-// Warning: If power is floating point, decimal portion is converted to a fraction, and then str_root() is employed on denominator of that fraction. Therefore multiple decimal places such as .01242 can be very slow because will need to find 100000 root of base, then that root to the power of 1242 - so be careful with floating point powers. If possible, round floating point to as few decimal places as practical prior to running str_pow().
-static std::string str_pow(std::string base, std::string power, const unsigned max_dec_prec = DONT_ADJUST_PRECISION)
+/*
+ power function, works with integer and floating point for both base and power (exponent)
+ Warning: If power is floating point, decimal portion is converted to a fraction, and then str_root() is employed on denominator of that fraction. Therefore multiple decimal places such as .01242 can be very slow because will need to find 100000 root of base, then that root to the power of 1242 - so be careful with floating point powers. If possible, round floating point to as few decimal places as practical prior to running str_pow(). A simplifier function has been added that will attempt to simplify the fraction (if possible) using the euclidean algorithm for finding greatest common denominator. Therefor an index of .375 will be converted to 3/8, which will be calculated as pow(root(x,8),3). This is significantly faster than pow(root(x,1000),375). Just remember (as demonstrated below) that if the root function has an even index, then x necessarily cannot be negative.
+
+ Notes regarding str_root() and str_pow() - These are basically sister functions. Consider the following: (graphing these functions is very helpful at grasping what's going on in each case)
+    x^   3     equivalent to pow(x,3)
+    x^  -3     equivalent to 1/(pow(x,3))
+    x^  1/3    equivalent to root(x,3)
+    x^ -1/3    equivalent to 1/(root(x,3))
+    x^ 1/-3    same as above
+    x^  4      equivalent to pow(x,4)
+    x^ -4      equivalent to 1/(pow(x,4))
+    x^  1/4    equivalent to root(x,4) BUT since root index of x is an even number, x cannot be a negative number
+    x^ -1/4    equivalent to 1/(root(x,4)) and x cannot be negative
+    x^ 1/-4    same as above
+    x^ .375    equivalent to (root(x,1000))^375 or (root(x,8))^3 or pow((root(x,1000),375) or pow(root(x,8)),3)
+    x^ -2.375  equivalent to  1 / ( pow(x,2) * (pow(root(x,1000)),375 ) or
+                              1 / ( pow(x,2) * (pow(root(x,8),3) ) - and x cannot be negative because 8 (and 1000) is even
+    2.375 V x  (2.375th root of x) = x^(1/(2 3/8)) = x^(8/19) = (19Vx)^8 equivalent to pow(root(x,19),8)
+ */
+static std::string str_pow(std::string base, double power, const unsigned max_dec_prec = DONT_ADJUST_PRECISION)
 {
     
     const unsigned internal_dec_limit = Bgnm::get_bgnm_internal_precision_limit();
     
     // negative power means final result ret needs to be 1/ret
     bool negative_power = false;
-    if(power[0]=='-')
+    if(power < 0)
     {
-        power.erase(0,1);
+        power = (power * -1); // make power positive
         negative_power = true;
     }
     
@@ -1177,45 +1226,36 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
     
     // anything to power of zero equals 1
     if(equal_to_zero(base)) return "0";
-    if(equal_to_zero(power)) return "1";
+    if(power == 0) return "1";
     
     //if power is floating point, convert decimal portion to fraction for use later
     bool floating_point_power = false;
-    std::string numerator = "0", denominator = "1", integer = power, temp_base = base;
-    if(power.find('.')!=std::string::npos)
+    std::string temp_base = base;
+    unsigned integer = 0, numerator = 0, denominator = 1, power_as_int = 0;
+    if((power - floor(power)) > 0)
     {
         floating_point_power = true;
-        str_convert_float_to_fraction_components(power, integer, numerator, denominator,true);
-        power = integer;
+        str_convert_float_to_fraction_components(power, integer, numerator, denominator);
+        power_as_int = integer;
         // ingnore floating point in case of a power such as XXXX.0
-        if(equal_to_zero(numerator)) floating_point_power = false;
+        if(numerator == 0) floating_point_power = false;
     }
     
-    std::string ret = "1", zero = "0", one = "1", two = "2";
+    std::string ret = "1";
     
-    while(comp_strs(power,zero,true))
+    while(power_as_int > 0)
     {
-        float fl;
-        try{
-            fl = stof(str_mod(power,two));
-        }
-        catch(std::exception &e)
-        {
-            throw Bgnm_error("Error converting str_mod(power,2) result to float type in str_pow().",__FILENAME__,__LINE__,"str_pow",114);
-            //std::cout << "error with " << fl << " e is : " << e.what() << std::endl;
-        }
-        if(fl == 1.0 )
+        if ((power_as_int % 2) == 1)
         { // if power % 2 = 1
-            //if(stof(str_mod(power,two)) == 1.0 ){ // if power % 2 = 1
             // ret = ret * base
             ret = mult_num_strings(ret,base,internal_dec_limit);
             // power = (power-1) / 2
-            power = div_num_strings(sub_num_strings(power,one),two,internal_dec_limit);
+            power_as_int = (power_as_int - 1) / 2;
         }
         else
         {
             // power = power / 2
-            power = div_num_strings(power,two,internal_dec_limit);
+            power_as_int = power_as_int / 2;
         }
         base = mult_num_strings(base,base,internal_dec_limit);
     }
@@ -1225,9 +1265,8 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
     if(floating_point_power)
     {
         std::string partial;
-        partial = str_pow(str_root(temp_base,denominator,internal_dec_limit), numerator,internal_dec_limit);
+        partial = str_pow(str_root(temp_base, denominator, internal_dec_limit), numerator, internal_dec_limit);
         ret = mult_num_strings(ret,partial,internal_dec_limit);
-
     }
     
     // if power was negative, need to inverse ret
@@ -1237,31 +1276,122 @@ static std::string str_pow(std::string base, std::string power, const unsigned m
     
     if(negative_base)
     {
-        if(str_mod(integer, "2") != "0" && numerator == "0") ret.insert(0,"-");
+        if((integer % 2) != 0 && numerator == 0) ret.insert(0,"-");
     }
     return ret;
-    
 }
 
 
+// Time to calculate root is dramatically affected by how good the initial guess iswhen using Newton-Raphson algorithm. Here we convert the string to scientific notation and then use log10 and anti logarithm to estimate the root. The return value should get the first several significant digits correct, and leave the rest up to Newton-Raphson to fine tune. (Note, this )
+static double initial_guess_for_root(const std::string & radicand, const double & index)
+{
+//    std::string initial_root = "1.1";
+//    long int_exp = exp;
+//    if(int_exp > 999 && int_exp < 5000)
+//    {
+//        initial_root = "1.01";
+//    }
+//    else if(int_exp > 4999 && int_exp < 10000)
+//    {
+//        initial_root = "1.01";
+//    }
+//    else if(int_exp > 9999)
+//    {
+//        int log_10_digits = ((int)log10(int_exp))+1;
+//        initial_root = "1.";
+//        for(int i=0; i < (log_10_digits - 4);i++)
+//        {
+//            initial_root.push_back('0');
+//        }
+//        initial_root.push_back('1');
+//    }
+//    return initial_root;
+    
+    // index √ radicand | e.g. 4.31 √ 8714
+    double root = 1,x,log_of_x,power,anti_log_of_power;
+    int log,power_int;
+
+    // convert radicand to scientific notation | radicand = x * 10^log | e.g. ( 4.31 √ 872 = 4.31 √ (8.714 * 10^3 )
+    // start by creating a mantissa array (here called num) with 15 decimal places (plus integer, decimal, and null byte - so char array of 18)
+    // (because even a long double type is only accurate about 15 places out at the most)
+    int size,dec,first;
+    char num[18];
+    for(int i = 0; i < 18; i++) num[i]='0'; // initialize to zero
+    num[17]='\0'; // null byte
+    size = (int)radicand.size();
+    dec = (int)radicand.find('.');
+    first = (int)radicand.find_first_not_of("0.");
+    if(dec == std::string::npos) dec = (int)radicand.size();
+    if(first == std::string::npos) return 0; // str equals zero
+    if(dec < first)
+    {
+        log = dec - first;
+    }
+    else
+    {
+        log = dec -1 -first;
+    }
+
+    int j=0,i=first;
+    for(;(i<size && j<17);i++)
+    {
+        if(radicand[i]=='.') continue;
+        else
+        {
+            if(j==0)
+            {
+                num[j]=radicand[i];
+                num[j+1]='.';
+                j=2;
+            }
+            else
+            {
+                num[j]=radicand[i];
+                j++;
+            }
+        }
+    }
+    // convert mantissa from string to double
+    x = std::stod(num);
+    
+    // find log10 of x | e.g. log10(8.714) = 0.940 | therefore 4.31 √ (10^0.94 * 10^3) = 4.31 √ (10^3.94)
+    log_of_x = log10(x);
+
+    // index √ (10^(log_of_x+log)) = 10^(10^(log_of_x+log))/index) | e.g. 4.31 √ (10^(.94 + 3))) = 10^(3.94/4.31) = 10^.91415 * 10^0
+    power = (log_of_x + log)/index;
+    
+    // split power into integer portion (power_int) and decimal portion (power)
+    power_int = floor(power);
+    power = power - power_int;
+    
+    // find anti logarithm of power | e.g. base 10 anti log of 0.914 = 8.204
+    anti_log_of_power = pow(10,power);
+    
+    // root = anti_log_of_power * 10^power_int | e.g. root = 8.204 * 10^0 = 8.204
+    root = anti_log_of_power * pow(10,power_int);
+    
+    return root;
+}
+
 //uses a Newton-Raphson type algorithm to find exp root of base
-static std::string str_root(std::string base, std::string initial_exp, const unsigned max_dec_prec)
+static std::string str_root(std::string base, double initial_exp, const unsigned max_dec_prec)
 {
     
     const unsigned internal_dec_limit   = Bgnm::get_bgnm_internal_precision_limit();
     const unsigned max_root_guess_count = Bgnm::get_bgnm_max_root_guess_count();
+    const unsigned index_precision  = Bgnm::get_bgnm_root_index_max_precision();
     
-    // exp or intitial_exp stand for exponent - but since we're talking roots, I really should have named it index - as in index of the radical
+    // exp or intitial_exp stands for exponent - but since we're talking roots, I really should have named it index - as in index of the radical
     
-    std::string numerator = "0", denominator = "1", integer = initial_exp, exp = initial_exp;
+    //std::string numerator = "0", denominator = "1";
+    double exp = initial_exp;
     
-    // negative exponent means issue error
-    // There is no universally accepted definition for how to handle Negative exponents (indices) for radicals. Here we will define a negative index as:
-    //           -index root of x = index root of (1/x)
-    if(exp[0]=='-')
+    // There is no universally accepted definition for how to handle a negative index root of a radical (-n √ x).
+    // Here we will define a negative index as:  -n √ x = n √ (1/x)
+    if(exp < 0)
     {
-        exp.erase(0,1);
-        initial_exp.erase(0,1);
+        exp = (exp * -1); // make power positive
+        initial_exp = (initial_exp * -1);
         base = div_num_strings("1", base);
     }
     
@@ -1275,108 +1405,89 @@ static std::string str_root(std::string base, std::string initial_exp, const uns
     
     if(equal_to_zero(base)) return "0";
     
+    std::string root = "1";
+    
     // need to issue exception/error in this case, cannot have a zero root
-    if(equal_to_zero(initial_exp))  throw Bgnm_error("Cannot calculate a root of base with a zero index.",__FILENAME__,__LINE__,__FUNCTION__,104);
+    if(initial_exp == 0)  throw Bgnm_error("Cannot calculate a root of base with a zero index.",__FILENAME__,__LINE__,__FUNCTION__,104);
     
-    //if exp is floating point, convert decimal portion to fraction for use later
-    bool floating_point_power = false;
-    if(initial_exp.find('.')!=std::string::npos)
+    //if index is floating point...
+    unsigned integer = 0, numerator = 0, denominator = 1;
+    if((initial_exp - floor(initial_exp)) > 0) // if initial exp is not an integer
     {
-        floating_point_power = true;
-        str_convert_float_to_fraction_components(initial_exp, integer, numerator, denominator,true);
-        exp = integer;
-        // ingnore floating point in case of a power such as XXXX.0
-        if(equal_to_zero(numerator)) floating_point_power = false;
+        // convert floating point index to improper fraction
+        str_convert_float_to_fraction_components(initial_exp, integer, numerator, denominator, true);
+
+        // e.g. 2.375 root of x = 2 3/8 root of x = 19/8 root of x = (19 root of x) ^ 8
+        // root = pow(root(x,numerator),denominator)
+        root = str_pow(str_root(base,numerator),denominator);
     }
-    
-    //come up with initial guess
-    //if answer base is less than one
-    
-    std::string trial, inst_slope, offset;
-    
-    // at some point need to come up with a better algorithm for guessing initial_root based on magnitude of base and exp. Time to calculate is dramatically affected by how good the initial guess is, and sometimes simply by weather guess is above or below the real answer - mostly due to the way Newton-Raphson works
-    std::string initial_root = "1.1";
-    long int_exp = stol(exp);
-    if(int_exp > 999 && int_exp < 5000)
+    // otherwise index is not floating point...
+    else
     {
-        initial_root = "1.01";
-    }
-    else if(int_exp > 4999 && int_exp < 10000)
-    {
-        initial_root = "1.01";
-    }
-    else if(int_exp > 9999)
-    {
-        int log_10_digits = ((int)log10(int_exp))+1;
-        initial_root = "1.";
-        for(int i=0; i < (log_10_digits - 4);i++)
-        {
-            initial_root.push_back('0');
-        }
-        initial_root.push_back('1');
-    }
-    
-    std::string root = initial_root;
-    std::string prev_root = ".9";
-    int x = 0;
-    
-    while(
-          (!comp_strs_equal(prev_root, root, internal_dec_limit-1)) && // once guessing is good enough, these two will become equal, in which case you're done (required to be equal except for last decimal place in order to prevent unnending loops that toggle the last decimal place due to rounding
-          (x < max_root_guess_count) // max_root_guess_count - sets an absolute max amount of work that the function is allowed to put in - if reaches max_root_guess_count, returns zero and should throw exception
-          )
-    {
-        //set a limit to not allow root to increase or decrease over previously attempted root by more than a factor of ten. If that happens, instead replace root with slightly adjusted root. (In testing, found that the second guess was sometimes astronomically greater, and the algorithm would take forever to come back to reality.
-        if(comp_strs(root, mult_num_strings(prev_root, "10")))
-        {
-            root = mult_num_strings(prev_root, "1.1");
-        }
-        else if(comp_strs(div_num_strings(prev_root, "10"), root))
-        {
-            root = div_num_strings(prev_root, "1.1");
-        }
+        std::string trial, inst_slope, offset;
         
-        prev_root = root;
-        trial = str_pow(root,exp,internal_dec_limit);
-        //calculate slope of line (derivative) at guess. The first dirivative of x^e is ex^(e-1), which gives the slope at guess x in order to use newton(?) algorithm for adjusting the next guess
-        inst_slope = mult_num_strings(exp,str_pow(root,(sub_num_strings(exp,"1")),internal_dec_limit));
-        //now find the y offset of that line when the y axis value is equal to trial
-        // trial = (slope * root) + offset     (e.g.  y = 2x - 5 )
-        // offset = trial - (slope * root)
-        offset = sub_num_strings(trial,(mult_num_strings(inst_slope, root)));
+        // Get an apropriate initial guess for root to plug into Newton-Raphson.
+        root = initial_guess_for_root(base, exp);
         
-        //now if the slope is the new line of guestimation, set y value equal to base, and find the x or root value for that line
-        // y = (slope * root) + y_offset   (y is base)
-        // (base - y_offset)/slope = root
-        root = div_num_strings(sub_num_strings(base,offset),inst_slope,internal_dec_limit);
+        // after adjusting the initial_guess_for_root() function algorithm, probably need to adjust this initial prev_root variable too.
+        std::string prev_root = "0";
+        int x = 0;
         
-        x++;
-        //RETURN 0 AS ERROR IF MAXIMUM LOOP COUNT REACHED
-        if(x >= max_root_guess_count)
+        while(
+              (!comp_strs_equal(prev_root, root, internal_dec_limit-1)) && // once guessing is good enough, these two will become equal, in which case you're done (required to be equal except for last decimal place in order to prevent unnending loops that toggle the last decimal place due to rounding
+              (x < max_root_guess_count) // max_root_guess_count - sets an absolute max amount of work that the function is allowed to put in - if reaches max_root_guess_count, returns zero and should throw exception
+              )
         {
-            std::string e = "Number of attempts to find root exceeded max_root_guess_count (" + std::to_string(max_root_guess_count) + "). Review use of str_root() or use set_max_root_guess_count(unsigned count) to increase number of allowed attempts.";
-            throw Bgnm_error(e.c_str(),__FILENAME__,__LINE__,__FUNCTION__,105);
+            // FOR NOW DELETING THIS FOLLOWING GUARDRAIL ROUTINE BECAUSE I TRUST THE NEW initial_guess_for_root() FUNCTION ENOUGH THAT I DON'T THINK I NEED THIS ANYMORE
+            /*
+            //set a limit to not allow root to increase or decrease over previously attempted root by more than a factor of ten. If that happens, instead replace root with slightly adjusted root. (In testing, found that the second guess was sometimes astronomically greater, and the algorithm would take forever to come back to reality.
+            if(comp_strs(root, mult_num_strings(prev_root, "10")))
+            {
+                root = mult_num_strings(prev_root, "1.1");
+            }
+            else if(comp_strs(div_num_strings(prev_root, "10"), root))
+            {
+                root = div_num_strings(prev_root, "1.1");
+            }
+             */
             
+            prev_root = root;
+            trial = str_pow(root,exp,internal_dec_limit);
+            //calculate slope of line (derivative) at guess. The first dirivative of x^e is ex^(e-1), which gives the slope at guess x in order to use Newton-Raphson algorithm for adjusting the next guess
+            inst_slope = mult_num_strings(std::to_string(exp),str_pow(root,exp-1,internal_dec_limit));
+            //now find the y offset of that line when the y axis value is equal to trial
+            // trial = (slope * root) + offset     (e.g.  y = 2x - 5 )
+            // offset = trial - (slope * root)
+            offset = sub_num_strings(trial,(mult_num_strings(inst_slope, root)));
+            
+            //now if the slope is the new line of guestimation, set y value equal to base, and find the x or root value for that line
+            // y = (slope * root) + y_offset   (y is base)
+            // (base - y_offset)/slope = root
+            root = div_num_strings(sub_num_strings(base,offset),inst_slope,internal_dec_limit);
+            
+            x++;
+            //RETURN 0 AS ERROR IF MAXIMUM LOOP COUNT REACHED
+            if(x >= max_root_guess_count)
+            {
+                std::string e = "Number of attempts to find root exceeded max_root_guess_count (" + std::to_string(max_root_guess_count) + "). Review use of str_root() or use set_max_root_guess_count(unsigned count) to increase number of allowed attempts.";
+                throw Bgnm_error(e.c_str(),__FILENAME__,__LINE__,__FUNCTION__,105);
+                
+            }
         }
-    }
-    
-    // figure in decimal/fraction portion of exponent if exists
-    if(floating_point_power)
-    {
-        //final root = base^integer * 1/base^(1/integer - 1/exp)
-        std::string temp_power = sub_num_strings(div_num_strings("1", integer,internal_dec_limit), div_num_strings("1", initial_exp,internal_dec_limit));
-        round_string(temp_power,Bgnm::get_bgnm_root_index_max_precision());
-        std::string factor = div_num_strings("1", str_pow(base, temp_power,internal_dec_limit));
-        root = mult_num_strings(root, factor);
     }
     
     if(max_dec_prec != DONT_ADJUST_PRECISION) round_string(root,max_dec_prec);
     
     if(negative_base)
     {
-        if(str_mod(integer, "2") != "0" && numerator == "0") root.insert(0,"-");
+        if(str_mod(std::to_string(integer), "2") != "0" && numerator == 0) root.insert(0,"-");
     }
     
+    // DELETED THE FOLLOWING ROUNDING ACTION BECAUSE I DON'T THINK THE ROOT_INDEX_MAX_PRECISION_CONCEPT IS NECESSARY AT ALL ANYMORE - NEED TO LOOK AT IT AGAIN
+    /*
+    // Not sure this should be left in here. The idea here is that if the index had a certain number of significant digits, then the final returned root should not pretend to have more precision
     if(floating_point_power) round_string(root,Bgnm::get_bgnm_root_index_max_precision());
+    */
     
     return root;
 }
@@ -1834,38 +1945,35 @@ template<> Bgnm Bgnm::operator % (const std::string & s) const
 template<> Bgnm Bgnm::operator ^ (const Bgnm & bn) const
 {
     Bgnm ret;
-    ret.val = str_pow(this->val,bn.val);
+    ret.val = str_pow(this->val,bn.to_double());
     return ret;
 }
 
 template<> Bgnm Bgnm::operator ^ (const int & i) const
 {
     Bgnm ret;
-    ret.val = str_pow(this->val,std::to_string(i));
+    ret.val = str_pow(this->val,i);
     return ret;
 }
 
 template<> Bgnm Bgnm::operator ^ (const float & f) const
 {
     Bgnm ret;
-    std::string s = floatconversion(f);
-    ret.val = str_pow(this->val,s);
+    ret.val = str_pow(this->val,f);
     return ret;
 }
 
 template<> Bgnm Bgnm::operator ^ (const double & d) const
 {
     Bgnm ret;
-    std::string s = floatconversion(d);
-    ret.val = str_pow(this->val,s);
+    ret.val = str_pow(this->val,d);
     return ret;
 }
 
 template<> Bgnm Bgnm::operator ^ (const long double & ld) const
 {
     Bgnm ret;
-    std::string s = floatconversion(ld);
-    ret.val = str_pow(this->val,s);
+    ret.val = str_pow(this->val,ld);
     return ret;
 }
 
@@ -1874,7 +1982,7 @@ Bgnm Bgnm::operator ^ (const char * cs) const
     Bgnm ret;
     std::string s(cs);
     if(!check_input(s,__FUNCTION__)) return ret;
-    ret.val = str_pow(this->val,s);
+    ret.val = str_pow(this->val,std::stod(cs));
     return ret;
 }
 
@@ -1882,7 +1990,7 @@ template<> Bgnm Bgnm::operator ^ (const std::string & s) const
 {
     Bgnm ret;
     if(!check_input(s,__FUNCTION__)) return ret;
-    ret.val = str_pow(this->val,s);
+    ret.val = str_pow(this->val,std::stod(s));
     return ret;
 }
 
@@ -2416,21 +2524,20 @@ template<> void Bgnm::operator %= (const std::string & s)
     if(check_input(s,__FUNCTION__)) this->val = str_mod(this->val,s);
 }
 
-Bgnm Bgnm::root(const float & index) const
+Bgnm Bgnm::root(const double & index) const
 {
-    std::string ind = std::to_string(index);
-    return str_root(this->val,ind);
+    return str_root(this->val,index);
 }
 
 Bgnm Bgnm::sqrt() const
 {
     if(this->val[0] == '-') throw Bgnm_error("Cannot calculate square root of negative value.",__FILENAME__,__LINE__,__FUNCTION__,106);
-    return str_root(this->val,"2");
+    return str_root(this->val,2);
 }
 
 Bgnm Bgnm::cbrt() const
 {
-    return str_root(this->val,"3");
+    return str_root(this->val,3);
 }
 
 void Bgnm::set_bgnm_internal_precision_limit(unsigned precision)

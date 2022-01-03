@@ -230,7 +230,7 @@ static bool not_equal(Bgnm &bn, double &db, double *diff)
     }
 }
 
-std::string opers[10] = {" ++X"," --X"," X++"," X--"," 2V "," 3V ", " abs"," flr", " clg"};
+std::string opers[10] = {" ++X"," --X"," X++"," X--"," 2√ "," 3√ ", " abs"," flr", " clg"};
 static bool single_term(const std::string_view operand)
 {
     for (int i = 0; i < 11; i++)
