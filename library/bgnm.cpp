@@ -1160,7 +1160,7 @@ void simplify_fraction(unsigned & numerator, unsigned & denominator)
     denominator = denominator/gcd;
 }
 
-// Takes a floating point number as a string and converts it to the integer, numerator, and denominator components (to be used by str_pow and str_root functions when they are given floating point exponents/indeces)
+// Takes a floating point number (non-negative!) as a string and converts it to the integer, numerator, and denominator components (to be used by str_pow and str_root functions when they are given floating point exponents/indices)
 // Default is to return floating point number (2.375) as a mixed fraction (2 3/8). If "improper" is set to true, then will instead return improper fraction (19/8) - in this case, integer is set to 0.
 
 static void str_convert_float_to_fraction_components(const double & floatpoint, unsigned & integer, unsigned & numerator, unsigned & denominator, bool improper = false)
@@ -1237,16 +1237,16 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
         floating_point_power = true;
         str_convert_float_to_fraction_components(power, integer, numerator, denominator);
         power_as_int = integer;
-        // ingnore floating point in case of a power such as XXXX.0
-        if(numerator == 0) floating_point_power = false;
+//        // ingnore floating point in case of a power such as XXXX.0
+//        if(numerator == 0) floating_point_power = false;
     }
     
     std::string ret = "1";
     
     while(power_as_int > 0)
     {
-        if ((power_as_int % 2) == 1)
-        { // if power % 2 = 1
+        if ((power_as_int % 2) == 1) // if power % 2 = 1
+        {
             // ret = ret * base
             ret = mult_num_strings(ret,base,internal_dec_limit);
             // power = (power-1) / 2
@@ -1283,7 +1283,7 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
 
 
 // Time to calculate root is dramatically affected by how good the initial guess iswhen using Newton-Raphson algorithm. Here we convert the string to scientific notation and then use log10 and anti logarithm to estimate the root. The return value should get the first several significant digits correct, and leave the rest up to Newton-Raphson to fine tune. (Note, this )
-static double initial_guess_for_root(const std::string & radicand, const double & index)
+std::string initial_guess_for_root(const std::string & radicand, const double & index)
 {
 //    std::string initial_root = "1.1";
 //    long int_exp = exp;
@@ -1370,7 +1370,7 @@ static double initial_guess_for_root(const std::string & radicand, const double 
     // root = anti_log_of_power * 10^power_int | e.g. root = 8.204 * 10^0 = 8.204
     root = anti_log_of_power * pow(10,power_int);
     
-    return root;
+    return std::to_string(root);
 }
 
 //uses a Newton-Raphson type algorithm to find exp root of base
