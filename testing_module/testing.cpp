@@ -219,8 +219,8 @@ static bool not_equal(Bgnm &bn, long double &db, long double *diff)
     long double temp = bn.to_long_double();
     long double denominator;
     db == 0 ? denominator = 1 : denominator = db ; // just in case div by zero problem
-    *diff =  (temp - db)/denominator; // difference is the difference between the two numbers divided by the size of one of them (to give it relative weighting)
-    if(*diff < Testing::get_error_threshhold()) // determine both to be equivelant if the two results are within one one-hundred-millionth of each other
+    *diff =  abs((temp - db)/denominator); // difference is the absolute value of the difference between the two numbers divided by the size of one of them (to give it relative weighting)
+    if(*diff < Testing::get_error_threshhold()) // determine both to be equivelant if the two results are within the error threshhold
     {
         return false;
     }
