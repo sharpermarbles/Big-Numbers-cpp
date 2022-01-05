@@ -251,7 +251,7 @@ class Bgnm
     Bgnm        abs()   const;     // return absolute value
     Bgnm        floor() const;     // round down to integer
     Bgnm        ceil()  const;     // round up to integer
-    bool        equal(const Bgnm & bn, const int precision) const; //same as == operator except will check equality
+    bool        equal(const Bgnm & bn, const int precision) const; //same as == operator except can check equality up to a given precision
     Bgnm        round(const int i) const;
     
     int         to_int() const;

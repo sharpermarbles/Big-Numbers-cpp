@@ -214,10 +214,10 @@ void Testing::exceptions()
 }
 
 // provide both the bgnm answer and the float answer, and also a double pointer to put the calculated difference into
-static bool not_equal(Bgnm &bn, double &db, double *diff)
+static bool not_equal(Bgnm &bn, long double &db, long double *diff)
 {
-    double temp = bn.to_double();
-    double denominator;
+    long double temp = bn.to_long_double();
+    long double denominator;
     db == 0 ? denominator = 1 : denominator = db ; // just in case div by zero problem
     *diff =  (temp - db)/denominator; // difference is the difference between the two numbers divided by the size of one of them (to give it relative weighting)
     if(*diff < Testing::get_error_threshhold()) // determine both to be equivelant if the two results are within one one-hundred-millionth of each other
@@ -248,12 +248,17 @@ static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, std::s
     std::string c_ar = ""; c_ar.insert(0,CHAR_ARRAY_SIZE * 2,' ');
     std::string d_ar = ""; d_ar.insert(0,CHAR_ARRAY_SIZE,' ');
     std::string as = a->to_string(), bs = b->to_string(), cs = c->to_string();
-    a_ar.replace(a_ar.size()-as.size(),as.size(),as);
+    if(oper == " 2√ " || oper == " 3√ ") a_ar.replace(0,as.size(),as);
+    else a_ar.replace(a_ar.size()-as.size(),as.size(),as);
     b_ar.replace(0,bs.size(),bs);
     c_ar.replace(0,cs.size(),cs);
     if(single_term(oper)) // ignore term b if operand doesn't take a second term (e.g. ++ or << or clg)
     {
-        std::cout << "    " << a_ar << oper << d_ar << " = " << c_ar << std::endl;
+        if(oper == " 2√ " || oper == " 3√ ")
+        {
+            std::cout << "    " << d_ar << oper << a_ar << " = " << c_ar << std::endl;
+        }
+        else std::cout << "    " << a_ar << oper << d_ar << " = " << c_ar << std::endl;
     }
     else
     {
@@ -269,12 +274,17 @@ static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, bool c = true, std::st
     std::string c_ar = "true";
     std::string d_ar = ""; d_ar.insert(0,CHAR_ARRAY_SIZE,' ');
     std::string as = a->to_string(), bs = b->to_string();
-    a_ar.replace(a_ar.size()-as.size(),as.size(),as);
+    if(oper == " 2√ " || oper == " 3√ ") a_ar.replace(0,as.size(),as);
+    else a_ar.replace(a_ar.size()-as.size(),as.size(),as);
     b_ar.replace(0,bs.size(),bs);
     if(!c) c_ar = "false";
     if(single_term(oper)) // ignore term b if operand doesn't take a second term (e.g. ++ or << or clg)
     {
-        std::cout << "    " << a_ar << oper << d_ar << " = " << c_ar << std::endl;
+        if(oper == " 2√ " || oper == " 3√ ")
+        {
+            std::cout << "    " << d_ar << oper << a_ar << " = " << c_ar << std::endl;
+        }
+        else std::cout << "    " << a_ar << oper << d_ar << " = " << c_ar << std::endl;
     }
     else
     {
@@ -282,7 +292,7 @@ static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, bool c = true, std::st
     }
 }
 
-static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, double *af = NULL, double* bf = NULL, double* cf = NULL, double* diff = NULL, std::string oper = "")
+static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, long double *af = NULL, long double* bf = NULL, long double* cf = NULL, long double* diff = NULL, std::string oper = "")
 {
     
     std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHHOLD ----\n";
@@ -299,7 +309,7 @@ static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, double
     std::cout << "\n";
 }
 
-static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, bool c = false, double* af = NULL, double* bf = NULL, bool cf = false, std::string oper = "")
+static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, bool c = false, long double* af = NULL, long double* bf = NULL, bool cf = false, std::string oper = "")
 {
     std::string str_false = "false", ans1 = "true ", ans2 = "true ";
     if(!c) ans1 = str_false;
@@ -318,11 +328,11 @@ static void test_add(Bgnm * _a, Bgnm* _b, bool show_success)
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
     Bgnm c = *a + *b;
-    double af, bf, cf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af + bf;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," +  ");
     else if ( show_success ) print_success(a,b,&c," +  ");
 }
@@ -335,11 +345,11 @@ static void test_sub(Bgnm * _a, Bgnm* _b, bool show_success)
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
     Bgnm c = *a - *b;
-    double af, bf, cf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af - bf;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," -  ");
     else if ( show_success ) print_success(a,b,&c," -  ");
 }
@@ -351,11 +361,11 @@ static void test_mult(Bgnm * _a, Bgnm* _b, bool show_success)
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
     Bgnm c = *a * *b;
-    double af, bf, cf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af * bf;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff))
     {
         print_failure(a,b,&c,&af,&bf,&cf,&diff," x  ");
@@ -371,11 +381,11 @@ static void test_div(Bgnm * _a, Bgnm* _b, bool show_success)
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
     Bgnm c = *a / *b;
-    double af, bf, cf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af / bf;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(a,b,&c,&af,&bf,&cf,&diff," /  ");
     else if ( show_success ) print_success(a,b,&c," /  ");
 }
@@ -387,12 +397,12 @@ static void test_inc_prefix(Bgnm * _a, bool show_success)
     if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = ++*a;
-    double af, bf, cf, af_temp;
-    af = a_temp.to_double();
+    long double af, bf, cf, af_temp;
+    af = a_temp.to_long_double();
     af_temp = af;
-    bf = b->to_double();
+    bf = b->to_long_double();
     cf = ++af;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," ++X");
     else if ( show_success ) print_success(&a_temp,b,&c," ++X");
 }
@@ -404,12 +414,12 @@ static void test_inc_postfix(Bgnm * _a, bool show_success)
     if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = *a++;
-    double af, bf, cf, af_temp;
-    af = a_temp.to_double();
+    long double af, bf, cf, af_temp;
+    af = a_temp.to_long_double();
     af_temp = af;
-    bf = b->to_double();
+    bf = b->to_long_double();
     cf = af++;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," X++");
     else if ( show_success ) print_success(&a_temp,b,&c," X++");
 }
@@ -421,12 +431,12 @@ static void test_dec_prefix(Bgnm * _a, bool show_success)
     if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = --*a;
-    double af, bf, cf, af_temp;
-    af = a_temp.to_double();
+    long double af, bf, cf, af_temp;
+    af = a_temp.to_long_double();
     af_temp = af;
-    bf = b->to_double();
+    bf = b->to_long_double();
     cf = --af;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," --X");
     else if ( show_success ) print_success(&a_temp,b,&c," --X");
 }
@@ -438,12 +448,12 @@ static void test_dec_postfix(Bgnm * _a, bool show_success)
     if (_a != NULL) a = _a ;
     Bgnm a_temp = *a;
     Bgnm c = *a--;
-    double af, bf, cf, af_temp;
-    af = a_temp.to_double();
+    long double af, bf, cf, af_temp;
+    af = a_temp.to_long_double();
     af_temp = af;
-    bf = b->to_double();
+    bf = b->to_long_double();
     cf = af--;
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," X--");
     else if ( show_success ) print_success(&a_temp,b,&c," X--");
 }
@@ -455,11 +465,11 @@ static void test_mod(Bgnm * _a, Bgnm* _b, bool show_success)
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
     Bgnm c = *a % *b;
-    double af, bf, cf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = fmod(af,bf);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff))
     {
         print_failure(a,b,&c,&af,&bf,&cf,&diff," %  ");
@@ -470,20 +480,23 @@ static void test_mod(Bgnm * _a, Bgnm* _b, bool show_success)
 static void test_pow(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm(); // forcing possitive numbers until can fix issue with negative modulo operations
-    float randint = (int)rand_int(1,45); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
+    float randflt = (int)rand_int(1,45); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
     
     // make about half of the tests have a floating point exponent
-    if(rand_int(1,2) == 2) randint = randint/rand_int(2,45);
+    if(rand_int(1,2) == 1) randflt = randflt/rand_int(2,45);
+    
+    // make about a fourth of the test have a negative exponent
+    if(rand_int(1,4) == 1) randflt *= -1;
 
-    Bgnm* b = new Bgnm(randint); // forcing possitive numbers until can fix issue with negative modulo operations
+    Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
     Bgnm c = *a ^ *b;
-    double af, bf, cf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = pow(af,bf);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff))
     {
         print_failure(a,b,&c,&af,&bf,&cf,&diff," ^  ");
@@ -502,9 +515,9 @@ static void test_great( Bgnm * _a, Bgnm* _b, bool show_success)
     rand_int(1,5) == 1 ? *b = *a: true;
     bool c = *a > *b;
     bool cf;
-    double af, bf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af > bf;
     if(c != cf)
     {
@@ -523,9 +536,9 @@ static void test_less( Bgnm * _a, Bgnm* _b, bool show_success)
     rand_int(1,5) == 1 ? *b = *a: true;
     bool c = *a < *b;
     bool cf;
-    double af, bf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af < bf;
     if(c != cf)
     {
@@ -544,9 +557,9 @@ static void test_great_eql( Bgnm * _a, Bgnm* _b, bool show_success)
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a >= *b;
     bool cf;
-    double af, bf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af >= bf;
     if(c != cf)
     {
@@ -565,9 +578,9 @@ static void test_less_eql( Bgnm * _a, Bgnm* _b, bool show_success)
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a <= *b;
     bool cf;
-    double af, bf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af <= bf;
     if(c != cf)
     {
@@ -586,9 +599,9 @@ static void test_equal( Bgnm * _a, Bgnm* _b, bool show_success )
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a == *b;
     bool cf;
-    double af, bf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af == bf;
     if(c != cf)
     {
@@ -607,9 +620,9 @@ static void test_not_equal( Bgnm * _a, Bgnm* _b, bool show_success )
     rand_int(1,2) == 1 ? *b = *a: true;
     bool c = *a != *b;
     bool cf;
-    double af, bf;
-    af = a->to_double();
-    bf = b->to_double();
+    long double af, bf;
+    af = a->to_long_double();
+    bf = b->to_long_double();
     cf = af != bf;
     if(c != cf)
     {
@@ -635,10 +648,10 @@ static void test_shft_rght( Bgnm * _a, Bgnm * _b, bool show_success )
     Bgnm* b = new Bgnm(shift_x);
     *a >> shift_x;
     Bgnm c = *a;
-    double af, af_temp, bf, cf;
+    long double af, af_temp, bf, cf;
     try
     {
-        af = a_temp.to_double();
+        af = a_temp.to_long_double();
     }
     catch (std::exception &e)
     {
@@ -647,7 +660,7 @@ static void test_shft_rght( Bgnm * _a, Bgnm * _b, bool show_success )
     af_temp = af;
     bf = (double)shift_x;
     cf = af / pow(10,shift_x);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," >> ");
     else if ( show_success ) print_success(&a_temp,b,&c," >> ");
 }
@@ -669,10 +682,10 @@ static void test_shft_left( Bgnm * _a, Bgnm * _b, bool show_success )
     Bgnm* b = new Bgnm(shift_x);
     *a << shift_x;
     Bgnm c = *a;
-    double af, af_temp, bf, cf;
+    long double af, af_temp, bf, cf;
     try
     {
-        af = a_temp.to_double();
+        af = a_temp.to_long_double();
     }
     catch (std::exception &e)
     {
@@ -681,7 +694,7 @@ static void test_shft_left( Bgnm * _a, Bgnm * _b, bool show_success )
     af_temp = af;
     bf = (double)shift_x;
     cf = af * (double)pow(10,shift_x);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(&a_temp,b,&c,&af_temp,&bf,&cf,&diff," << ");
     else if ( show_success ) print_success(&a_temp,b,&c," << ");
 }
@@ -694,11 +707,11 @@ static void test_add_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
     if (_b != NULL) b = _b ;
     Bgnm a_temp = *a; // save a
     *a += *b;
-    double af, af_temp, bf;
-    af = a_temp.to_double(); // save af
-    bf = b->to_double();
+    long double af, af_temp, bf;
+    af = a_temp.to_long_double(); // save af
+    bf = b->to_long_double();
     af += bf;
-    double diff;
+    long double diff;
     if(not_equal(*a,af,&diff)) print_failure(&a_temp,b,a,&af_temp,&bf,&af,&diff," += ");
     else if ( show_success ) print_success(&a_temp,b,a," += ");
 }
@@ -711,12 +724,12 @@ static void test_sub_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
     if (_b != NULL) b = _b ;
     Bgnm a_temp = *a; // save a
     *a -= *b;
-    double af, af_temp, bf;
-    af = a_temp.to_double(); // save af
+    long double af, af_temp, bf;
+    af = a_temp.to_long_double(); // save af
     af_temp = af; // save af
-    bf = b->to_double();
+    bf = b->to_long_double();
     af -= bf;
-    double diff;
+    long double diff;
     if(not_equal(*a,af,&diff)) print_failure(&a_temp,b,a,&af_temp,&bf,&af,&diff," -= ");
     else if ( show_success ) print_success(&a_temp,b,a," -= ");
 }
@@ -729,12 +742,12 @@ static void test_mult_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
     if (_b != NULL) b = _b ;
     Bgnm a_temp = *a; // save a
     *a *= *b;
-    double af, af_temp, bf;
-    af = a_temp.to_double();
+    long double af, af_temp, bf;
+    af = a_temp.to_long_double();
     af_temp = af; // save af
-    bf = b->to_double();
+    bf = b->to_long_double();
     af *= bf;
-    double diff;
+    long double diff;
     if(not_equal(*a,af,&diff)) print_failure(&a_temp,b,a,&af_temp,&bf,&af,&diff," *= ");
     else if ( show_success ) print_success(&a_temp,b,a," *= ");
 }
@@ -747,12 +760,12 @@ static void test_div_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
     if (_b != NULL) b = _b ;
     Bgnm a_temp = *a; // save a
     *a /= *b;
-    double af, af_temp, bf;
-    af = a_temp.to_double();
+    long double af, af_temp, bf;
+    af = a_temp.to_long_double();
     af_temp = af; // save af
-    bf = b->to_double();
+    bf = b->to_long_double();
     af /= bf;
-    double diff;
+    long double diff;
     if(not_equal(*a,af,&diff)) print_failure(&a_temp,b,a,&af_temp,&bf,&af,&diff," /= ");
     else if ( show_success ) print_success(&a_temp,b,a," /= ");
 }
@@ -765,11 +778,11 @@ static void test_mod_eqls( Bgnm * _a, Bgnm* _b, bool show_success )
     if (_b != NULL) b = _b ;
     Bgnm a_temp = *a; // save a
     *a %= *b;
-    double af, bf, cf;
-    af = a_temp.to_double();
-    bf = b->to_double();
+    long double af, bf, cf;
+    af = a_temp.to_long_double();
+    bf = b->to_long_double();
     cf = fmod(af,bf);
-    double diff;
+    long double diff;
     if(not_equal(*a,cf,&diff)) print_failure(&a_temp,b,a,&af,&bf,&cf,&diff," %= ");
     else if ( show_success ) print_success(&a_temp,b,a," %= ");
 }
@@ -783,14 +796,17 @@ static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
     // make about half of the tests have a floating point index
     if(rand_int(1,2) == 2) randflt = randflt/rand_int(2,45);
     
+    // make about a fourth of the test have a negative exponent
+    if(rand_int(1,4) == 1) randflt *= -1;
+    
     Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_b != NULL) b = _b ;
     Bgnm c = a->root(b->to_float());
-    double af, bf, cf;
-    af = a->to_double();
+    long double af, bf, cf;
+    af = a->to_long_double();
     bf = b->to_float();
     cf = pow(af,1.0/bf);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff))
     {
         print_failure(b,a,&c,&bf,&af,&cf,&diff," √  ");
@@ -803,10 +819,10 @@ static void test_sqrt( Bgnm * _a, bool show_success )
     Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
     Bgnm c = a->sqrt();
-    double af, cf;
-    af = a->to_double();
+    long double af, cf;
+    af = a->to_long_double();
     cf = pow(af,1.0/2.0);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff))
     {
         print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 2√ ");
@@ -819,10 +835,10 @@ static void test_cbrt( Bgnm * _a, bool show_success )
     Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
     Bgnm c = a->cbrt();
-    double af, cf;
-    af = a->to_double();
+    long double af, cf;
+    af = a->to_long_double();
     cf = pow(af,1.0/3.00);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff))
     {
         print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 3√ ");
@@ -835,10 +851,10 @@ static void test_abs( Bgnm * _a, bool show_success )
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
     Bgnm c = a->abs();
-    double af, cf;
-    af = a->to_double();
+    long double af, cf;
+    af = a->to_long_double();
     cf = abs(af);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," abs");
     else if ( show_success ) print_success(a,new Bgnm,&c," abs");
 }
@@ -848,10 +864,10 @@ static void test_floor( Bgnm * _a, bool show_success )
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
     Bgnm c = a->floor();
-    double af, cf;
-    af = a->to_double();
+    long double af, cf;
+    af = a->to_long_double();
     cf = floor(af);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," flr");
     else if ( show_success ) print_success(a,new Bgnm,&c," flr");
 }
@@ -861,10 +877,10 @@ static void test_ceil( Bgnm * _a, bool show_success )
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
     Bgnm c = a->ceil();
-    double af, cf;
-    af = a->to_double();
+    long double af, cf;
+    af = a->to_long_double();
     cf = ceil(af);
-    double diff;
+    long double diff;
     if(not_equal(c,cf,&diff)) print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," clg");
     else if ( show_success ) print_success(a,new Bgnm,&c," clg");
 }

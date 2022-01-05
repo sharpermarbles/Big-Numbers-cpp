@@ -1201,7 +1201,7 @@ static std::string str_root(std::string base, double exp, const unsigned max_dec
     x^ .375    equivalent to (root(x,1000))^375 or (root(x,8))^3 or pow((root(x,1000),375) or pow(root(x,8)),3)
     x^ -2.375  equivalent to  1 / ( pow(x,2) * (pow(root(x,1000)),375 ) or
                               1 / ( pow(x,2) * (pow(root(x,8),3) ) - and x cannot be negative because 8 (and 1000) is even
-    2.375 V x  (2.375th root of x) = x^(1/(2 3/8)) = x^(8/19) = (19Vx)^8 equivalent to pow(root(x,19),8)
+    2.375 √ x  (2.375th root of x) = x^(1/(2 3/8)) = x^(8/19) = (19Vx)^8 equivalent to pow(root(x,19),8)
  */
 static std::string str_pow(std::string base, double power, const unsigned max_dec_prec = DONT_ADJUST_PRECISION)
 {
@@ -1248,6 +1248,8 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
         power_as_int = power;
     }
     
+    unsigned original_power_as_int = power_as_int;
+    
     std::string ret = "1";
     
     while(power_as_int > 0)
@@ -1283,13 +1285,13 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
     
     if(negative_base)
     {
-        if((integer % 2) != 0 && numerator == 0) ret.insert(0,"-");
+        if((original_power_as_int % 2) != 0 && numerator == 0) ret.insert(0,"-");
     }
     return ret;
 }
 
 
-// Time to calculate root is dramatically affected by how good the initial guess iswhen using Newton-Raphson algorithm. Here we convert the string to scientific notation and then use log10 and anti logarithm to estimate the root. The return value should get the first several significant digits correct, and leave the rest up to Newton-Raphson to fine tune. (Note, this )
+// Time to calculate root is dramatically affected by how good the initial guess iswhen using Newton-Raphson algorithm. Here we convert the string to scientific notation and then use log10 and anti logarithm to estimate the root. The return value should get the first several significant digits correct, and leave the rest up to Newton-Raphson to fine tune.
 std::string initial_guess_for_root(const std::string & radicand, const double & index)
 {
 //    std::string initial_root = "1.1";
@@ -2630,6 +2632,10 @@ double Bgnm::to_double() const
     try { return std::stod(this->val);}
     catch (std::exception e)
     {
+        
+        // GET RID OF THIS NEXT LINE - ONLY FOR TESTING PURPOSES
+        std::cout << "THIS BGNM CANNOT CONVERT TO DOUBLE:  " << this->val << std::endl;
+        
         throw Bgnm_error("Could not convert Bgnm type to double.",__FILENAME__,__LINE__,__FUNCTION__,112);
     }
 }
@@ -2640,6 +2646,9 @@ long double Bgnm::to_long_double() const
     try { return std::stold(this->val);}
     catch (std::exception e)
     {
+        // GET RID OF THIS NEXT LINE - ONLY FOR TESTING PURPOSES
+        std::cout << "THIS BGNM CANNOT CONVERT TO LONG DOUBLE:  " << this->val << std::endl;
+        
         throw Bgnm_error("Could not convert Bgnm type to long double.",__FILENAME__,__LINE__,__FUNCTION__,113);
     }
 }
