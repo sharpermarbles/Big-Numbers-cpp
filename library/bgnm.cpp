@@ -300,7 +300,7 @@ static bool comp_strs(const std::string_view a_str, const std::string_view b_str
 }
 
 // compare two string numbers (integer or floating point) return true if a is numerically equal to b
-static bool comp_strs_equal(const std::string_view & a_str, const std::string_view & b_str, const unsigned int precision = 0xffffffff)
+static bool comp_strs_equal(const std::string_view & a_str, const std::string_view & b_str, const unsigned int precision = 0xffffffff, unsigned * counter = NULL)
 {
     //note - precision sets how many digits right of decimal must be equal for the function to return true
     
@@ -359,11 +359,13 @@ static bool comp_strs_equal(const std::string_view & a_str, const std::string_vi
     if (dec_size > b_dec.size()) dec_size = (int)b_dec.size();
     for(;i<dec_size && i<precision;i++)
     {
+        if (counter != NULL) *counter = i; // this is only for roots_dont_match()
         if(a_dec[i] > b_dec[i] || a_dec[i] < b_dec[i]) return false;
     }
     if(diff < 0) long_dec = b_dec; // b_dec is longer, has a panhandle
     for(;i < dec_size + abs(diff) && i < precision;i++)
     { // check the panhadle, if > 0, means true (if a) false (if b)
+        if (counter != NULL) *counter = i; // this is only for roots_dont_match()
         if(long_dec[i] > '0') return false;
     }
     
@@ -1224,11 +1226,13 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
         negative_base = true;
     }
     
-    // anything to power of zero equals 1
+    // if base is zero, return zero
     if(equal_to_zero(base)) return "0";
+    
+    // anything to power of zero equals 1
     if(power == 0) return "1";
     
-    // if power is 1, x^1 = x, so just return base
+    // if power is 1 just return base
     if(power == 1) return base;
     
     //if power is floating point, convert decimal portion to fraction for use later
@@ -1317,7 +1321,7 @@ std::string initial_guess_for_root(const std::string & radicand, const double & 
 //    return initial_root;
     
     // index √ radicand | e.g. 4.31 √ 8714
-    double root = 1,x,log_of_x,power,anti_log_of_power;
+    long double root = 1.0,x,log_of_x,power,anti_log_of_power;
     int log,power_int;
 
     // convert radicand to scientific notation | radicand = x * 10^log | e.g. ( 4.31 √ 872 = 4.31 √ (8.714 * 10^3 )
@@ -1361,7 +1365,7 @@ std::string initial_guess_for_root(const std::string & radicand, const double & 
         }
     }
     // convert mantissa from string to double
-    x = std::stod(num);
+    x = std::stold(num);
     
     // find log10 of x | e.g. log10(8.714) = 0.940 | therefore 4.31 √ (10^0.94 * 10^3) = 4.31 √ (10^3.94)
     log_of_x = log10(x);
@@ -1379,8 +1383,31 @@ std::string initial_guess_for_root(const std::string & radicand, const double & 
     // root = anti_log_of_power * 10^power_int | e.g. root = 8.204 * 10^0 = 8.204
     root = anti_log_of_power * pow(10,power_int);
     
-    //return as string
-    return std::to_string(root);
+    return floatconversion(root);
+
+}
+
+static bool roots_dont_match(const std::string & prev_root, const std::string & root, unsigned * counter1, unsigned * counter2)
+{
+//    std::string diff = sub_num_strings(prev_root, root);
+//    std::cout << diff << std::endl;
+    
+    unsigned * counter = new unsigned (0);
+    
+    bool no_match = !comp_strs_equal(prev_root, root, Bgnm::get_bgnm_internal_precision_limit(), counter);
+    // Counter keeps track of the decimal place Newton-Raphson is narrowing in on (e.g. if the difference
+    // between roots is .00004 on one round and .0000002 on the next round, the counter will be 5 on one round
+    // and 7 on the next, which shows that the algorithm is still making progress). If Newton-Raphson
+    // is stuck on the same decimal place for two rounds in a row then assume that's the best it can do
+    // and just return false (meaning that the roots finally match and Newton-Raphson is done). It might be
+    // simpler programming to just take the actual difference between both roots each time and compare to
+    // the previous difference, but that would be significantly more expensive. In theory there could be a
+    // scenario where the algorithm is returning roots that vary back and forth between e.g. 17 places
+    // 18 places back to 17 places and so on. This little check with counter will not preven that and
+    // still would need to be some kind of guard to prevent.
+    if(*counter == *counter1) return false;
+    if(*counter != *counter1) *counter1 = *counter;
+    return no_match;
 }
 
 //uses a Newton-Raphson type algorithm to find exp root of base
@@ -1443,8 +1470,9 @@ static std::string str_root(std::string base, double initial_exp, const unsigned
         std::string prev_root = "0";
         int x = 0;
         
+        unsigned counter1 = 1, counter2 = 1;
         while(
-              (!comp_strs_equal(prev_root, root, internal_dec_limit-1)) && // once guessing is good enough, these two will become equal, in which case you're done (required to be equal except for last decimal place in order to prevent unnending loops that toggle the last decimal place due to rounding
+              (roots_dont_match(prev_root, root, &counter1, &counter2)) && // once guessing is good enough, these two will become equal, in which case you're done (required to be equal except for last decimal place in order to prevent unnending loops that toggle the last decimal place due to rounding
               (x < max_root_guess_count) // max_root_guess_count - sets an absolute max amount of work that the function is allowed to put in - if reaches max_root_guess_count, returns zero and should throw exception
               )
         {

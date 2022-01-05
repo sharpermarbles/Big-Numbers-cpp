@@ -801,9 +801,9 @@ static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
     
     Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_b != NULL) b = _b ;
-    Bgnm c = a->root(b->to_float());
+    Bgnm c = a->root(b->to_double());
     long double af, bf, cf;
-    af = a->to_long_double();
+    af = a->to_double();
     bf = b->to_float();
     cf = pow(af,1.0/bf);
     long double diff;
