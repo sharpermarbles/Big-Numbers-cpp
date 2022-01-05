@@ -1228,10 +1228,13 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
     if(equal_to_zero(base)) return "0";
     if(power == 0) return "1";
     
+    // if power is 1, x^1 = x, so just return base
+    if(power == 1) return base;
+    
     //if power is floating point, convert decimal portion to fraction for use later
     bool floating_point_power = false;
     std::string temp_base = base;
-    unsigned integer = 0, numerator = 0, denominator = 1, power_as_int = 0;
+    unsigned integer = 0, numerator = 0, denominator = 1, power_as_int;
     if((power - floor(power)) > 0)
     {
         floating_point_power = true;
@@ -1239,6 +1242,10 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
         power_as_int = integer;
 //        // ingnore floating point in case of a power such as XXXX.0
 //        if(numerator == 0) floating_point_power = false;
+    }
+    else
+    {
+        power_as_int = power;
     }
     
     std::string ret = "1";
@@ -1370,6 +1377,7 @@ std::string initial_guess_for_root(const std::string & radicand, const double & 
     // root = anti_log_of_power * 10^power_int | e.g. root = 8.204 * 10^0 = 8.204
     root = anti_log_of_power * pow(10,power_int);
     
+    //return as string
     return std::to_string(root);
 }
 

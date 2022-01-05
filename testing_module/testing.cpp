@@ -470,7 +470,11 @@ static void test_mod(Bgnm * _a, Bgnm* _b, bool show_success)
 static void test_pow(Bgnm * _a, Bgnm* _b, bool show_success)
 {
     Bgnm* a = rand_bgnm(); // forcing possitive numbers until can fix issue with negative modulo operations
-    int randint = (int)rand_int(1,9999); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
+    float randint = (int)rand_int(1,45); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
+    
+    // make about half of the tests have a floating point exponent
+    if(rand_int(1,2) == 2) randint = randint/rand_int(2,45);
+
     Bgnm* b = new Bgnm(randint); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
     if (_b != NULL) b = _b ;
@@ -774,7 +778,11 @@ static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
 {
     Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
-    float randflt = (float)rand_int(1,99); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
+    float randflt = (float)rand_int(1,45); // FOR NOW JUST STICKING TO SMALL INTEGER POWERS - NEED TO DO MORE ROBUST TESTING!!
+        
+    // make about half of the tests have a floating point index
+    if(rand_int(1,2) == 2) randflt = randflt/rand_int(2,45);
+    
     Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_b != NULL) b = _b ;
     Bgnm c = a->root(b->to_float());
@@ -785,9 +793,9 @@ static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
     double diff;
     if(not_equal(c,cf,&diff))
     {
-        print_failure(a,b,&c,&af,&bf,&cf,&diff," xV ");
+        print_failure(b,a,&c,&bf,&af,&cf,&diff," √  ");
     }
-    else if ( show_success ) print_success(a,b,&c," xV ");
+    else if ( show_success ) print_success(b,a,&c," √  ");
 }
 
 static void test_sqrt( Bgnm * _a, bool show_success )
@@ -801,9 +809,9 @@ static void test_sqrt( Bgnm * _a, bool show_success )
     double diff;
     if(not_equal(c,cf,&diff))
     {
-        print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 2V ");
+        print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 2√ ");
     }
-    else if ( show_success ) print_success(a,new Bgnm,&c," 2V ");
+    else if ( show_success ) print_success(a,new Bgnm,&c," 2√ ");
 }
 
 static void test_cbrt( Bgnm * _a, bool show_success )
@@ -817,9 +825,9 @@ static void test_cbrt( Bgnm * _a, bool show_success )
     double diff;
     if(not_equal(c,cf,&diff))
     {
-        print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 3V ");
+        print_failure(a,new Bgnm,&c,&af,NULL,&cf,&diff," 3√ ");
     }
-    else if ( show_success ) print_success(a,new Bgnm,&c," 3V ");
+    else if ( show_success ) print_success(a,new Bgnm,&c," 3√ ");
 }
 
 static void test_abs( Bgnm * _a, bool show_success )
@@ -1056,9 +1064,7 @@ static void perform_random_test(bool show_all = true)
         case 8:
             test_mod(NULL, NULL, show_all); break;
         case 9:
-            std::cout << "    --skipping test_pow()--" << std::endl;
-            //test_pow(NULL, NULL, show_all);
-            break;
+            test_pow(NULL, NULL, show_all); break;
         case 10:
             test_great(NULL, NULL, show_all); break;
         case 11:
@@ -1086,17 +1092,11 @@ static void perform_random_test(bool show_all = true)
         case 22:
             test_mod_eqls(NULL, NULL, show_all); break;
         case 23:
-            std::cout << "    --skipping test_root()--" << std::endl;
-            //test_root(NULL, NULL, show_all);
-            break;
+            test_root(NULL, NULL, show_all); break;
         case 24:
-            std::cout << "    --skipping test_sqrt()--" << std::endl;
-            //test_sqrt(NULL, show_all);
-            break;
+            test_sqrt(NULL, show_all); break;
         case 25:
-            std::cout << "    --skipping test_cbrt()--" << std::endl;
-            //test_cbrt(NULL, show_all);
-            break;
+            test_cbrt(NULL, show_all); break;
         case 26:
             test_abs(NULL, show_all); break;
         case 27:
