@@ -353,7 +353,6 @@ static bool comp_strs_equal(const std::string_view & a_str, const std::string_vi
     
     // compare a and b decimal components
     diff = (int)a_dec.size() - (int)b_dec.size();
-    //a_shift=0; b_shift=0; i=0;
     std::string_view long_dec = a_dec; // assume that a is longer, has the panhandle
     int dec_size = (int)a_dec.size();
     if (dec_size > b_dec.size()) dec_size = (int)b_dec.size();
@@ -1291,35 +1290,17 @@ static std::string str_pow(std::string base, double power, const unsigned max_de
     {
         if((original_power_as_int % 2) != 0 && numerator == 0) ret.insert(0,"-");
     }
+    
+    // There should be no situation where the return value would be zero at this point. If it is, it means the internal precision wasn't high enough to calculate properly. Throw error instructing to increase internal precision limit (default of 25).
+    if(equal_to_zero(ret))  throw Bgnm_error("Internal precision is not high enough to calculate this power. Increase GLOBAL_INTERNAL_PRECISION_LIMIT in order to allow power function to properly calculate this result.",__FILENAME__,__LINE__,__FUNCTION__,117);
+    
     return ret;
 }
 
 
-// Time to calculate root is dramatically affected by how good the initial guess iswhen using Newton-Raphson algorithm. Here we convert the string to scientific notation and then use log10 and anti logarithm to estimate the root. The return value should get the first several significant digits correct, and leave the rest up to Newton-Raphson to fine tune.
+// Time to calculate root is dramatically affected by how good the initial guess is when using Newton-Raphson algorithm. Here we convert the string to scientific notation and then use log10 and anti logarithm to estimate the root. The return value should get the first several significant digits correct, and leave the rest up to Newton-Raphson to fine tune.
 std::string initial_guess_for_root(const std::string & radicand, const double & index)
 {
-//    std::string initial_root = "1.1";
-//    long int_exp = exp;
-//    if(int_exp > 999 && int_exp < 5000)
-//    {
-//        initial_root = "1.01";
-//    }
-//    else if(int_exp > 4999 && int_exp < 10000)
-//    {
-//        initial_root = "1.01";
-//    }
-//    else if(int_exp > 9999)
-//    {
-//        int log_10_digits = ((int)log10(int_exp))+1;
-//        initial_root = "1.";
-//        for(int i=0; i < (log_10_digits - 4);i++)
-//        {
-//            initial_root.push_back('0');
-//        }
-//        initial_root.push_back('1');
-//    }
-//    return initial_root;
-    
     // index √ radicand | e.g. 4.31 √ 8714
     long double root = 1.0,x,log_of_x,power,anti_log_of_power;
     int log,power_int;
@@ -1395,7 +1376,7 @@ static bool roots_dont_match(const std::string & prev_root, const std::string & 
     unsigned * counter = new unsigned (0);
     
     bool no_match = !comp_strs_equal(prev_root, root, Bgnm::get_bgnm_internal_precision_limit(), counter);
-    // Counter keeps track of the decimal place Newton-Raphson is narrowing in on (e.g. if the difference
+    // Counter keeps track of the decimal place that Newton-Raphson is narrowing in on (e.g. if the difference
     // between roots is .00004 on one round and .0000002 on the next round, the counter will be 5 on one round
     // and 7 on the next, which shows that the algorithm is still making progress). If Newton-Raphson
     // is stuck on the same decimal place for two rounds in a row then assume that's the best it can do
@@ -1403,7 +1384,7 @@ static bool roots_dont_match(const std::string & prev_root, const std::string & 
     // simpler programming to just take the actual difference between both roots each time and compare to
     // the previous difference, but that would be significantly more expensive. In theory there could be a
     // scenario where the algorithm is returning roots that vary back and forth between e.g. 17 places
-    // 18 places back to 17 places and so on. This little check with counter will not preven that and
+    // 18 places back to 17 places and so on. This little check with counter will not prevent that and
     // still would need to be some kind of guard to prevent.
     if(*counter == *counter1) return false;
     if(*counter != *counter1) *counter1 = *counter;
@@ -1416,11 +1397,9 @@ static std::string str_root(std::string base, double initial_exp, const unsigned
     
     const unsigned internal_dec_limit   = Bgnm::get_bgnm_internal_precision_limit();
     const unsigned max_root_guess_count = Bgnm::get_bgnm_max_root_guess_count();
-    const unsigned index_precision  = Bgnm::get_bgnm_root_index_max_precision();
     
     // exp or intitial_exp stands for exponent - but since we're talking roots, I really should have named it index - as in index of the radical
     
-    //std::string numerator = "0", denominator = "1";
     double exp = initial_exp;
     
     // There is no universally accepted definition for how to handle a negative index root of a radical (-n √ x).
@@ -1455,7 +1434,6 @@ static std::string str_root(std::string base, double initial_exp, const unsigned
         str_convert_float_to_fraction_components(initial_exp, integer, numerator, denominator, true);
 
         // e.g. 2.375 root of x = 2 3/8 root of x = 19/8 root of x = (19 root of x) ^ 8
-        // root = pow(root(x,numerator),denominator)
         root = str_pow(str_root(base,numerator),denominator);
     }
     // otherwise index is not floating point...
@@ -1470,29 +1448,16 @@ static std::string str_root(std::string base, double initial_exp, const unsigned
         std::string prev_root = "0";
         int x = 0;
         
-        unsigned counter1 = 1, counter2 = 1;
+        unsigned counter1 = 0xffffffff, counter2 = 0xffffffff;
         while(
               (roots_dont_match(prev_root, root, &counter1, &counter2)) && // once guessing is good enough, these two will become equal, in which case you're done (required to be equal except for last decimal place in order to prevent unnending loops that toggle the last decimal place due to rounding
               (x < max_root_guess_count) // max_root_guess_count - sets an absolute max amount of work that the function is allowed to put in - if reaches max_root_guess_count, returns zero and should throw exception
               )
         {
-            // FOR NOW DELETING THIS FOLLOWING GUARDRAIL ROUTINE BECAUSE I TRUST THE NEW initial_guess_for_root() FUNCTION ENOUGH THAT I DON'T THINK I NEED THIS ANYMORE
-            /*
-            //set a limit to not allow root to increase or decrease over previously attempted root by more than a factor of ten. If that happens, instead replace root with slightly adjusted root. (In testing, found that the second guess was sometimes astronomically greater, and the algorithm would take forever to come back to reality.
-            if(comp_strs(root, mult_num_strings(prev_root, "10")))
-            {
-                root = mult_num_strings(prev_root, "1.1");
-            }
-            else if(comp_strs(div_num_strings(prev_root, "10"), root))
-            {
-                root = div_num_strings(prev_root, "1.1");
-            }
-             */
-            
             prev_root = root;
             trial = str_pow(root,exp,internal_dec_limit);
             //calculate slope of line (derivative) at guess. The first dirivative of x^e is ex^(e-1), which gives the slope at guess x in order to use Newton-Raphson algorithm for adjusting the next guess
-            inst_slope = mult_num_strings(std::to_string(exp),str_pow(root,exp-1,internal_dec_limit));
+            inst_slope = mult_num_strings(floatconversion(exp),str_pow(root,exp-1,internal_dec_limit));
             //now find the y offset of that line when the y axis value is equal to trial
             // trial = (slope * root) + offset     (e.g.  y = 2x - 5 )
             // offset = trial - (slope * root)
@@ -1521,11 +1486,8 @@ static std::string str_root(std::string base, double initial_exp, const unsigned
         if(str_mod(std::to_string(integer), "2") != "0" && numerator == 0) root.insert(0,"-");
     }
     
-    // DELETED THE FOLLOWING ROUNDING ACTION BECAUSE I DON'T THINK THE ROOT_INDEX_MAX_PRECISION_CONCEPT IS NECESSARY AT ALL ANYMORE - NEED TO LOOK AT IT AGAIN
-    /*
-    // Not sure this should be left in here. The idea here is that if the index had a certain number of significant digits, then the final returned root should not pretend to have more precision
-    if(floating_point_power) round_string(root,Bgnm::get_bgnm_root_index_max_precision());
-    */
+    // There should be no situation where the root would be zero at this point, if it is, it means the internal precision wasn't high enough to calculate a miniscule root. Throw error instructing to increase internal precision limit (default of 25).
+    if(equal_to_zero(root))  throw Bgnm_error("Internal precision is not high enough to calculate this root. Increase GLOBAL_INTERNAL_PRECISION_LIMIT in order to allow root function to properly calculate this root.",__FILENAME__,__LINE__,__FUNCTION__,116);
     
     return root;
 }
@@ -2562,20 +2524,20 @@ template<> void Bgnm::operator %= (const std::string & s)
     if(check_input(s,__FUNCTION__)) this->val = str_mod(this->val,s);
 }
 
-Bgnm Bgnm::root(const double & index) const
+Bgnm root(const Bgnm & b, const double & index)
 {
-    return str_root(this->val,index);
+    return str_root(b.val,index);
 }
 
-Bgnm Bgnm::sqrt() const
+Bgnm sqrt(const Bgnm & b)
 {
-    if(this->val[0] == '-') throw Bgnm_error("Cannot calculate square root of negative value.",__FILENAME__,__LINE__,__FUNCTION__,106);
-    return str_root(this->val,2);
+    if(b.val[0] == '-') throw Bgnm_error("Cannot calculate square root of negative value.",__FILENAME__,__LINE__,__FUNCTION__,106);
+    return str_root(b.val,2);
 }
 
-Bgnm Bgnm::cbrt() const
+Bgnm cbrt(const Bgnm & b)
 {
-    return str_root(this->val,3);
+    return str_root(b.val,3);
 }
 
 void Bgnm::set_bgnm_internal_precision_limit(unsigned precision)
@@ -2693,16 +2655,16 @@ char* Bgnm::to_c_string() const
     return ret;
 }
 
-Bgnm Bgnm::abs() const
+Bgnm abs(const Bgnm & b)
 {
-    Bgnm ret = this->val;
+    Bgnm ret = b.val;
     if(ret.val[0] == '-') ret.val.erase(0,1);
     return ret;
 }
 
-Bgnm Bgnm::floor() const
+Bgnm floor(const Bgnm & b)
 {
-    Bgnm ret = this->val;
+    Bgnm ret = b.val;
     unsigned long dec_loc = ret.val.find('.');
     //if negative, then basically figure ceil() for negative number
     if(ret.val[0] == '-' && dec_loc != std::string::npos)
@@ -2725,9 +2687,9 @@ Bgnm Bgnm::floor() const
     return ret;
 }
 
-Bgnm Bgnm::ceil() const
+Bgnm ceil(const Bgnm & b)
 {
-    Bgnm ret = this->val;
+    Bgnm ret = b.val;
     unsigned long dec_loc = ret.val.find('.');
     //if negative, then basically, figure floor() for negative number
     if(ret.val[0] == '-' && dec_loc != std::string::npos)
@@ -2741,7 +2703,7 @@ Bgnm Bgnm::ceil() const
             // if there is even a small fraction, increment integer value and return
             if(ret.val[i] > '0')
             {
-                ret = ret.floor();
+                ret = floor(ret);
                 return ++ret;
             }
         }
@@ -2751,16 +2713,29 @@ Bgnm Bgnm::ceil() const
     return ret;
 }
 
-bool Bgnm::equal(const Bgnm & bn, const int precision) const
+bool equal(const Bgnm & a, const Bgnm & b, const int precision)
 {
-    return comp_strs_equal(this->val, bn.val,precision);
+    return comp_strs_equal(a.val, b.val, precision);
 }
 
-Bgnm Bgnm::round(const int i) const
+Bgnm round(const Bgnm & b, const int i)
 {
-    std::string ret_str = this->val;
+    std::string ret_str = b.val;
     round_string(ret_str, i);
     Bgnm ret(ret_str);
     return ret;
 }
 
+int          to_int         (const Bgnm & b) { return b.to_int();         }
+long long    to_long_long   (const Bgnm & b) { return b.to_long_long();   }
+float        to_float       (const Bgnm & b) { return b.to_float();       }
+double       to_double      (const Bgnm & b) { return b.to_double();      }
+long double  to_long_double (const Bgnm & b) { return b.to_long_double(); }
+std::string  to_string      (const Bgnm & b) { return b.to_string();      }
+char*        to_c_string    (const Bgnm & b) { return b.to_c_string();    }
+
+std::ostream &operator<< ( std::ostream &s, const Bgnm & bn)
+{
+   s << bn.val;
+   return s;
+}

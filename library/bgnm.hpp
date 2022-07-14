@@ -93,6 +93,8 @@ the following operators are overloaded to facilitate seamless math operations an
  
     for now add_num_strings can be used for increment (and sub_num_strings for decremebt) - but really this should be a new function to perform the operation much faster to add and subtract one
  
+    Possible improvement to main multiply function - maybe redo the algorithm to use a Fast Fourier Transform (FFT) algorithm for faster multiplication of polynomials. I almost went ahead to implement this until I realized this would have inherent loss of precision due to the inclusion of euler's number and pi in the equations. Maybe it's still worth looking at, but need to decide what the precision loss is and when that's acceptable. The Bgnm library is intended to be accurate to nearly every digit that it returns from every function - which is not the case for most calculators especially for floating point calculations.
+ 
  */
 
 
@@ -118,6 +120,7 @@ the following operators are overloaded to facilitate seamless math operations an
 //  define main Bgnm (big number) class
 class Bgnm
 {
+private:
     
     static unsigned bgnm_internal_precision_limit;
     static unsigned bgnm_max_root_guess_count;
@@ -125,20 +128,7 @@ class Bgnm
     
     std::string val;
 
-    public:
-    
-    //  overload << operator for ostream so you can do stuff like "std::cout << Bgnm << std::endl"
-    friend std::ostream &operator<<( std::ostream &s, const Bgnm & bn)
-    {
-       s << bn.val;
-       return s;
-    }
-    
-    // overload std::to_string() for easy conversion from Bgnm to std::string
-    friend std::string to_string( const Bgnm & bn)
-    {
-        return bn.val;
-    }
+public:
     
     //  Constructors
     Bgnm();
@@ -245,15 +235,6 @@ class Bgnm
     void operator %= (const N & number);
     void operator %= (const char * cs);
     
-    Bgnm        root(const double & index) const;
-    Bgnm        sqrt()  const;     // return square root
-    Bgnm        cbrt()  const;     // return cube root
-    Bgnm        abs()   const;     // return absolute value
-    Bgnm        floor() const;     // round down to integer
-    Bgnm        ceil()  const;     // round up to integer
-    bool        equal(const Bgnm & bn, const int precision) const; //same as == operator except can check equality up to a given precision
-    Bgnm        round(const int i) const;
-    
     int         to_int() const;
     long long   to_long_long() const;
     float       to_float() const;
@@ -261,6 +242,31 @@ class Bgnm
     long double to_long_double() const;
     std::string to_string() const;
     char*       to_c_string() const;
+    
+    // friend functions...
+    
+    // equivelant to member functions above
+    friend int          to_int(const Bgnm &);
+    friend long long    to_long_long(const Bgnm &);
+    friend float        to_float(const Bgnm &);
+    friend double       to_double(const Bgnm &);
+    friend long double  to_long_double(const Bgnm &);
+    friend std::string  to_string(const Bgnm &);
+    friend char*        to_c_string(const Bgnm &);
+    
+    //  overload << operator for stuff like "std::cout << Bgnm;"
+    friend std::ostream &operator<<( std::ostream &s, const Bgnm & bn);
+
+    // other essential functions
+    friend Bgnm  root(const Bgnm &, const double & index); // return index root of Bgnm
+    friend Bgnm  sqrt(const Bgnm &);  // return square root
+    friend Bgnm  cbrt(const Bgnm &);  // return cube root
+    friend Bgnm   abs(const Bgnm &);  // return absolute value
+    friend Bgnm floor(const Bgnm &);  // round down to integer
+    friend Bgnm  ceil(const Bgnm &);  // round up to integer
+    friend bool equal(const Bgnm &, const Bgnm &, const int precision); //same as == operator except can check equality up to a given precision
+    friend Bgnm round(const Bgnm &, const int i);
+
     
 }; //end of class definition
 

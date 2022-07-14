@@ -157,14 +157,14 @@ void Testing::exceptions()
     catch(std::exception &e) { print_e(e); }
     
     // root of base with zero index 1743
-    try { Bgnm b6(123), b7; b7 = b6.root(0);}
+    try { Bgnm b6(123), b7; b7 = root(b6,0);}
     catch(std::exception &e) { print_e(e); }
     
     // exceeded max_root_guess_count 1820
     try
     {
         Bgnm::set_bgnm_max_root_guess_count(2);
-        Bgnm b8(1234); Bgnm b9 = b8.root(5.6);
+        Bgnm b8(1234); Bgnm b9 = root(b8,5.6);
     }
     catch(std::exception &e)
     {
@@ -173,7 +173,7 @@ void Testing::exceptions()
     }
     
     // calculate square root of negative value 2891
-    try { Bgnm b10(-1234); Bgnm b11 = b10.sqrt(); }
+    try { Bgnm b10(-1234); Bgnm b11 = sqrt(b10); }
     catch(std::exception &e) { print_e(e); }
     
     // bgnm_internal_precision_limit out of range 2902
@@ -801,7 +801,7 @@ static void test_root( Bgnm * _a, Bgnm* _b, bool show_success )
     
     Bgnm* b = new Bgnm(randflt); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_b != NULL) b = _b ;
-    Bgnm c = a->root(b->to_double());
+    Bgnm c = root(*a, b->to_double());
     long double af, bf, cf;
     af = a->to_double();
     bf = b->to_float();
@@ -818,7 +818,7 @@ static void test_sqrt( Bgnm * _a, bool show_success )
 {
     Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
-    Bgnm c = a->sqrt();
+    Bgnm c = sqrt(*a);
     long double af, cf;
     af = a->to_long_double();
     cf = pow(af,1.0/2.0);
@@ -834,7 +834,7 @@ static void test_cbrt( Bgnm * _a, bool show_success )
 {
     Bgnm* a = rand_bgnm(true); // forcing possitive numbers until can fix issue with negative modulo operations
     if (_a != NULL) a = _a ;
-    Bgnm c = a->cbrt();
+    Bgnm c = cbrt(*a);
     long double af, cf;
     af = a->to_long_double();
     cf = pow(af,1.0/3.00);
@@ -850,7 +850,7 @@ static void test_abs( Bgnm * _a, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
-    Bgnm c = a->abs();
+    Bgnm c = abs(*a);
     long double af, cf;
     af = a->to_long_double();
     cf = abs(af);
@@ -863,7 +863,7 @@ static void test_floor( Bgnm * _a, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
-    Bgnm c = a->floor();
+    Bgnm c = floor(*a);
     long double af, cf;
     af = a->to_long_double();
     cf = floor(af);
@@ -876,7 +876,7 @@ static void test_ceil( Bgnm * _a, bool show_success )
 {
     Bgnm* a = rand_bgnm();
     if (_a != NULL) a = _a ;
-    Bgnm c = a->ceil();
+    Bgnm c = ceil(*a);
     long double af, cf;
     af = a->to_long_double();
     cf = ceil(af);
