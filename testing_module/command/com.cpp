@@ -1,9 +1,17 @@
-//
-//  coms.cpp
-//  command
-//
-//  Created by Ben Harvey on 4/11/21.
-//
+/*
+com.cpp
+
+Copyright © 2021 Ben Harvey.
+Created by Ben Harvey on 4/11/21.
+ 
+This file is part of Command Parse C++ Library
+
+Command Parse C++ Library is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License version 3 as published by the Free Software Foundation.
+
+Command Parse C++ Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License version 3 along with Command C++ Library. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 // //////////////////////////////////////////////////////////////////
 // INSTRUCTIONS AND CUSTOMIZATION BEGIN BELOW ON LINE 125 !!!!!!!!!!!
@@ -184,7 +192,7 @@ static void ceil       ( Parsed const * const );
 void Com::load( std::vector<Com*> * const vec)
 {
     // revise welcome and exit message as desired
-    welcome_msg = "Test module for Big Numbers library. Type \"help\" if needed.";
+    welcome_msg = "Test module for Big Numbers library. Type \"help\" to list all commands or \"random\" to see quick demo.";
     exit_msg    = "Exiting program.";
     
     _CREATE_COMMAND_
@@ -574,7 +582,7 @@ void random (Parsed const * const parsed )
     }
     else
     {
-        Testing::random_tester(20, e, t);
+        Testing::random_tester(50, e, t);
     }
 }
 

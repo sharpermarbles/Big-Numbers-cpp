@@ -1,9 +1,17 @@
-//
-//  Parsed.cpp
-//  command
-//
-//  Created by Ben Harvey on 4/25/21.
-//
+/*
+parsed.cpp
+
+Copyright © 2021 Ben Harvey.
+Created by Ben Harvey on 4/11/21.
+ 
+This file is part of Command Parse C++ Library
+
+Command Parse C++ Library is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License version 3 as published by the Free Software Foundation.
+
+Command Parse C++ Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License version 3 along with Command C++ Library. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include "parsed.h"
 #include "opt.h"

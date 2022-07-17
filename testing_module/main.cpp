@@ -1,18 +1,23 @@
+/*
+main.cpp Entry point for testing module of Big Numbers C++ Library
+ 
+Created by Ben Harvey on 10/10/20.
+Copyright © 2020 Ben Harvey.
+ 
+This file is part of Big Numbers C++ Library
 
-//  main.cpp
-//
-//  Created by Ben Harvey on 1/6/20.
-//  Copyright © 2020 Ben Harvey. All rights reserved.
+Big Numbers C++ Library is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License version 3 as published by the Free Software Foundation.
 
-//  main() function for testing and playing with bgnm library
+Big Numbers C++ Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 
+You should have received a copy of the GNU Lesser General Public License version 3 along with Big Numbers C++ Library. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include <iostream>
 #include "command.h"
 
 //big_nums library
 #include "bgnm.hpp"
-
 
 int main()
 {
@@ -21,7 +26,6 @@ int main()
     
     try
     {
-        // basic program user input loop
         Command::main_input_loop();
     }
     catch (char const * c)

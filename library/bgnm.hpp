@@ -1,11 +1,18 @@
 /*
 big_nums.hpp
-big_nums
 
 Created by Ben Harvey on 10/10/20.
-Copyright © 2020 Ben Harvey. All rights reserved.
+Copyright © 2020 Ben Harvey.
 
-A big number class that represents numbers of any size and/or precission. With overloaded constructors and operators, these objects should be able to be instantiated and operated on/with as simply as with any primitive types. Bgnm objects can be created with any of the following types: int, long long, float, double, long double, char*, std::string, and of course Bgnm
+This file is part of Big Numbers C++ Library
+
+Big Numbers C++ Library is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License version 3 as published by the Free Software Foundation.
+
+Big Numbers C++ Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License version 3 along with Big Numbers C++ Library. If not, see <https://www.gnu.org/licenses/>.
+ 
+The Big Numbers C++ Library creates a C++ class Bgnm that can represent integer and floating point numbers of any size and/or precission (to millions of places). With overloaded constructors and operators, these objects should be able to be instantiated and operated on as simply as with any primitive types. Bgnm objects can be created with any of the following types: int, long long, float, double, long double, char*, std::string, and of course Bgnm
 
 the following operators are overloaded to facilitate seamless math operations and interaction with basic data types
     =  assigment
@@ -32,7 +39,7 @@ the following operators are overloaded to facilitate seamless math operations an
     -= subtraction assignment
     *= multiplication assignment
     /= division assignment
-    %= modulus assignment
+    %= modulo assignment
 
     << (ostring << operator overloaded so bgnm can easily be printed via std::cout)
 
@@ -53,12 +60,12 @@ the following operators are overloaded to facilitate seamless math operations an
 
     Bgnm round(precision)
 
-    int         toint() // convert to int
-    float       tofloat() // convert to float
-    double      todouble() // convert to double
+    int         toint()        // convert to int
+    float       tofloat()      // convert to float
+    double      todouble()     // convert to double
     long double tolongdouble() // convert to long double
-    char*       tocstring()
-    std::string tostring() // overloaded std::to_string() to accept Bgnm
+    char*       tocstring()    // convert to a c string
+    std::string tostring()     // overloaded std::to_string() to accept Bgnm
     Bgnm        abs() returns absolute (possitive) value
 
     bool Bgnm::equal(precision) same as == operator, but can set decimal precision, after which the method ignores differences and returns true
@@ -93,7 +100,7 @@ the following operators are overloaded to facilitate seamless math operations an
  
     for now add_num_strings can be used for increment (and sub_num_strings for decremebt) - but really this should be a new function to perform the operation much faster to add and subtract one
  
-    Possible improvement to main multiply function - maybe redo the algorithm to use a Fast Fourier Transform (FFT) algorithm for faster multiplication of polynomials. I almost went ahead to implement this until I realized this would have inherent loss of precision due to the inclusion of euler's number and pi in the equations. Maybe it's still worth looking at, but need to decide what the precision loss is and when that's acceptable. The Bgnm library is intended to be accurate to nearly every digit that it returns from every function - which is not the case for most calculators especially for floating point calculations.
+    Possible improvement to main multiply function - maybe redo the algorithm to use a Fast Fourier Transform (FFT) algorithm for faster multiplication of polynomials. I almost went ahead to implement this until I realized this would have inherent loss of precision due to the inclusion of euler's number and pi in the equations. Maybe it's still worth looking at, but need to decide what the precision loss is and when that's acceptable. The Bgnm library is intended to be accurate to nearly every digit that it returns from every method - which is not the case for most calculators especially for floating point calculations.
  
  */
 
@@ -106,13 +113,13 @@ the following operators are overloaded to facilitate seamless math operations an
 // GLOBAL_INTERNAL_PRECISION_LIMIT sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy.
 #define GLOBAL_INTERNAL_PRECISION_LIMIT 25
 
-// MAX_ROOT_GUESS_COUNT sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions.
+// MAX_ROOT_GUESS_COUNT sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions. After adding the new method intitial_guess_for_root(), this counter is less relevant, and should probably never be changed.
 #define MAX_ROOT_GUESS_COUNT 200
 
 // DONT_ADJUST_PRECISION is a default constant that instructs functions to not round return values. This value should not be changed. If a different parameter/argument is provided to one of these functions instead of this default value, the function will round the return value to the number of decimal places indicated by the parameter/argument. DO NOT CHANGE!
 #define DONT_ADJUST_PRECISION 0xffffffff
 
-// When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.
+// When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. This constant can be ignored if not planning to run root operations with floating point indeces.
 #define ROOT_INDEX_MAX_PRECISION 6
 
 //class Bgnm_error;

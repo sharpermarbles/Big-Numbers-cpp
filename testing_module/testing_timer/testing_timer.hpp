@@ -1,3 +1,5 @@
+// The Timer class in this file generally follows the concept put forth by "The Cherno" YouTube channel in the video titled "Timing in C++" (https://www.youtube.com/watch?v=oEx5vGNFrLk). The implementation has been developed a little differently here.
+
 // Timer class for testing purposes
 // Just create a block of code and create an object of type Timer at the begining of the block. When the block completes (if auto_report is true), the destructor stops the timer and prints the elapsed time. Otherwise use the stop() and report() functions at the end of the code block to get the time ellapsed.
 
