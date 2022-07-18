@@ -1,9 +1,3 @@
-
-[![GNU LGPL License][license-shield]][license-url]
-[![C++][code-shield][https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white]
-
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
 
@@ -19,16 +13,19 @@
 
 C++ library for gigantic numbers (integer or floating point)
 
-  A big number class written in c++ that can represent numbers of any size or precission (up to millions of places). Included with the library is an extensive testing module to asist in development. With overloaded constructors and operators, objects of the Bgnm class should be able to be instantiated and operated on as simply as using primitive types.
+  A big number class written in c++ that can represent numbers of any size or precission (to millions of places). Included with the **library** is an extensive **testing module** to asist in development. With overloaded constructors and operators, objects of the Bgnm class should be able to be instantiated and operated on as simply as using primitive types.
 
-## What About the Dozens of Other Big Number Libraries Out There?
+#### What About the Dozens of Other Big Number Libraries Out There?
 
-First, most big number libraries only deal with integers and even then they may only have a few basic math functions. This library is attempts to make the Bgnm class as usable as any int or double primitive type in your project. Secondly, this library is fast. I'm still working to compare this library to several of the most-forked c++ big number libraries out there in GitHub, but so far, this one is as fast or faster than the ones I've checked. But really, the main reason is that I just wanted to make it, so I did. I'll be glad if someone else finds it useful or interesting. I'll be even more thrilled if anyone out there would wish to help develop it further.
+First, most big number libraries only deal with integers and even then they may only have a few basic math functions. This library is attempts to make the Bgnm class as usable as any primitive type in your project, and it includes full support for floating point numbers. Need to run the nth root of a massive floating point number where the index is itself a floating point? No problem. This library can handle it. Secondly, this library is fast. I want to compare this library's performance to several of the most-forked c++ big number libraries out there in GitHub. I've allready tested a few, and so far this library is as fast or faster than the ones I've checked. Really, though, the main reason for creating this library is that I just wanted the challenge of doing it myself, so I did. I'll be glad if anyone else finds it useful or interesting. I'll be even more appreciative if anyone out there wants to help me improve it.
 
 ## The Library
 
+The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself (see the Testing Module section below).
+
 ### Overloaded Operators
  
+    Right hand values may be int, long long, float, double, long double, char*, std::string, and of course Bgnm
      =  assigment
      +  addition
      -  subtraction
@@ -89,7 +86,36 @@ First, most big number libraries only deal with integers and even then they may 
     friend std::string  to_string(const Bgnm &);
     friend char*        to_c_string(const Bgnm &);
   
-### Three static members, and what they do
+### Static Members
+
+    static unsigned bgnm_internal_precision_limit (default 25)
+    Sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy.
+    
+    static unsigned bgnm_max_root_guess_count (default 200)
+    Sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions. After adding the new method intitial_guess_for_root(), this counter is less relevant, and should probably never be changed.
+    
+    static unsigned bgnm_root_index_max_precision (default 6)
+    When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. This constant can be ignored if not planning to run root operations with floating point indeces.
+    
+    The above static members have the following setters and getters
+    static      void set_bgnm_internal_precision_limit(unsigned);
+    static  unsigned get_bgnm_internal_precision_limit();
+    static      void set_bgnm_max_root_guess_count(unsigned);
+    static  unsigned get_bgnm_max_root_guess_count();
+    static      void set_bgnm_root_index_max_precision(unsigned);
+    static  unsigned get_bgnm_root_index_max_precision();
+
+### Constructors
+
+    Bgnm objects can be created with the following types
+    Bgnm, int, long long, float, double, long double, char*, and std::string
+    
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Testing Module
+
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
 ## License
@@ -100,31 +126,10 @@ Big Numbers C++ Library is distributed under GNU Lesser General Public License v
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting Started / Installation
 
-The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorperate into your project, simply include the bgnm.hpp header file and bgnm.cpp file to your project directory and compile.
-
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
+The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorperate into your project, simply include the bgnm.hpp header file in your source code and add the bgnm.cpp file to your project directory and compile away.
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- USAGE EXAMPLES -->
