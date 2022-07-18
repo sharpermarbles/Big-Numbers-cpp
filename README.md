@@ -110,10 +110,21 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     Bgnm objects can be created with the following types
     Bgnm, int, long long, float, double, long double, char*, and std::string
     
+### Exceptions
+
+    
+    
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Testing Module
 
+The purpose of the Testing Module is firstly to check for bugs and secondly to check the performance of alleged improvements. It can also be used to compare this library's performance to that of other big number libraries.
+
+Once you compile and run the testing module, you can type `help` to get a list of all commands in the module, or type `random` to see a quick test of a few dozen random operations using the Big Number C++ Library. For each test, the module generates two random big numbers (as in the case of addition), and then calculates the result twice, once using the Big Number library, and once using `long double` arithmatic. It then compares the two results to check for accuracy. If the difference between the results is greater than the error threshhold, the module reports that there is a discrepency. Sometimes the module will report a discrepency, even though the two results are essentially the same. This may mean that the error threshhold is too small. It is often the case that the `long double` arithmatic will only be significant to about 5 or 6 decimal places. Hence the need for a Big Number library!
+
+To run 1000 random tests, just type `random -n 1000`
+
+To run 500 random tests, but only show results of tests that have an error or discrepency enter `random -e -n 500`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
