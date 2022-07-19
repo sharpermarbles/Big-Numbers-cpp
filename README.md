@@ -89,13 +89,42 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
 ### Static Members
 
     static unsigned bgnm_internal_precision_limit (default 25)
-    Sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy.
+    Sets the default maximum decimal precision limit for INTERNAL 
+    root and power calculations. When root and power functions call 
+    mult_num_strings() or div_num_strings(), decimal places get added 
+    which can quickly be a problem when in loops. This global limit 
+    prevents this from getting out of hand. There are times when this 
+    needs to be increased or decreased, even temporarily. In such 
+    cases, use the set/get_global_internal_precision_limit() functions. 
+    Note that this does not get applied to any other calculations 
+    (other than power and root) so as to not reduce significant 
+    digits or accuracy.
     
     static unsigned bgnm_max_root_guess_count (default 200)
-    Sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions. After adding the new method intitial_guess_for_root(), this counter is less relevant, and should probably never be changed.
+    Sets default maximum number of guesses str_root() is allowed to 
+    attempt when it's looking for a root. If it hasn't happened in 
+    MAX_ROOT_GUESS_COUNT number of guesses, then it has to give 
+    up - it's probably not going to happen because initial guess 
+    wasn't close enough, or because due to the way Newton-Raphson 
+    works, the tangent at x^initial_root sent the algorithm too 
+    far off base, never to recover in any reasonable time. This 
+    value can be adjusted if necessary using the 
+    set/get_max_root_guess_count() functions. After adding the 
+    new method intitial_guess_for_root(), this counter is less relevant, 
+    and should probably never be changed.
     
     static unsigned bgnm_root_index_max_precision (default 6)
-    When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. This constant can be ignored if not planning to run root operations with floating point indeces.
+    When finding root, this sets maximum decimal precision for the 
+    index. In other words, if using a default value of 6, then the 
+    operation 1.123456789 root of 100 will be calculated as 1.123457 
+    root of 100. Floating point indeces for root operations are 
+    exponentially complicated by each additional decimal place. If 
+    the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, 
+    calculations are sped up significantly. This is different than 
+    global_internal_precision_limit, which prevents multiplication 
+    and division processes from adding excessive decimal places in 
+    loop situations. This constant can be ignored if not planning 
+    to run root operations with floating point indeces.
     
     The above static members have the following setters and getters
     static      void set_bgnm_internal_precision_limit(unsigned);
