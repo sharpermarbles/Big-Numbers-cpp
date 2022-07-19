@@ -120,7 +120,7 @@ The above static members have the following setters and getters
 
 The Big Number C++ Library has its own error class which is derived from `std::runtime_error`. Bgnm_error objects can be handled in the same way standard exceptions are handled (e.g. `bgnm_error.what()`). Here is a list of all exceptions specific to this library.
 
--  101: Cannot divide by zero.
+- Bgnm_error 101: Cannot divide by zero.
 - Bgnm_error 102: Invalid string or c_string provided. Occurs when number represented as a std::string or c string cannot be parsed as a number.
 - Bgnm_error 103: Modulo operator cannot take zero as modulus as results in undefined behavior.
 - Bgnm_error 104: Cannot calculate a root of base with a zero index.
@@ -149,6 +149,131 @@ Once you compile and run the testing module, you can type `help` to get a list o
 To run 1000 random tests, just type `random -n 1000`
 
 To run 500 random tests, but only show results of tests that have an error or discrepency enter `random -e -n 500`
+
+### All Testing Module Commands
+
+
+`abs`
+(absolute) Finds absolute value of a.
+
+`add`
+(add) Executes a + b.
+
+`add_assign`
+(add and assign) Executes a + b and assigns result to a.
+
+`cbrt`
+(cube root) Calculates cube root of a.
+
+`ceil`
+(round up) Round a (floating point) up to nearest integer.
+
+`dec_post`
+(decrement postfix) Executes a--.
+
+`dec_pre`
+(decrement prefix) Executes --a.
+
+`demo`
+Demo runs a demonstration, testing all the overrides of the Bgnm constructor for various data types. The results will be printed out in comparison to the original data to confirm fidelity.
+
+`div`
+(divide) Executes a / b.
+
+`div_assign`
+(divide and assign) Executes a / b and assigns result to a.
+
+`equal`
+(equal) Answers true if a == b.
+
+`exceptions`
+Test all Bgnm exceptions included in Bgnm library.
+
+`exit`
+Terminate program.
+
+`floor`
+(round down) Round a (floating point) down to nearest integer.
+
+`great`
+(greater than) Answers true if a > b.
+
+`great_eql`
+(greater than or equal) Answers true if a >= b.
+
+`help`
+List all possible user commands.
+
+`inc_post`
+(increment postfix) Executes a++.
+
+`inc_pre`
+(increment prefix) Executes ++a.
+
+`less`
+(less than) Answers true if a < b.
+
+`less_eql`
+(less than or equal) Answers true if a <= b.
+
+`mod`
+(modulo) Executes a % b.
+
+`mod_assign`
+(modulo and assign) Executes a % b and assigns result to a.
+
+`mult`
+(greater than) Executes a x b.
+
+`mult_assign`
+(multiply and assign) Executes a x b and assigns result to a.
+
+`not_equal`
+(not equal) Answers true if a != b.
+
+`pow`
+(power) Executes a ^ b. (NOTE: in Bgnm library, '^' operator is the power operator, not XOR operator)
+
+`random`
+Performs a default of 50 random operations with bgnm objects and check for errors or discrepencies.
+
+`root`
+(find nth root) Calculates b(th) root of a.
+
+`shift_l`
+(shift left) Base-ten operation analogous to bitwise shift left. Executes a x (10^b).
+
+`shift_r`
+(shift right) Base-ten operation analogous to bitwise shift right. Executes a / (10^b).
+
+`sqrt`
+(square root) Calculates square root of a.
+
+`sub`
+(subtract) Executes a - b.
+
+`sub_assign`
+(subtract and assign) Executes a - b and assigns result to a.
+
+`threshhold`
+Set or view error threshhold. When a test is performed with Bgnm objects, the result is compared against the same operation with type double. If there is a discrepency between the two results, the error threshhold sets whether the discrepency is reported. Remember that the discrepency is calculated as a fraction of the difference between the results divided by the Bgnm result. Therefore in most cases the discrepency will be something like 3.412e-16. Therefore the error threshhold should be set to something in the range of 1e-15 to 1e-18. However the only rule is that it be a possitive number.
+
+  Enter new threshhold or leave empty to view current threshhold. Type "threshhold 0" to reset error threshhold to default value.
+  
+`bgnm_int_prec_limit`
+Set or view static Bgnm::bgnm_internal_precision_limit that sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy.
+
+  Enter new precision limit or leave empty to view current threshhold. Enter "0" to reset Bgnm::bgnm_internal_precision_limit to default value.
+
+`bgnm_max_root_guess`
+Set or view static Bgnm::bgnm_max_root_guess_count that sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time.
+
+  Enter new guess count limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_max_root_guess_count to default value.
+
+`bgnm_root_ind_max_prec`
+When finding x root of a number where x is a floating point value, this sets Bgnm::bgnm_root_index_max_precision controling the maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.
+
+  Enter new precision limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_root_index_max_precision to default value.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
