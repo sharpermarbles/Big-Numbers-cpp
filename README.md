@@ -169,40 +169,11 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-
-
-
 <!-- TO DO -->
 ## Ideas, Issues and To Do
 
-     need to add ability to choose accuracy to how many decimal places (e.g., give me accuracy to 40 decimal places)
-
-     Bgnm pow(precision) will offer precision other than
-     Bgnm root(precision)
- 
-     Bgnm round(precision)
- 
-     int         toint() // convert to int
-     float       tofloat() // convert to float
-     double      todouble() // convert to double
-     long double tolongdouble() // convert to long double
-     char*       tocstring()
-     std::string tostring() // overloaded std::to_string() to accept Bgnm
-     Bgnm        abs() returns absolute (possitive) value
- 
-     bool Bgnm::equal(precision) same as == operator, but can set decimal precision, after which the method ignores differences and returns true
- 
-     Bgnm floor() // rounds down to nearest integer value
-     Bgnm ceil()  // rounds up to nearest integer value
- 
-     ADD support for hexadecimal input?
-     Add conversion of Bgnm to string hexa
- 
-     Add somthing like sizeof() or length() to get number of digits (with or without decimal)
- 
-     Add option that keeps Bgnm library from checking cstrings and stdstrings for validity - this would improve performance if parent program checks/trusts all input
- 
-     fix exception handling so properly passes exceptions back to parent program - or should I just make the thing crash if error exceptions are thrown??
+Refer to the repository's Issues section of GitHub for tracking bugs and ideas.
+https://github.com/sharpermarbles/Big-Numbers-cpp/issues
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -210,7 +181,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- CONTACT -->
 ## Contact
 
-Ben Harvey - sharpermarbles@yahoo.com
+Ben - sharpermarbles@gmail.com
 
 Project Link: [https://github.com/sharpermarbles/Big-Numbers-cpp](https://github.com/sharpermarbles/Big-Numbers-cpp)
 
