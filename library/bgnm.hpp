@@ -67,40 +67,6 @@ the following operators are overloaded to facilitate seamless math operations an
     char*       tocstring()    // convert to a c string
     std::string tostring()     // overloaded std::to_string() to accept Bgnm
     Bgnm        abs() returns absolute (possitive) value
-
-    bool Bgnm::equal(precision) same as == operator, but can set decimal precision, after which the method ignores differences and returns true
-
-    Bgnm floor() // rounds down to nearest integer value
-    Bgnm ceil()  // rounds up to nearest integer value
-
-    ADD support for hexadecimal input?
-    Add conversion of Bgnm to string hexa
-
-    Add somthing like sizeof() or length() to get number of digits (with or without decimal)
-
-    Add option that keeps Bgnm library from checking cstrings and stdstrings for validity - this would improve performance if parent program checks/trusts all input
-
-    fix exception handling so properly passes exceptions back to parent program - or should I just make the thing crash if error exceptions are thrown??
-
-    fix issue with modulo operator - what to do with negative modulus (or remainder) - need to figure out whether this should be allowed, make modulo operator have exactly the same behavior as c++ % operator and fmod() function
-    (need to fix same issue with %= uless fixing the first fixes the second also)
-
-    fix issues with power operator - issues with large powers (or negative), find ways to speed it up
-
-    << and >> could be more efficient - right now they loop through mult_str_10 and div_str_10 but this isn't efficient
-        one possibility would be to change mult_str_10 and div_str_10 so that they take an int for how many operations to perform, then they can be way more efficient instead of str.erase()/str.append()/str.insert() multiple times in a row
- 
-    for some member functions such as bgnm->abs(), they currently are object specific, but instead of acting on the object, they return a new bgnm - it might make more sense to have two functions - bgnm abs(bgnm), and void bgnm::abs() (a static function that can be used to return bgnms if given a bgnm, but a member function that can also operate directly on its own bgnm object) - need to make a list of all the other function like this that would make sense to do this - also need to look up in the c++ manual to see how the analogous methods/functions are set up for basic data types.
- 
-    need a power mod function (for use by encryption libraries)
- 
-    for divide function - can't remember if I already fixed this or not - !!!! STILL NEED TO PROVIDE FOR PRECISION TO BE GREATER THAN 2 x DIVISOR + 5 !!! FOR EXAMPLE, WHAT ABOUT IN THE CALCULATION OF PI?
-
-    div_num_str() - another idea to speed it up.... for the part where you see how many divisors fit in the numerator, - //ANOTHER IDEA - INSTEAD OF SUBTRACTING ONE AT A TIME UNTIL NUM_SUBST IS TOO SMALL, WHAT IF I ADDED DIV UP UNTIL JUST SMALLER THAN NUM_SUBST, THEN SUBTRACTED THAT NUMBER - THAT MEANS MULTIPLE ADDS AND ONE SUBTRACT, INSTEAD OF MULTIPLE SUBTRACTS - MAYBE IT WOULD BE FASTER???
- 
-    for now add_num_strings can be used for increment (and sub_num_strings for decremebt) - but really this should be a new function to perform the operation much faster to add and subtract one
- 
-    Possible improvement to main multiply function - maybe redo the algorithm to use a Fast Fourier Transform (FFT) algorithm for faster multiplication of polynomials. I almost went ahead to implement this until I realized this would have inherent loss of precision due to the inclusion of euler's number and pi in the equations. Maybe it's still worth looking at, but need to decide what the precision loss is and when that's acceptable. The Bgnm library is intended to be accurate to nearly every digit that it returns from every method - which is not the case for most calculators especially for floating point calculations.
  
  */
 

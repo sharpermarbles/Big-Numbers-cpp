@@ -88,7 +88,7 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
   
 ### Static Members
 
-    static unsigned bgnm_internal_precision_limit (default 25)
+    **static unsigned bgnm_internal_precision_limit** (default 25)
     Sets the default maximum decimal precision limit for INTERNAL 
     root and power calculations. When root and power functions call 
     mult_num_strings() or div_num_strings(), decimal places get added 
@@ -100,7 +100,7 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     (other than power and root) so as to not reduce significant 
     digits or accuracy.
     
-    static unsigned bgnm_max_root_guess_count (default 200)
+    **static unsigned bgnm_max_root_guess_count** (default 200)
     Sets default maximum number of guesses str_root() is allowed to 
     attempt when it's looking for a root. If it hasn't happened in 
     MAX_ROOT_GUESS_COUNT number of guesses, then it has to give 
@@ -113,7 +113,7 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     new method intitial_guess_for_root(), this counter is less relevant, 
     and should probably never be changed.
     
-    static unsigned bgnm_root_index_max_precision (default 6)
+    **static unsigned bgnm_root_index_max_precision** (default 6)
     When finding root, this sets maximum decimal precision for the 
     index. In other words, if using a default value of 6, then the 
     operation 1.123456789 root of 100 will be calculated as 1.123457 
@@ -126,11 +126,14 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     loop situations. This constant can be ignored if not planning 
     to run root operations with floating point indeces.
     
-    The above static members have the following setters and getters
+    //The above static members have the following setters and getters
+    
     static      void set_bgnm_internal_precision_limit(unsigned);
     static  unsigned get_bgnm_internal_precision_limit();
+    
     static      void set_bgnm_max_root_guess_count(unsigned);
     static  unsigned get_bgnm_max_root_guess_count();
+    
     static      void set_bgnm_root_index_max_precision(unsigned);
     static  unsigned get_bgnm_root_index_max_precision();
 
@@ -141,7 +144,25 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     
 ### Exceptions
 
-    
+The Big Number C++ Library has its own error class which is derived from `std::runtime_error`. Bgnm_error objects can be handled in the same way standard exceptions are handled (e.g. `bgnm_error.what()`). Here is a list of all exceptions specific to this library.
+
+    -Bgnm_error 101: Cannot divide by zero.
+    -Bgnm_error 102: Invalid string or c_string provided. Occurs when number represented as a std::string or c string cannot be parsed as a number.
+    -Bgnm_error 103: Modulo operator cannot take zero as modulus as results in undefined behavior.
+    -Bgnm_error 104: Cannot calculate a root of base with a zero index.
+    -Bgnm_error 105: Number of attempts to find root exceeded max_root_guess_count. Review use of str_root() or use set_max_root_guess_count(unsigned) to increase number of allowed attempts.
+    -Bgnm_error 106: Cannot calculate square root of negative value.
+    -Bgnm_error 107: Provided precision for internal calculations is out of range.
+    -Bgnm_error 108: Provided number for max root guess count is out of range.
+    -Bgnm_error 109: Could not convert Bgnm type to int.
+    -Bgnm_error 110: Could not convert Bgnm type to long long.
+    -Bgnm_error 111: Could not convert Bgnm type to float.
+    -Bgnm_error 112: Could not convert Bgnm type to double.
+    -Bgnm_error 113: Could not convert Bgnm type to long double.
+    -Bgnm_error 114: Not used.
+    -Bgnm_error 115: Provided number for root index max precision was out of range.
+    -Bgnm_error 116: Internal precision is not high enough to calculate given root. **static unsigned bgnm_internal_precision_limit** needs to be increased in order to allow root function to properly calculate this root.
+    -Bgnm_error 117: Internal precision is not high enough to calculate given power (exponent). **static unsigned bgnm_internal_precision_limit** needs to be increased in order to allow power function to properly calculate result.
     
 <p align="right">(<a href="#top">back to top</a>)</p>
 

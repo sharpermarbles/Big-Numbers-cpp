@@ -12,23 +12,6 @@ Big Numbers C++ Library is distributed in the hope that it will be useful, but W
 
 You should have received a copy of the GNU Lesser General Public License version 3 along with Big Numbers C++ Library. If not, see <https://www.gnu.org/licenses/>.
 */
- 
-/*
- PROBLEM CALCS - need to test further
- 
- (ON THIS NEXT ONE, PROBABLY NEED TO DISSALOW NEGATIVES FOR FLOATING ROOTS)
- MAYBE NEED TO CREATE A NAN (AND OR INF) MEMBER FOR BGNM?
-
- bgnm    operation: -743202 ^  1.04167 = 1305436.9255044765287386824762264
- control operation: -743202 ^  1.04167 = nan
- 
- bgnm    operation: -411232880525578.4386 ^  0.176471 = 379.28240292246159326526750590312200573837054357573974
- control operation: -4.11233e+14 ^  0.176471 = nan
- 
- 
- 
- */
-
 
 #ifndef _testing_h_
 #define _testing_h_

@@ -2630,10 +2630,6 @@ double Bgnm::to_double() const
     try { return std::stod(this->val);}
     catch (std::exception e)
     {
-        
-        // GET RID OF THIS NEXT LINE - ONLY FOR TESTING PURPOSES
-        std::cout << "THIS BGNM CANNOT CONVERT TO DOUBLE:  " << this->val << std::endl;
-        
         throw Bgnm_error("Could not convert Bgnm type to double.",__FILENAME__,__LINE__,__FUNCTION__,112);
     }
 }
@@ -2644,9 +2640,6 @@ long double Bgnm::to_long_double() const
     try { return std::stold(this->val);}
     catch (std::exception e)
     {
-        // GET RID OF THIS NEXT LINE - ONLY FOR TESTING PURPOSES
-        std::cout << "THIS BGNM CANNOT CONVERT TO LONG DOUBLE:  " << this->val << std::endl;
-        
         throw Bgnm_error("Could not convert Bgnm type to long double.",__FILENAME__,__LINE__,__FUNCTION__,113);
     }
 }
