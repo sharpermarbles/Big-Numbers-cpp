@@ -146,12 +146,24 @@ The purpose of the Testing Module is firstly to check for bugs and secondly to c
 
 Once you compile and run the testing module, you can type `help` to get a list of all commands in the module, or type `random` to see a quick test of a few dozen random operations using the Big Number C++ Library. For each test, the module generates two random big numbers (as in the case of addition), and then calculates the result twice, once using the Big Number library, and once using `long double` arithmatic. It then compares the two results to check for accuracy. If the difference between the results is greater than the error threshhold, the module reports that there is a discrepency. Sometimes the module will report a discrepency, even though the two results are essentially the same. This may mean that the error threshhold is too small. It is often the case that the `long double` arithmatic will only be significant to about 5 or 6 decimal places. Hence the need for a Big Number library!
 
-To run 1000 random tests, just type `random -n 1000`
-
-To run 500 random tests, but only show results of tests that have an error or discrepency enter `random -e -n 500`
+To run 1000 random tests, type ` random -n 1000 `
+To run 500 random tests, but only show results of tests that have an error or discrepency enter ` random -e -n 500 `
 
 ### All Testing Module Commands
 
+The module has command line function to test every Bgnm method. Most of the commands have the following flags/options. Type ` help ` to see a full list of commands and options.
+
+    -c, --constants
+    Use this option in order to specify which constants to test. Without this option, the test will always use random numbers.  For example, to test ` 12 + 3.45 ` enter ` add -c 12 3.45 `. Always provide a and b separated by space. If a and/or b is negative, enclose string in quotes (e.g. ` add -c "0.02352 -26234.734409" `).
+
+    -e
+    Only show test results that indicate errors/discrepencies (helpful when running thousands of tests).
+
+    -n, --number
+    Number of operations to perform if not the default number. For example ` add -n 10000 ` will perform 10000 random addition operations and show results.
+
+    -t
+    Shows the elapsted time to execute tests. For example ` add -n 10000 -t ` will report the time it takes to run 10000 random addition operations.
 
 `abs`
 (absolute) Finds absolute value of a.
