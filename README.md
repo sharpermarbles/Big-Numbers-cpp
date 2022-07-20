@@ -9,7 +9,7 @@
 </div>
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+# About The Project
 
 C++ library for gigantic numbers (integer or floating point)
 
@@ -23,7 +23,7 @@ Many big number libraries only deal with integers and even then they may only ha
 
 At it's core, the Bgnm object is a `std::string`. Don't worry though, each function and method have been carefully developed and re-developed to avoid additional overhead that might be expected from using strings. For example, wherever possible `std::string_view` (C++17) is used to reduce copying and memory reallocation. Where other libraries may take shortcuts (e.g. implement division by using a simple subtraction loop), this library uses more robust algorithms to make operations as efficient as possible. However, accuracy is prioritized over speed. So where using some kind of Fourier Transform for multiplication operations would greatly reduce the workload, it is not employed here due to the inherent loss of precision (dependence on pi and Euler's number). It should be noted that an earlier iteration of this library attempted to move from a string model to a binary arithmetic model. The idea was that the big number could be stored in binary in arrays of unsigned integers, and then use super fast logic operations to achieve the mathematical operations. After putting a great amount of effort into recoding the main mathematical functions to work with a binary paradigm, testing showed it was no faster, and often slower, than the string-based Bgnm operations.
 
-## The Library
+# The Library
 
 The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself (see the Testing Module section below).
 
@@ -36,7 +36,7 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
  
 Right hand values may be int, long long, float, double, long double, char*, std::string, and of course Bgnm
 
-     =  assingment
+     =  assignment
      +  addition
      -  subtraction
      *  multiplication
@@ -146,9 +146,9 @@ The Big Number C++ Library has its own error class which is derived from `std::r
     
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Testing Module
+# The Testing Module
 
-The purpose of the Testing Module is 1) to check for bugs, 2) to check the performance of alleged improvements, 3) to compare this library's performance to that of other big number libraries.
+The purpose of the Testing Module is: 1) to check for bugs; 2) to check the performance of alleged improvements; 3) to compare this library's performance to that of other big number libraries.
 
 Once you compile and run the testing module, you can type `help` to get a list of all commands in the module, or type `random` to see a quick test of a few dozen random operations using the Big Number C++ Library. For each test this module executes, it generates two random big numbers and then calculates the result twice. The first result is calculated using the Big Number library, and the second using `long double` arithmatic. It then compares the two results to check for accuracy `(abs(result_a - result_b) / result_a)`. If the difference between the results is greater than the error threshold, the module reports that there is a discrepancy. Sometimes the module will report a discrepancy even though the two results are essentially the same. This may mean that the error threshold is too small. It is often the case that the `long double` arithmetic will only be significant to about 5 or 6 decimal places and therefore not be accurate enough to compare to the Bgnm result. Hence the need for a Big Number library!
 
@@ -295,7 +295,7 @@ When finding x root of a number where x is a floating point value, this sets Bgn
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
-## License
+# License
 
 Big Numbers C++ Library is distributed under GNU Lesser General Public License version 3 as published by the Free Software Foundation. See `LICENSE` file for more information.
 
@@ -303,14 +303,14 @@ Big Numbers C++ Library is distributed under GNU Lesser General Public License v
 
 
 <!-- GETTING STARTED -->
-## Getting Started / Installation
+# Getting Started / Installation
 
 The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorporate into your project, simply include the bgnm.hpp header file in your source code and add the bgnm.cpp file to your project directory and compile away.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- USAGE EXAMPLES -->
-## Usage and Examples
+# Usage and Examples
 
 #### Big Number C++ Libarary
 
@@ -406,7 +406,7 @@ Now rerun root test from above and see that module no longer reports an error.
 
 
 <!-- CONTRIBUTING -->
-## Contributing
+# Contributing
 
 I would appreciate any help in further developing this library. If you have a suggestion that would make it better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
@@ -421,7 +421,7 @@ Don't forget to give the project a star! Thanks again!
 
 
 <!-- TO DO -->
-## Ideas, Issues and To Do
+# Ideas, Issues and To Do
 
 Refer to the repository's Issues section of GitHub for tracking bugs and ideas.
 https://github.com/sharpermarbles/Big-Numbers-cpp/issues
@@ -430,7 +430,7 @@ https://github.com/sharpermarbles/Big-Numbers-cpp/issues
 
 
 <!-- CONTACT -->
-## Contact
+# Contact
 
 Ben - sharpermarbles@gmail.com
 
