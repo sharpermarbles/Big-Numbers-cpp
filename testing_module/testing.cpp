@@ -29,23 +29,23 @@ You should have received a copy of the GNU Lesser General Public License version
 #define PROBABILITY_INT           1 // rand_bgnm() - bigger number means more likely the returned random bgnm will be integer instead of floating point
 #define PROBABILITY_POSSITIVE     2 // rand_bgnm() - bigger number means more likely the returned random bgnm will be possitive
 #define MAX_NUM_ZEROS            15 // rand_bgnm() - maximum number of zeros that may be randomly added to random bgnm (floating point)
-#define ERROR_THRESHHOLD 0.000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
+#define ERROR_threshold 0.000000000000001 // not_equal() - difference between bgnm calc and control calc (uses type double) which sounds the alarm
 
-double Testing::error_threshhold = ERROR_THRESHHOLD;
+double Testing::error_threshold = ERROR_threshold;
 
-void Testing::set_error_threshhold( const double threshhold)
+void Testing::set_error_threshold( const double threshold)
 {
-    if (threshhold == 0) error_threshhold = ERROR_THRESHHOLD;
-    else if (threshhold > 0)
+    if (threshold == 0) error_threshold = ERROR_threshold;
+    else if (threshold > 0)
     {
-        error_threshhold = threshhold;
+        error_threshold = threshold;
     }
-    else throw "    Error threshhold must be greater than zero.\n";
+    else throw "    Error threshold must be greater than zero.\n";
 }
 
-double Testing::get_error_threshhold()
+double Testing::get_error_threshold()
 {
-    return error_threshhold;
+    return error_threshold;
 }
 
 void Testing::set_bgnm_internal_precision_limit(unsigned lim)
@@ -233,7 +233,7 @@ static bool not_equal(Bgnm &bn, long double &db, long double *diff)
     long double denominator;
     db == 0 ? denominator = 1 : denominator = db ; // just in case div by zero problem
     *diff =  abs((temp - db)/denominator); // difference is the absolute value of the difference between the two numbers divided by the size of one of them (to give it relative weighting)
-    if(*diff < Testing::get_error_threshhold()) // determine both to be equivelant if the two results are within the error threshhold
+    if(*diff < Testing::get_error_threshold()) // determine both to be equivelant if the two results are within the error threshold
     {
         return false;
     }
@@ -308,8 +308,8 @@ static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, bool c = true, std::st
 static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, long double *af = NULL, long double* bf = NULL, long double* cf = NULL, long double* diff = NULL, std::string oper = "")
 {
     
-    std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHHOLD ----\n";
-    std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshhold of " << Testing::get_error_threshhold() << std::endl;
+    std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR threshold ----\n";
+    std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshold of " << Testing::get_error_threshold() << std::endl;
     if(bf == NULL)
     {
         std::cout << "   bgnm    operation: " << *a << oper << " = " << *c << std::endl;

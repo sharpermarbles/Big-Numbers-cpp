@@ -138,7 +138,7 @@ void Com::print()
 static void demo       ( Parsed const * const );
 static void random     ( Parsed const * const );
 static void exceptions ( Parsed const * const );
-static void threshhold ( Parsed const * const );
+static void threshold ( Parsed const * const );
 //static void test   ( Parsed const * const );
 
 static void bgnm_int_prec_limit    ( Parsed const * const );
@@ -196,13 +196,13 @@ void Com::load( std::vector<Com*> * const vec)
     exit_msg    = "Exiting program.";
     
     _CREATE_COMMAND_
-        threshhold,
-        "threshhold",
-        "Set or view error threshhold. When a test is performed with Bgnm objects, the result is compared against the same operation with type double. If there is a discrepency between the two results, the error threshhold sets whether the discrepency is reported. Remember that the discrepency is calculated as a fraction of the difference between the results divided by the Bgnm result. Therefore in most cases the discrepency will be something like 3.412e-16. Therefore the error threshhold should be set to something in the range of 1e-15 to 1e-18. However the only rule is that it be a possitive number."
+        threshold,
+        "threshold",
+        "Set or view error threshold. When a test is performed with Bgnm objects, the result is compared against the same operation with type double. If there is a discrepency between the two results, the error threshold sets whether the discrepency is reported. Remember that the discrepency is calculated as a fraction of the difference between the results divided by the Bgnm result. Therefore in most cases the discrepency will be something like 3.412e-16. Therefore the error threshold should be set to something in the range of 1e-15 to 1e-18. However the only rule is that it be a possitive number."
         ____
         _ADD_OPTION_
              '!', "",
-             "Enter new threshhold or leave empty to view current threshhold. Type \"threshhold 0\" to reset error threshhold to default value.", true, false
+             "Enter new threshold or leave empty to view current threshold. Type \"threshold 0\" to reset error threshold to default value.", true, false
              ____
     
     _CREATE_COMMAND_
@@ -212,7 +212,7 @@ void Com::load( std::vector<Com*> * const vec)
         ____
         _ADD_OPTION_
              '!', "",
-             "Enter new precision limit or leave empty to view current threshhold. Enter \"0\" to reset Bgnm::bgnm_internal_precision_limit to default value.", true, false
+             "Enter new precision limit or leave empty to view current threshold. Enter \"0\" to reset Bgnm::bgnm_internal_precision_limit to default value.", true, false
              ____
     
     _CREATE_COMMAND_
@@ -479,7 +479,7 @@ void Com::load( std::vector<Com*> * const vec)
 //     YOU MAY USE EITHER THE METHOD parsed->check(const char& nickname) OR THE
 //     METHOD parsed->check(const std::string& fullname). IT WILL NOT MATTER WHICH ONE YOU USE.
 
-void threshhold (Parsed const * const parsed)
+void threshold (Parsed const * const parsed)
 {
     std::string new_thresh = parsed->check();
     double nt;
@@ -490,12 +490,12 @@ void threshhold (Parsed const * const parsed)
         {
             std::cout << "    Provided argument is not a number" << std::endl;
         }
-        Testing::set_error_threshhold(nt);
-        std::cout << "    Error threshhold successfully changed to " << Testing::get_error_threshhold() << ". \n";
+        Testing::set_error_threshold(nt);
+        std::cout << "    Error threshold successfully changed to " << Testing::get_error_threshold() << ". \n";
     }
     else
     {
-        std::cout << "    Error threshhold currently set to " << Testing::get_error_threshhold() << ". \n";
+        std::cout << "    Error threshold currently set to " << Testing::get_error_threshold() << ". \n";
     }
 }
 

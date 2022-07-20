@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License version
 
 class Testing
 {
-    static double error_threshhold;
+    static double error_threshold;
 
 public:
 
@@ -35,8 +35,8 @@ public:
     static void      demo ();
     static void      exceptions ();
     
-    static void      set_error_threshhold(const double threshhold);
-    static double    get_error_threshhold();
+    static void      set_error_threshold(const double threshold);
+    static double    get_error_threshold();
     
     static void      set_bgnm_internal_precision_limit(unsigned precision);
     static unsigned  get_bgnm_internal_precision_limit();

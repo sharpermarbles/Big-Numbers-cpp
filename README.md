@@ -35,6 +35,7 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
 ### Overloaded Operators
  
 Right hand values may be int, long long, float, double, long double, char*, std::string, and of course Bgnm
+
      =  assingment
      +  addition
      -  subtraction
@@ -336,6 +337,69 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     unsigned ui = Bgnm::get_bgnm_root_index_max_precision();
 
 #### Testing Module
+
+Example output if 20 random tests are executed. The below example does not show any discrepancies.
+
+    Enter command: random -n 20
+                              -8 --X                         = -9                                                                        
+                              09 <  470320145234.7           = true
+                            9016 <  57077413888622303        = true
+                            044. *= 54331717921376044452     = 2390595588540545955888                                                    
+             -337978.22486666838 += 0359417779.6809          = 0359079801.45603333162                                                    
+                  92727768335779 -= 715601401627111614       = -715508673858775835                                                       
+                                 2√ 7.000000003              = 2.6457513116315372999547123                                               
+            65055317450824620989 flr                         = 65055317450824620989                                                      
+                     2.000000762 x  -190749                  = -381498.145350738                                                         
+             1534224301743996180 <= 1534224301743996180      = true
+            8.000000857989052484 %  115467                   = 8.000000857989052484                                                      
+                 130610533951924 += 673349643990252          = 803960177942176                                                           
+            0673887.241653041699 != .000000002               = true
+              -78093098064254669 >> 6                        = -78093098064.254669                                                       
+                                 3√ 64366.9                  = 40.0762918961534021741793585                                              
+                      -537868413 >  -939578.71373768         = false
+                                 3√ 62743184810129407.63     = 397364.3059589460068847456571491                                          
+                               0 X++                         = 0                                                                         
+               -8925004291997345 <= -8925004291997345        = true
+                             6.0 √  874.2                    = 3.0922063453612262208996372
+
+Example output when using `add` command
+                                                                                
+    Enter command: add -c 12.345 6789
+                                       12.345 +  6789                  = 6801.345                                                                  
+    
+Example output when test reveals a discrepancy that is greater than allowed threshold. In this case, the control operation does not have high enough precision and the Bgnm operation actually produces the correct and highl-precision result.
+
+    Enter command: root -c 7898850. 0.75610
+    
+    ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHHOLD ----
+    Fractional difference of 2.91438e-08 is greater than allowed error threshhold of 1e-15
+    bgnm    operation: 0.75610 √  7898850.   = 1326035164.7078233504968041059134598
+    control operation: 0.7561 √  7.89885e+06 = 1.32604e+09
+    
+Example output when testing module catches a Bgnm exception.
+
+    Issue with test number 760
+    Bgnm ERROR 113: Could not convert Bgnm type to long double. Exception thrown in file bgnm.cpp, line 2643, function: to_long_double().
+
+Change error threshold
+
+    // first check current threshold
+    Enter command: threshold
+        Error threshold currently set to 1e-15. 
+        
+    // change threshold to allow larger discrepancies
+    Enter command: threshold .0000001
+        Error threshold successfully changed to 1e-07.
+        
+    // change threshold back to default (1e-15)
+    Enter command: threshold 0
+        Error threshold successfully changed to 1e-15. 
+        
+Now rerun root test from above and see that module no longer reports an error.
+
+    Enter command: root -c 7898850. 0.75610
+                   0.75610 √  7898850.            = 1326035164.7078233504968041059134598 
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
