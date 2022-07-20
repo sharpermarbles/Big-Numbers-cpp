@@ -4,7 +4,7 @@
   <h1 align="center">Big Number C++ Library</h3>
 
   <p align="center">
-    Work with gigantic INTEGER and FLOATING POINT numbers!
+    Work with gigantic INTEGER and FLOATING POINT numbers.
   </p>
 </div>
 
@@ -13,20 +13,29 @@
 
 C++ library for gigantic numbers (integer or floating point)
 
-  A big number class written in c++ that can represent numbers of any size or precission (to millions of places). Included with the **library** is an extensive **testing module** to asist in development. With overloaded constructors and operators, objects of the Bgnm class should be able to be instantiated and operated on as simply as using primitive types.
+  A big number class written in c++ that represents numbers of any size or precision (to millions of places). Included with the **library** is an extensive **testing module** to assist development. With overloaded constructors and operators, objects of the Bgnm class should be able to be instantiated and operated on as simply as using primitive types.
 
-#### What About the Dozens of Other Big Number Libraries Out There?
+#### What about the dozens of big number libraries already out there?
 
-First, most big number libraries only deal with integers and even then they may only have a few basic math functions. This library is attempts to make the Bgnm class as usable as any primitive type in your project, and it includes full support for floating point numbers. Need to run the nth root of a massive floating point number where the index is itself a floating point? No problem. This library can handle it. Secondly, this library is fast. I want to compare this library's performance to several of the most-forked c++ big number libraries out there in GitHub. I've allready tested a few, and so far this library is as fast or faster than the ones I've checked. Really, though, the main reason for creating this library is that I just wanted the challenge of doing it myself, so I did. I'll be glad if anyone else finds it useful or interesting. I'll be even more appreciative if anyone out there wants to help me improve it.
+Many big number libraries only deal with integers and even then they may only have a few basic math functions. This library attempts to make the Bgnm class as usable as any primitive type in your project and it includes full support for floating point numbers. Need to run the nth root of a massive floating point number where the index is itself a floating point? This library can handle it. Moreover, this library attempts to implement efficiencies where many of the other libraries don't bother. The hope is to compare this library's performance to several of the most-forked c++ big number libraries available on GitHub. A few comparisons have already been made, and so far this library is as fast or faster than the ones checked.
+
+#### What's under the hood?
+
+At it's core, the Bgnm object is a `std::string`. Don't worry though, each function and method have been carefully developed and re-developed to avoid additional overhead that might be expected from using strings. For example, wherever possible `std::string_view` (C++17) is used to reduce copying and memory reallocation. Where other libraries may take shortcuts (e.g. implement division by using a simple subtraction loop), this library uses more robust algorithms to make operations as efficient as possible. However, accuracy is prioritized over speed. So where using some kind of Fourier Transform for multiplication operations would greatly reduce the workload, it is not employed here due to the inherent loss of precision (dependence on pi and Euler's number). It should be noted that an earlier iteration of this library attempted to move from a string model to a binary arithmetic model. The idea was that the big number could be stored in binary in arrays of unsigned integers, and then use super fast logic operations to achieve the mathematical operations. After putting a great amount of effort into recoding the main mathematical functions to work with a binary paradigm, testing showed it was no faster, and often slower, than the string-based Bgnm operations.
 
 ## The Library
 
 The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself (see the Testing Module section below).
 
+### Constructors
+
+    Bgnm objects can be created with the following types
+    Bgnm, int, long long, float, double, long double, char*, and std::string
+
 ### Overloaded Operators
  
-    Right hand values may be int, long long, float, double, long double, char*, std::string, and of course Bgnm
-     =  assigment
+Right hand values may be int, long long, float, double, long double, char*, std::string, and of course Bgnm
+     =  assingment
      +  addition
      -  subtraction
      *  multiplication
@@ -56,7 +65,6 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
      
 ### Other Essential Math Methods
 
-    // other essential functions
     Bgnm   root(const Bgnm &, const double & index); // return index root of Bgnm
     Bgnm   sqrt(const Bgnm &);  // return square root
     Bgnm   cbrt(const Bgnm &);  // return cube root
@@ -68,7 +76,9 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     
 ### Conversion to Other Types (if not out of range)
 
-    // Member methods
+Bgnm objects can be converted back to basic types assuming the number is parsable to that type respecting size, int/float, sign, etc. This can be acheived either using the member methods, or friend methods.
+
+    // member methods
     int         to_int() const;
     long long   to_long_long() const;
     float       to_float() const;
@@ -77,7 +87,7 @@ The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp
     std::string to_string() const;
     char*       to_c_string() const;
     
-    // friend methods equivelant to member functions above
+    // friend methods equivalent to member methods above
     friend int          to_int(const Bgnm &);
     friend long long    to_long_long(const Bgnm &);
     friend float        to_float(const Bgnm &);
@@ -94,11 +104,11 @@ Sets the default maximum decimal precision limit for INTERNAL root and power cal
     
 `static unsigned bgnm_max_root_guess_count //(default: 200)`
 
-Sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions. After adding the new method intitial_guess_for_root(), this counter is less relevant, and should probably never be changed.
+Sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up. This might happen because the initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. This value can be adjusted if necessary using the set/get_max_root_guess_count() functions. After adding the new method `intitial_guess_for_root()` which uses log10 and anti logarithm to make a very close initial guess, this counter is less relevant and should probably never be changed.
     
 `static unsigned bgnm_root_index_max_precision //(default: 6)`
 
-When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. This constant can be ignored if not planning to run root operations with floating point indeces.
+When finding root, this sets maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indices for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. This constant can be ignored if not planning to run root operations with floating point indeces.
     
 The above static members have the following setters and getters
     
@@ -110,11 +120,6 @@ The above static members have the following setters and getters
     
     static      void set_bgnm_root_index_max_precision(unsigned);
     static  unsigned get_bgnm_root_index_max_precision();
-
-### Constructors
-
-    Bgnm objects can be created with the following types
-    Bgnm, int, long long, float, double, long double, char*, and std::string
     
 ### Exceptions
 
@@ -142,28 +147,33 @@ The Big Number C++ Library has its own error class which is derived from `std::r
 
 ## Testing Module
 
-The purpose of the Testing Module is firstly to check for bugs and secondly to check the performance of alleged improvements. It can also be used to compare this library's performance to that of other big number libraries.
+The purpose of the Testing Module is 1) to check for bugs, 2) to check the performance of alleged improvements, 3) to compare this library's performance to that of other big number libraries.
 
-Once you compile and run the testing module, you can type `help` to get a list of all commands in the module, or type `random` to see a quick test of a few dozen random operations using the Big Number C++ Library. For each test, the module generates two random big numbers (as in the case of addition), and then calculates the result twice, once using the Big Number library, and once using `long double` arithmatic. It then compares the two results to check for accuracy. If the difference between the results is greater than the error threshhold, the module reports that there is a discrepency. Sometimes the module will report a discrepency, even though the two results are essentially the same. This may mean that the error threshhold is too small. It is often the case that the `long double` arithmatic will only be significant to about 5 or 6 decimal places. Hence the need for a Big Number library!
+Once you compile and run the testing module, you can type `help` to get a list of all commands in the module, or type `random` to see a quick test of a few dozen random operations using the Big Number C++ Library. For each test this module executes, it generates two random big numbers and then calculates the result twice. The first result is calculated using the Big Number library, and the second using `long double` arithmatic. It then compares the two results to check for accuracy `(abs(result_a - result_b) / result_a)`. If the difference between the results is greater than the error threshold, the module reports that there is a discrepancy. Sometimes the module will report a discrepancy even though the two results are essentially the same. This may mean that the error threshold is too small. It is often the case that the `long double` arithmetic will only be significant to about 5 or 6 decimal places and therefore not be accurate enough to compare to the Bgnm result. Hence the need for a Big Number library!
 
-To run 1000 random tests, type ` random -n 1000 `
-To run 500 random tests, but only show results of tests that have an error or discrepency enter ` random -e -n 500 `
+To run 1000 random tests, type ` random -n 1000 `.
+
+To run 500 random tests, but only show results of tests that have an error or discrepancy enter ` random -e -n 500 `.
 
 ### All Testing Module Commands
 
 The module has command line function to test every Bgnm method. Most of the commands have the following flags/options. Type ` help ` to see a full list of commands and options.
 
-    -c, --constants
-    Use this option in order to specify which constants to test. Without this option, the test will always use random numbers.  For example, to test ` 12 + 3.45 ` enter ` add -c 12 3.45 `. Always provide a and b separated by space. If a and/or b is negative, enclose string in quotes (e.g. ` add -c "0.02352 -26234.734409" `).
+#### Common Flags/Options
 
-    -e
-    Only show test results that indicate errors/discrepencies (helpful when running thousands of tests).
+`-c, --constants`
+Use this option in order to specify which constants to test. Without this option, the test will always use random numbers.  For example, to test ` 12 + 3.45 ` enter ` add -c 12 3.45 `. Always provide a and b separated by space. If a and/or b is negative, enclose string in quotes (e.g. ` add -c "0.02352 -26234.734409" `).
 
-    -n, --number
-    Number of operations to perform if not the default number. For example ` add -n 10000 ` will perform 10000 random addition operations and show results.
+`-e`
+Only show test results that indicate errors/discrepancies (helpful when running thousands of tests).
 
-    -t
-    Shows the elapsted time to execute tests. For example ` add -n 10000 -t ` will report the time it takes to run 10000 random addition operations.
+`-n, --number`
+Number of operations to perform if not the default number. For example ` add -n 10000 ` will perform 10000 random addition operations and show results.
+
+`-t`
+Shows the elapsed time to execute tests. For example ` add -n 10000 -t ` will report the time it takes to run 10000 random addition operations.
+
+#### Math Commands
 
 `abs`
 (absolute) Finds absolute value of a.
@@ -186,9 +196,6 @@ The module has command line function to test every Bgnm method. Most of the comm
 `dec_pre`
 (decrement prefix) Executes --a.
 
-`demo`
-Demo runs a demonstration, testing all the overrides of the Bgnm constructor for various data types. The results will be printed out in comparison to the original data to confirm fidelity.
-
 `div`
 (divide) Executes a / b.
 
@@ -198,12 +205,6 @@ Demo runs a demonstration, testing all the overrides of the Bgnm constructor for
 `equal`
 (equal) Answers true if a == b.
 
-`exceptions`
-Test all Bgnm exceptions included in Bgnm library.
-
-`exit`
-Terminate program.
-
 `floor`
 (round down) Round a (floating point) down to nearest integer.
 
@@ -212,9 +213,6 @@ Terminate program.
 
 `great_eql`
 (greater than or equal) Answers true if a >= b.
-
-`help`
-List all possible user commands.
 
 `inc_post`
 (increment postfix) Executes a++.
@@ -246,9 +244,6 @@ List all possible user commands.
 `pow`
 (power) Executes a ^ b. (NOTE: in Bgnm library, '^' operator is the power operator, not XOR operator)
 
-`random`
-Performs a default of 50 random operations with bgnm objects and check for errors or discrepencies.
-
 `root`
 (find nth root) Calculates b(th) root of a.
 
@@ -267,25 +262,34 @@ Performs a default of 50 random operations with bgnm objects and check for error
 `sub_assign`
 (subtract and assign) Executes a - b and assigns result to a.
 
-`threshhold`
-Set or view error threshhold. When a test is performed with Bgnm objects, the result is compared against the same operation with type double. If there is a discrepency between the two results, the error threshhold sets whether the discrepency is reported. Remember that the discrepency is calculated as a fraction of the difference between the results divided by the Bgnm result. Therefore in most cases the discrepency will be something like 3.412e-16. Therefore the error threshhold should be set to something in the range of 1e-15 to 1e-18. However the only rule is that it be a possitive number.
+#### Other Commands
 
-  Enter new threshhold or leave empty to view current threshhold. Type "threshhold 0" to reset error threshhold to default value.
+`demo`
+Demo runs a demonstration, testing all the overrides of the Bgnm constructor for various data types. The results will be printed out in comparison to the original data to confirm fidelity.
+
+`exceptions`
+Test all Bgnm exceptions included in Bgnm library.
+
+`exit`
+Terminate program.
+
+`help`
+List all possible user commands.
+
+`random`
+Performs a default of 50 random operations with bgnm objects and check for errors or discrepencies. Use ` -n ` to specify different number of tests to run.
+
+`threshhold`
+Set or view error threshold. When a test is performed with Bgnm objects, the result is compared against the same operation with type double. If there is a discrepancy between the two results, the error threshold sets whether the discrepancy is reported. Remember that the discrepancy is calculated as a fraction of the difference between the results divided by the Bgnm result. Therefore in most cases the discrepancy will be something like 3.412e-16. Therefore the error threshold should be set to something in the range of 1e-15 to 1e-18. However the only rule is that it be a positive number. Enter new threshold or leave empty to view current threshold. Type "threshold 0" to reset error threshold to default value.
   
 `bgnm_int_prec_limit`
-Set or view static Bgnm::bgnm_internal_precision_limit that sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy.
-
-  Enter new precision limit or leave empty to view current threshhold. Enter "0" to reset Bgnm::bgnm_internal_precision_limit to default value.
+Set or view static Bgnm::bgnm_internal_precision_limit that sets the default maximum decimal precision limit for INTERNAL root and power calculations. When root and power functions call mult_num_strings() or div_num_strings(), decimal places get added which can quickly be a problem when in loops. This global limit prevents this from getting out of hand. There are times when this needs to be increased or decreased, even temporarily. In such cases, use the set/get_global_internal_precision_limit() functions. Note that this does not get applied to any other calculations (other than power and root) so as to not reduce significant digits or accuracy. Enter new precision limit or leave empty to view current threshhold. Enter "0" to reset Bgnm::bgnm_internal_precision_limit to default value.
 
 `bgnm_max_root_guess`
-Set or view static Bgnm::bgnm_max_root_guess_count that sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time.
-
-  Enter new guess count limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_max_root_guess_count to default value.
+Set or view static Bgnm::bgnm_max_root_guess_count that sets default maximum number of guesses str_root() is allowed to attempt when it's looking for a root. If it hasn't happened in MAX_ROOT_GUESS_COUNT number of guesses, then it has to give up - it's probably not going to happen because initial guess wasn't close enough, or because due to the way Newton-Raphson works, the tangent at x^initial_root sent the algorithm too far off base, never to recover in any reasonable time. Enter new guess count limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_max_root_guess_count to default value.
 
 `bgnm_root_ind_max_prec`
-When finding x root of a number where x is a floating point value, this sets Bgnm::bgnm_root_index_max_precision controling the maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indeces for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations.
-
-  Enter new precision limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_root_index_max_precision to default value.
+When finding x root of a number where x is a floating point value, this sets Bgnm::bgnm_root_index_max_precision controling the maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indices for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. Enter new precision limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_root_index_max_precision to default value.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -300,16 +304,38 @@ Big Numbers C++ Library is distributed under GNU Lesser General Public License v
 <!-- GETTING STARTED -->
 ## Getting Started / Installation
 
-The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorperate into your project, simply include the bgnm.hpp header file in your source code and add the bgnm.cpp file to your project directory and compile away.
+The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorporate into your project, simply include the bgnm.hpp header file in your source code and add the bgnm.cpp file to your project directory and compile away.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Usage and Examples
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+#### Big Number C++ Libarary
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+    // create Bgnm objects
+    Bgnm bgnm_a(12.345);
+    Bgnm bgnm_b("00.0121345");
+    double c = 123456789;
+    Bgnm bgnm_c = c;
+    Bgnm bgnm_f("-0.0000001234");
+    
+    // mathematical operations
+    Bgnm bgnm_d = bgnm_c + c;
+    Bgnm bgnm_e = root(bgnm_d,1.125);
+    bgnm_e = round(bgnm_e,5);
+    bgnm_f *= 10000;
+    
+    // conversions
+    std::string s = bgnm_e.to_string();
+    long double d = bgnm_e.to_long_double();
+    int i = bgnm_d.to_int();
+    
+    // library management
+    Bgnm::set_bgnm_internal_precision_limit(50);
+    unsigned ui = Bgnm::get_bgnm_root_index_max_precision();
+
+#### Testing Module
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
