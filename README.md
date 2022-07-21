@@ -296,13 +296,13 @@ When finding x root of a number where x is a floating point value, this sets Bgn
 
 The Testing Module includes two other libraries from https://github.com/sharpermarbles
 
-####Command C++ Library [https://github.com/sharpermarbles/Command-cpp](https://github.com/sharpermarbles/Command-cpp)
+#### Command C++ Library [https://github.com/sharpermarbles/Command-cpp](https://github.com/sharpermarbles/Command-cpp)
 
-Command C++ Library is a command line parser. It can be used to parse command line input and then call functions and methods in parent program including user input flags/options and arguments.
+    Command C++ Library is a command line parser. It can be used to parse command line input and then call functions and methods in parent program including user input flags/options and arguments.
 
-####Timer C++ Library [https://github.com/sharpermarbles/Timer-cpp](https://github.com/sharpermarbles/Timer-cpp)
+#### Timer C++ Library [https://github.com/sharpermarbles/Timer-cpp](https://github.com/sharpermarbles/Timer-cpp)
 
-Timer C++ is a very simple class that reports time elapsed for a given operation.
+    Timer C++ is a very simple class that reports time elapsed for a given operation.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
