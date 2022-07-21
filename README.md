@@ -8,6 +8,22 @@
   </p>
 </div>
 
+    // Include the Big Number C++ Library
+    #include "bgnm.hpp"
+    
+    // Set global Bgnm internal precision to 50 decimal places
+    Bgnm::set_bgnm_internal_precision_limit(50);
+    
+    // Create two Bgnm objects bgnm_a and bgnm_b
+    Bgnm bgnm_a = "235632.0000012315234623423263452356000942";
+    Bgnm bgnm_b = 0.32875;
+    
+    // Perform operation with bgnm_a and bgnm_b and store in bgnm_c
+    Bgnm bgnm_c = bgnm_a ^ bgnm_b;
+    std::cout << bgnm_c;
+    
+    // Above code outputs: "58.36090476236679475553766933344219446262809432652618"
+
 <!-- ABOUT THE PROJECT -->
 # About The Project
 
@@ -297,10 +313,10 @@ When finding x root of a number where x is a floating point value, this sets Bgn
 The Testing Module includes two other libraries from https://github.com/sharpermarbles
 
 #### Command C++ Library [https://github.com/sharpermarbles/Command-cpp](https://github.com/sharpermarbles/Command-cpp)
-&nbsp&nbsp&nbsp&nbspCommand C++ Library is a command line parser. It can be used to parse command line input and then call functions and methods in parent program including user input flags/options and arguments.
+Command C++ Library is a command line parser. It can be used to parse command line input and then call functions and methods in parent program including user input flags/options and arguments.
 
 #### Timer C++ Library [https://github.com/sharpermarbles/Timer-cpp](https://github.com/sharpermarbles/Timer-cpp)
-&nbsp&nbsp&nbsp&nbspTimer C++ is a very simple class that reports time elapsed for a given operation.
+Timer C++ is a very simple class that reports time elapsed for a given operation.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -333,7 +349,7 @@ The Testing Module includes two other libraries from https://github.com/sharperm
 
 #### Testing Module
 
-Example output if 20 random tests are executed. The below example does not show any discrepancies.
+Example output if 20 random tests are executed. The below example shows that the 15th test found a discrepancy.
 
     Enter command: random -n 20
                               -8 --X                         = -9                                                                        
@@ -349,11 +365,16 @@ Example output if 20 random tests are executed. The below example does not show 
             8.000000857989052484 %  115467                   = 8.000000857989052484                                                      
                  130610533951924 += 673349643990252          = 803960177942176                                                           
             0673887.241653041699 != .000000002               = true
-              -78093098064254669 >> 6                        = -78093098064.254669                                                       
+              -78093098064254669 >> 6                        = -78093098064.254669  
+              
+    ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR threshold ----
+   Fractional difference of 8.22549e-07 is greater than allowed error threshold of 1e-07
+   bgnm    operation: 0.60 √  0.0000040367 = 0.0000000010233969643807065
+   control operation: 0.6 √  4.0367e-06 = 1.0234e-09
+                                                                   
                                  3√ 64366.9                  = 40.0762918961534021741793585                                              
                       -537868413 >  -939578.71373768         = false
                                  3√ 62743184810129407.63     = 397364.3059589460068847456571491                                          
-                               0 X++                         = 0                                                                         
                -8925004291997345 <= -8925004291997345        = true
                              6.0 √  874.2                    = 3.0922063453612262208996372
 
