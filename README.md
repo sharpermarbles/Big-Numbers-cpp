@@ -18,7 +18,7 @@
     Bgnm bgnm_a = "235632.0000012315234623423263452356000942";
     Bgnm bgnm_b = 0.32875;
     
-    // Perform operation with bgnm_a and bgnm_b and store in bgnm_c
+    // Calculate bgnm_a to the power of bgnm_b and store result in bgnm_c
     Bgnm bgnm_c = bgnm_a ^ bgnm_b;
     std::cout << bgnm_c;
     
@@ -366,12 +366,12 @@ Example output if 20 random tests are executed. The below example shows that the
                  130610533951924 += 673349643990252          = 803960177942176                                                           
             0673887.241653041699 != .000000002               = true
               -78093098064254669 >> 6                        = -78093098064.254669  
-              
+    
     ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR threshold ----
-   Fractional difference of 8.22549e-07 is greater than allowed error threshold of 1e-07
-   bgnm    operation: 0.60 √  0.0000040367 = 0.0000000010233969643807065
-   control operation: 0.6 √  4.0367e-06 = 1.0234e-09
-                                                                   
+    Fractional difference of 8.22549e-07 is greater than allowed error threshold of 1e-07
+    bgnm    operation: 0.60 √  0.0000040367 = 0.0000000010233969643807065
+    control operation: 0.6 √  4.0367e-06 = 1.0234e-09
+                
                                  3√ 64366.9                  = 40.0762918961534021741793585                                              
                       -537868413 >  -939578.71373768         = false
                                  3√ 62743184810129407.63     = 397364.3059589460068847456571491                                          
