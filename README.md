@@ -292,22 +292,19 @@ Set or view static Bgnm::bgnm_max_root_guess_count that sets default maximum num
 `bgnm_root_ind_max_prec`
 When finding x root of a number where x is a floating point value, this sets Bgnm::bgnm_root_index_max_precision controling the maximum decimal precision for the index. In other words, if using a default value of 6, then the operation 1.123456789 root of 100 will be calculated as 1.123457 root of 100. Floating point indices for root operations are exponentially complicated by each additional decimal place. If the floating point index is rounded to ROOT_INDEX_MAX_PRECISION, calculations are sped up significantly. This is different than global_internal_precision_limit, which prevents multiplication and division processes from adding excessive decimal places in loop situations. Enter new precision limit or leave empty to view current limit. Enter "0" to reset Bgnm::bgnm_root_index_max_precision to default value.
 
+## Using
+
+The Testing Module includes two other libraries from https://github.com/sharpermarbles
+
+####Command C++ Library [https://github.com/sharpermarbles/Command-cpp](https://github.com/sharpermarbles/Command-cpp)
+
+Command C++ Library is a command line parser. It can be used to parse command line input and then call functions and methods in parent program including user input flags/options and arguments.
+
+####Timer C++ Library [https://github.com/sharpermarbles/Timer-cpp](https://github.com/sharpermarbles/Timer-cpp)
+
+Timer C++ is a very simple class that reports time elapsed for a given operation.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- LICENSE -->
-# License
-
-Big Numbers C++ Library is distributed under GNU Lesser General Public License version 3 as published by the Free Software Foundation. See `LICENSE` file for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-<!-- GETTING STARTED -->
-# Getting Started / Installation
-
-The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorporate into your project, simply include the bgnm.hpp header file in your source code and add the bgnm.cpp file to your project directory and compile away.
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 <!-- USAGE EXAMPLES -->
 # Usage and Examples
@@ -367,7 +364,7 @@ Example output when using `add` command
     Enter command: add -c 12.345 6789
                                        12.345 +  6789                  = 6801.345                                                                  
     
-Example output when test reveals a discrepancy that is greater than allowed threshold. In this case, the control operation does not have high enough precision and the Bgnm operation actually produces the correct and highl-precision result.
+Example output when test reveals a discrepancy that is greater than allowed threshold. In this case, the control operation does not have high enough precision and the Bgnm operation actually produces the correct result. See below where the error threshold is adjusted to allow this discrepancy.
 
     Enter command: root -c 7898850. 0.75610
     
@@ -403,6 +400,23 @@ Now rerun root test from above and see that module no longer reports an error.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+
+<!-- GETTING STARTED -->
+# Getting Started / Installation
+
+The library consists of just two files; bgnm.hpp (header file) and bgnm.cpp (cpp file). The rest of the project files are all just related to the testing module and are not needed by the library itself. To incorporate into your project, simply include the bgnm.hpp header file in your source code and add the bgnm.cpp file to your project directory and compile away.
+
+Please check back later for a CMAKE file.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+<!-- LICENSE -->
+# License
+
+Big Numbers C++ Library is distributed under GNU Lesser General Public License version 3 as published by the Free Software Foundation. See `LICENSE` file for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- CONTRIBUTING -->
