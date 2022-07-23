@@ -308,7 +308,7 @@ static void print_success(Bgnm *a = NULL, Bgnm* b = NULL, bool c = true, std::st
 static void print_failure(Bgnm* a = NULL, Bgnm* b = NULL, Bgnm* c = NULL, long double *af = NULL, long double* bf = NULL, long double* cf = NULL, long double* diff = NULL, std::string oper = "")
 {
     
-    std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR threshold ----\n";
+    std::cout << "\n   ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHOLD ----\n";
     std::cout << "   Fractional difference of " << *diff << " is greater than allowed error threshold of " << Testing::get_error_threshold() << std::endl;
     if(bf == NULL)
     {

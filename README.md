@@ -367,7 +367,7 @@ Example output if 20 random tests are executed. The below example shows that the
             0673887.241653041699 != .000000002               = true
               -78093098064254669 >> 6                        = -78093098064.254669  
     
-    ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR threshold ----
+    ---- NOTICE! CONTROL ANSWER DIFFERS BY MORE THAN ERROR THRESHOLD ----
     Fractional difference of 8.22549e-07 is greater than allowed error threshold of 1e-07
     bgnm    operation: 0.60 √  0.0000040367 = 0.0000000010233969643807065
     control operation: 0.6 √  4.0367e-06 = 1.0234e-09
