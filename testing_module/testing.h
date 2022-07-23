@@ -21,6 +21,9 @@ You should have received a copy of the GNU Lesser General Public License version
 #include "bgnm.hpp"
 #include "testing_timer.hpp"
 
+// abstraction layer for external big number libraries for comparison
+#include "extern_lib_support.hpp"
+
 class Testing
 {
     static double error_threshold;
