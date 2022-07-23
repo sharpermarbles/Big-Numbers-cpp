@@ -11,9 +11,6 @@
     // Include the Big Number C++ Library
     #include "bgnm.hpp"
     
-    // Set global Bgnm internal precision to 50 decimal places
-    Bgnm::set_bgnm_internal_precision_limit(50);
-    
     // Create two Bgnm objects bgnm_a and bgnm_b
     Bgnm bgnm_a = "235632.0000012315234623423263452356000942";
     Bgnm bgnm_b = 0.32875;
@@ -170,7 +167,7 @@ Once you compile and run the testing module, you can type `help` to get a list o
 
 To run 1000 random tests, type ` random -n 1000 `.
 
-To run 500 random tests, but only show results of tests that have an error or discrepancy enter ` random -e -n 500 `.
+To run 500 random tests but only show any errors or discrepancies type ` random -e -n 500 `.
 
 ### All Testing Module Commands
 
